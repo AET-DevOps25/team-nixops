@@ -5,7 +5,9 @@ description = "Default template for PDM package"
 authors = [
     {name = "GHOSCHT", email = "31184695+GHOSCHT@users.noreply.github.com"},
 ]
-dependencies = []
+dependencies = [
+    "openapi-server",
+]
 # dependencies = ["api"]
 requires-python = "==3.12.*"
 readme = "README.md"
@@ -16,7 +18,4 @@ license = {text = "MIT"}
 distribution = false
 
 [tool.uv.sources]
-api = { workspace = true }
-
-[tool.uv.workspace]
-# members = ["api/"]
+openapi-server = { path = "api" }
