@@ -131,11 +131,15 @@ name = "genai"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "fastapi" },
     { name = "openapi-server" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "openapi-server", directory = "api" }]
+requires-dist = [
+    { name = "fastapi", specifier = ">=0.115.12" },
+    { name = "openapi-server", directory = "api" },
+]
 
 [[package]]
 name = "h11"

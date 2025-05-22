@@ -4,7 +4,7 @@ from typing import Dict, List  # noqa: F401
 import importlib
 import pkgutil
 
-from openapi_server.apis.echo_api_base import BaseEchoApi
+from openapi_server.apis.default_api_base import BaseDefaultApi
 import openapi_server.impl
 
 from fastapi import (  # noqa: F401
@@ -23,7 +23,8 @@ from fastapi import (  # noqa: F401
 )
 
 from openapi_server.models.extra_models import TokenModel  # noqa: F401
-from openapi_server.security_api import get_token_basic_auth, get_token_api_key
+from typing import Any
+
 
 router = APIRouter()
 
@@ -32,25 +33,17 @@ for _, name, _ in pkgutil.iter_modules(ns_pkg.__path__, ns_pkg.__name__ + "."):
     importlib.import_module(name)
 
 
-@router.post(
-    "/echo",
+@router.get(
+    "/",
     responses={
-        200: {"model": str, "description": "OK"},
+        200: {"description": "Successful response"},
     },
-    tags=["Echo"],
-    summary="Echo test",
+    tags=["default"],
     response_model_by_alias=True,
 )
-async def echo(
-    body: str = Body(None, description="Echo payload"),
-    token_basic_auth: TokenModel = Security(
-        get_token_basic_auth
-    ),
-    token_api_key: TokenModel = Security(
-        get_token_api_key
-    ),
-) -> str:
-    """Receive the exact message you&#39;ve sent"""
-    if not BaseEchoApi.subclasses:
+async def root_get(
+) -> None:
+    """Returns a list of stuff"""
+    if not BaseDefaultApi.subclasses:
         raise HTTPException(status_code=500, detail="Not implemented")
-    return await BaseEchoApi.subclasses[0]().echo(body)
+    return await BaseDefaultApi.subclasses[0]().root_get()

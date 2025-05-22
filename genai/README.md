@@ -1,9 +1,12 @@
 # GenAI MicroService
 
-## OpenAPI
+## Getting Started
+Start the api:
+```sh
+fastapi dev src/app.py
+```
 
-re-generate api types
-
+Re-generate api types in case of changes to openapi.yml with the following:
 ```sh
 openapi-generator-cli generate -g python-fastapi -i ../openapi.yml^C
 ```

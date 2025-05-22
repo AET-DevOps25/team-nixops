@@ -6,6 +6,7 @@ authors = [
     {name = "GHOSCHT", email = "31184695+GHOSCHT@users.noreply.github.com"},
 ]
 dependencies = [
+    "fastapi>=0.115.12",
     "openapi-server",
 ]
 # dependencies = ["api"]
