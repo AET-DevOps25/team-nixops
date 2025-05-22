@@ -82,15 +82,16 @@
             packages = [
               venv
               pkgs.uv
-				  pkgs.openapi-generator-cli
+              pkgs.openapi-generator-cli
             ];
             env = {
               UV_NO_SYNC = "1";
               UV_PYTHON = "${venv}/bin/python";
               UV_PYTHON_DOWNLOADS = "never";
+              PYTHONPATH = "${venv}/bin/python";
             };
+
             shellHook = ''
-              unset PYTHONPATH
               export REPO_ROOT=$(git rev-parse --show-toplevel)
             '';
           };

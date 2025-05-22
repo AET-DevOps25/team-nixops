@@ -7,7 +7,7 @@ authors = [
 ]
 dependencies = [
     "fastapi>=0.115.12",
-    "openapi-server",
+    "openapi_server",
 ]
 # dependencies = ["api"]
 requires-python = "==3.12.*"
@@ -19,4 +19,4 @@ license = {text = "MIT"}
 distribution = false
 
 [tool.uv.sources]
-openapi-server = { path = "api" }
+openapi_server = { path = "api" }

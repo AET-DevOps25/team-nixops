@@ -264,7 +264,7 @@ wheels = [
 
 [[package]]
 name = "openapi-server"
-version = "1.0.0"
+version = "1.0.12"
 source = { directory = "api" }
 dependencies = [
     { name = "fastapi", extra = ["all"] },
