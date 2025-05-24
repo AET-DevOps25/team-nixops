@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
 
     pyproject-nix = {
       url = "github:pyproject-nix/pyproject.nix";
@@ -25,46 +26,41 @@
     };
   };
 
-  outputs = {
-    nixpkgs,
-    uv2nix,
-    pyproject-nix,
-    pyproject-build-systems,
-    ...
-  }: let
-    inherit (nixpkgs) lib;
-    forAllSystems = lib.genAttrs lib.systems.flakeExposed;
+  outputs =
+    { self
+    , nixpkgs
+    , flake-utils
+    , pyproject-nix
+    , uv2nix
+    , pyproject-build-systems
+    ,
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
+      let
+        inherit (nixpkgs) lib;
 
-    workspace = uv2nix.lib.workspace.loadWorkspace {workspaceRoot = ./.;};
-
-    overlay = workspace.mkPyprojectOverlay {
-      sourcePreference = "wheel";
-    };
-
-    # Python sets grouped per system
-    pythonSets = forAllSystems (
-      system: let
         pkgs = nixpkgs.legacyPackages.${system};
 
-        # Base Python package set from pyproject.nix
-        baseSet = pkgs.callPackage pyproject-nix.build.packages {
-          python = pkgs.python312;
+        python = pkgs.python312;
+
+        workspace = uv2nix.lib.workspace.loadWorkspace { workspaceRoot = ./.; };
+
+        # Create package overlay from workspace.
+        overlay = workspace.mkPyprojectOverlay {
+          sourcePreference = "wheel";
         };
-      in
-        baseSet.overrideScope (
-          lib.composeManyExtensions [
-            pyproject-build-systems.overlays.default
-            overlay
-          ]
-        )
-    );
-  in {
-    devShells = forAllSystems (
-      system: let
-        pkgs = nixpkgs.legacyPackages.${system};
 
-        pythonSet = pythonSets.${system};
-
+        pythonSet =
+          (pkgs.callPackage pyproject-nix.build.packages {
+            inherit python;
+          }).overrideScope
+            (
+              lib.composeManyExtensions [
+                pyproject-build-systems.overlays.default
+                overlay
+              ]
+            );
         venv = (pythonSet.mkVirtualEnv "genai-dev-env" workspace.deps.all).overrideAttrs {
           venvIgnoreCollisions = [
             # quick and dirty hack, will probably lead to some weird errors in the future
@@ -72,8 +68,19 @@
             "*"
           ];
         };
-      in {
-        default = pkgs.mkShell {
+
+        inherit (pkgs.callPackages pyproject-nix.build.util { }) mkApplication;
+        package = mkApplication {
+          inherit venv;
+          package = pythonSet.genai;
+        };
+      in
+      {
+        packages = {
+          genai = package;
+          default = package;
+        };
+        devShells.default = pkgs.mkShell {
           packages = [
             venv
             pkgs.uv
@@ -92,27 +99,4 @@
         };
       }
     );
-    packages = forAllSystems (
-      system: let
-        pythonSet = pythonSets.${system};
-        pkgs = nixpkgs.legacyPackages.${system};
-        inherit (pkgs.callPackages pyproject-nix.build.util {}) mkApplication;
-
-        venv = (pythonSet.mkVirtualEnv "genai-dev-env" workspace.deps.default).overrideAttrs {
-          venvIgnoreCollisions = [
-            # quick and dirty hack, will probably lead to some weird errors in the future
-            # fixes collision between fastapi-cli and the fastapi python module
-            "*"
-          ];
-        };
-      in {
-        default =
-          mkApplication
-          {
-            inherit venv;
-            package = pythonSet.python;
-          };
-      }
-    );
-  };
 }
