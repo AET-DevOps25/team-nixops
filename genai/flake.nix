@@ -76,6 +76,7 @@
         };
       in
       {
+        # package doesn't really work (empty derivation), since server is executed by e.g. uvicorn
         packages = {
           genai = package;
           default = package;

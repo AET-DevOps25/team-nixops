@@ -3,7 +3,7 @@
 ## Getting Started
 Start the api:
 ```sh
-fastapi dev src/app.py
+fastapi dev src
 ```
 
 Re-generate api types in case of changes to openapi.yml with the following:
