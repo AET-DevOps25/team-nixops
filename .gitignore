@@ -377,3 +377,8 @@ sketch
 # gitignore template for Vue.js projects
 #
 # Recommended template: Node.gitignore
+
+#Nix builds
+**/result
+**/result/
+**/.devenv/
