@@ -24,4 +24,4 @@ COPY --from=builder --chown=app:app /app /app
 
 ENV PATH="/app/.venv/bin:$PATH"
 
-CMD ["python3", "/app/src/mcp_server_milvus/server.py"]
+CMD ["python3", "/app/src/mcp_server_milvus/server.py", "--sse"]
