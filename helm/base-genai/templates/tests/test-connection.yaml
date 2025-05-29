@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "base-genai.fullname" . }}-test-connection"
+  labels:
+    {{- include "base-genai.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "base-genai.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
