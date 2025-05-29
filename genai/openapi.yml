@@ -1,0 +1,113 @@
+openapi: 3.0.4
+info:
+  title: GenAI MicroService - OpenAPI 3.0
+  version: 0.0.1
+servers:
+  - url: http://127.0.0.1:8000
+  - url: http://localhost:8000
+tags:
+  - name: embedding
+    description: Everything concerning the vector db
+  - name: generation
+    description: Everything concerning llm interaction
+
+paths:
+  /embed:
+    post:
+      summary: Create embeddings based on content of the SQL DB.
+      description: Triggers async pull of new content from the SQL DB and creates embeddings in vector DB for resulting data.
+      operationId: createEmbeddings
+      tags:
+        - embedding
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmbeddingStatus'
+        '400':
+          description: Invalid status value
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      summary: Get info about embedding processes.
+      description: Returns status of embedding with supplied id. Status info about completed embedding processes are not guaranteed to be kept after successful completion.
+      operationId: getEmbeddingStatus
+      tags:
+        - embedding
+      parameters:
+        - name: id
+          in: query
+          description: Embedding id
+          required: true
+          schema:
+            type: integer
+            default: 420
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmbeddingStatus'
+        '404':
+          description: Embedding info not found for id, either does not exist or corresponding process has been completed successfully.
+        '400':
+          description: Supplied id is invalid
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /gen/ws:
+    get:
+      summary: WebSocket connection used for chat streaming.
+      description: Connect to the WebSocket server. Send a message and receive a response.
+      operationId: streamChat
+      tags:
+        - generation
+      responses:
+        '101':
+          description: Switching Protocols - The client is switching protocols as requested by the server.
+components:
+  schemas:
+    EmbeddingStatus:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 420
+        registeredAt:
+          type: string
+          format: date-time
+        status:
+          type: string
+          description: Embedding Status
+          example: queued
+          enum:
+            - queued
+            - executing
+            - failed
+            - succeeded
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
