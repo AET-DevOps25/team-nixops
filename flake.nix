@@ -27,37 +27,41 @@
     };
   };
 
-  outputs = inputs @ {flake-parts, ...}:
-    flake-parts.lib.mkFlake {inherit inputs;} {
+  outputs = inputs @ { flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
         inputs.devenv.flakeModule
       ];
-      systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
-      perSystem = {
-        pkgs,
-        pyproject-nix,
-        uv2nix,
-        pyproject-build-systems,
-        ...
-      }: {
-        packages.donna = pkgs.callPackage server/donna {};
-        # TODO: how the fck does this work
-        # idk.genai = (pkgs.callPackage ./genai {
-        #   inherit (inputs) pyproject-nix uv2nix pyproject-build-systems;
-        # }).devShells;
-        devenv.shells.default = {
-          languages = {
-            kotlin.enable = true;
-            java = {
-              enable = true;
-              gradle.enable = true;
-              maven.enable = true;
-            };
-            python = {
-              uv.enable = true;
+      systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
+      perSystem =
+        { pkgs
+        , pyproject-nix
+        , uv2nix
+        , pyproject-build-systems
+        , ...
+        }:
+        let
+          genai = pkgs.callPackage ./genai {
+            inherit (inputs) pyproject-nix uv2nix pyproject-build-systems;
+          };
+        in
+        {
+          packages.donna = pkgs.callPackage server/donna { };
+          devShells.genai = genai.devShell;
+          packages.genai = genai.package;
+          devenv.shells.default = {
+            languages = {
+              kotlin.enable = true;
+              java = {
+                enable = true;
+                gradle.enable = true;
+                maven.enable = true;
+              };
+              python = {
+                uv.enable = true;
+              };
             };
           };
         };
-      };
     };
 }

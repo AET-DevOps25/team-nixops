@@ -40,11 +40,8 @@
   };
 in {
   # package doesn't really work (empty derivation), since server is executed by e.g. uvicorn
-  packages = {
-    genai = package;
-    default = package;
-  };
-  devShells = pkgs.mkShell {
+  inherit package;
+  devShell = pkgs.mkShell {
     packages = [
       venv
       pkgs.uv
