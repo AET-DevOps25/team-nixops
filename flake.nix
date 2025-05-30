@@ -2,9 +2,7 @@
   description = "Description for the project";
 
   inputs = {
-    flake-parts.url = "github:hercules-ci/flake-parts";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    devenv.url = "github:cachix/devenv";
 
     pyproject-nix = {
       url = "github:pyproject-nix/pyproject.nix";
@@ -25,31 +23,73 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+    devenv = {
+      url = "github:cachix/devenv";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    srvos = {
+      url = "github:nix-community/srvos";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs @ { flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [
-        inputs.devenv.flakeModule
-      ];
-      systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
-      perSystem =
-        { pkgs
-        , pyproject-nix
-        , uv2nix
-        , pyproject-build-systems
-        , ...
-        }:
-        let
+  outputs = inputs @ {flake-parts, ...}:
+    flake-parts.lib.mkFlake {inherit inputs;} (
+      {
+        self,
+        lib,
+        ...
+      }: {
+        debug = true;
+        imports = [
+          inputs.devenv.flakeModule
+          ./nix/targets/flake-module.nix
+          ./nix/modules/flake-module.nix
+        ];
+        systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
+        perSystem = {
+          pkgs,
+          system,
+          self',
+          ...
+        }: let
           genai = pkgs.callPackage ./genai {
             inherit (inputs) pyproject-nix uv2nix pyproject-build-systems;
           };
-        in
-        {
-          packages.donna = pkgs.callPackage server/donna { };
+        in {
+          checks = let
+            nixosMachines = lib.mapAttrs' (
+              name: config: lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel
+            ) ((lib.filterAttrs (_: config: config.pkgs.system == system)) self.nixosConfigurations);
+            packages = lib.mapAttrs' (n: lib.nameValuePair "package-${n}") self'.packages;
+            devShells = lib.mapAttrs' (n: lib.nameValuePair "devShell-${n}") self'.devShells;
+          in
+            nixosMachines // packages // devShells;
+
+          packages = {
+            donna = pkgs.callPackage server/donna {};
+            genai = genai.package;
+          };
+
           devShells.genai = genai.devShell;
-          packages.genai = genai.package;
           devenv.shells.default = {
+            packages = with pkgs; [
+              jq
+              age
+              sops
+            ];
             languages = {
               kotlin.enable = true;
               java = {
@@ -60,8 +100,10 @@
               python = {
                 uv.enable = true;
               };
+              opentofu.enable = true;
             };
           };
         };
-    };
+      }
+    );
 }
