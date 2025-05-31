@@ -1,13 +1,13 @@
-name: "Build GenAI Docker Image"
+name: "Build Infrastructure"
 on:
   pull_request:
     paths:
-      - genai/**
+      - nix/**
   push:
     paths:
-      - genai/**
+      - nix/**
 jobs:
-  docker:
+  tests:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -19,4 +19,5 @@ jobs:
         name: team-nixops
         # If you chose API tokens for write access OR if you have a private cache
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-    - run: nix build .#packages.x86_64-linux.genai
+    - run: nix build .#nixosConfigurations.dev.config.system.build.toplevel
+    - run: nix build .#nixosConfigurations.dev.config.system.build.diskoScript

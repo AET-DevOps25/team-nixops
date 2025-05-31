@@ -90,6 +90,11 @@
               age
               sops
             ];
+            cachix = {
+              enable = true;
+              pull = ["pre-commit-hooks" "nix-community"];
+              push = "team-nixops";
+            };
             languages = {
               kotlin.enable = true;
               java = {
