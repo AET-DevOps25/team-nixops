@@ -5,13 +5,22 @@ Description:
     This module demonstrates a minimal FastAPI setup and endpoint implementation.
 """
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 import yaml
 
 from openapi_server.models.pet import Pet
 from typing import List
+import uvicorn
+import logging
+logger = logging.getLogger('uvicorn.error')
 
 app = FastAPI()
+
+@app.get(
+    "/api/chat")
+async def root(request: Request):
+    print("FOOOOOOOOOOO")
+    print(request.headers)
 
 
 @app.get(
@@ -43,3 +52,6 @@ def custom_openapi():
 
 
 app.openapi = custom_openapi
+
+if __name__ == '__main__':
+    uvicorn.run(app, log_level="trace")
