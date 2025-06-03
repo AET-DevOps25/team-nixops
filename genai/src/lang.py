@@ -32,17 +32,17 @@ llm_api_key = os.getenv("LLM_API_KEY")
 #     }
 # )
 
-llm = ChatOllama(
-    model="qwen2.5:0.5b",
-    temperature=0.5,
-)
-
-# llm = ChatOpenAI(
-#     model_name="llama3.3:latest",  # Or any other model available on this Open WebUI instance.
+# llm = ChatOllama(
+#     model="qwen2.5:0.5b",
 #     temperature=0.5,
-#     openai_api_key=llm_api_key,  # Replace with your Open WebUI API key.
-#     openai_api_base="https://gpu.aet.cit.tum.de/api", # The base URL of your Open WebUI instance.
 # )
+
+llm = ChatOpenAI(
+    model_name="llama3.3:latest",  # Or any other model available on this Open WebUI instance.
+    temperature=0.5,
+    openai_api_key=llm_api_key,  # Replace with your Open WebUI API key.
+    openai_api_base="https://gpu.aet.cit.tum.de/api",  # The base URL of your Open WebUI instance.
+)
 
 
 def chatbot(state: State):
@@ -56,12 +56,14 @@ graph_builder.add_node("chatbot", chatbot)
 graph_builder.add_edge(START, "chatbot")
 graph = graph_builder.compile()
 
+
 def stream_graph_updates(user_input: str):
-    for chunk in graph.stream({"messages": [{"role": "user", "content": user_input}]}, stream_mode="debug"):
-        print(chunk)
-    # for event in graph.stream({"messages": [{"role": "user", "content": user_input}]}):
-    #     for value in event.values():
-    #         print("Assistant:", value["messages"][-1].content)
+    for message_chunk, metadata in graph.stream(
+        {"messages": [("user", user_input)]},
+        stream_mode="messages",
+    ):
+        if message_chunk.content:
+            print(message_chunk.content, end="|", flush=True)
 
 
 while True:
