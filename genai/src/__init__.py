@@ -6,21 +6,69 @@ Description:
 """
 
 from fastapi import FastAPI, Request
+from fastapi.responses import StreamingResponse
 import yaml
 
 from openapi_server.models.pet import Pet
 from typing import List
 import uvicorn
 import logging
-logger = logging.getLogger('uvicorn.error')
+from typing import Annotated
+from dotenv import load_dotenv
+from asyncio import sleep
+import os
+
+from typing_extensions import TypedDict
+
+from langgraph.graph import StateGraph, START
+from langgraph.graph.message import add_messages
+from langchain_openai import ChatOpenAI
+from langchain_ollama.chat_models import ChatOllama
+
+logger = logging.getLogger("uvicorn.error")
 
 app = FastAPI()
 
-@app.get(
-    "/api/chat")
-async def root(request: Request):
-    print("FOOOOOOOOOOO")
-    print(request.headers)
+load_dotenv()
+
+
+class State(TypedDict):
+    messages: Annotated[list, add_messages]
+
+
+graph_builder = StateGraph(State)
+
+llm_api_key = os.getenv("LLM_API_KEY")
+
+llm = ChatOpenAI(
+    model_name="llama3.3:latest",  # Or any other model available on this Open WebUI instance.
+    temperature=0.5,
+    openai_api_key=llm_api_key,  # Replace with your Open WebUI API key.
+    openai_api_base="https://gpu.aet.cit.tum.de/api",  # The base URL of your Open WebUI instance.
+)
+
+
+def chatbot(state: State):
+    return {"messages": [llm.invoke(state["messages"])]}
+
+
+graph_builder.add_node("chatbot", chatbot)
+graph_builder.add_edge(START, "chatbot")
+graph = graph_builder.compile()
+
+
+@app.get("/stream")
+async def stream_response(prompt: str):
+    async def generate(user_input: str):
+        for message_chunk, _ in graph.stream(
+            {"messages": [("user", user_input)]},
+            stream_mode="messages",
+        ):
+            print(message_chunk)
+            yield message_chunk.content or ""
+            await sleep(0.04)
+
+    return StreamingResponse(generate(prompt), media_type="text/event-stream")
 
 
 @app.get(
@@ -53,5 +101,5 @@ def custom_openapi():
 
 app.openapi = custom_openapi
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     uvicorn.run(app, log_level="trace")
