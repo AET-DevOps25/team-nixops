@@ -60,13 +60,12 @@ graph = graph_builder.compile()
 @app.get("/stream")
 async def stream_response(prompt: str):
     async def generate(user_input: str):
-        for message_chunk, _ in graph.stream(
+        async for message_chunk, _ in graph.astream(
             {"messages": [("user", user_input)]},
             stream_mode="messages",
         ):
-            print(message_chunk)
             yield message_chunk.content or ""
-            await sleep(0.04)
+            await sleep(0.04)  # simply for chat output smoothing
 
     return StreamingResponse(generate(prompt), media_type="text/event-stream")
 
