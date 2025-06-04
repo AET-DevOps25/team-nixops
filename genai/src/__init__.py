@@ -24,6 +24,7 @@ from langgraph.graph import StateGraph, START
 from langgraph.graph.message import add_messages
 from langchain_openai import ChatOpenAI
 from langchain_ollama.chat_models import ChatOllama
+from langgraph.checkpoint.memory import InMemorySaver
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -52,22 +53,25 @@ def chatbot(state: State):
     return {"messages": [llm.invoke(state["messages"])]}
 
 
+checkpointer = InMemorySaver()
 graph_builder.add_node("chatbot", chatbot)
 graph_builder.add_edge(START, "chatbot")
-graph = graph_builder.compile()
+graph = graph_builder.compile(checkpointer=checkpointer)
 
 
 @app.get("/stream")
-async def stream_response(prompt: str):
-    async def generate(user_input: str):
+async def stream_response(prompt: str, user_id: str):
+    async def generate(user_input: str, user_id: str):
+        config = {"configurable": {"thread_id": user_id}}
         async for message_chunk, _ in graph.astream(
             {"messages": [("user", user_input)]},
+            config=config,
             stream_mode="messages",
         ):
             yield message_chunk.content or ""
             await sleep(0.04)  # simply for chat output smoothing
 
-    return StreamingResponse(generate(prompt), media_type="text/event-stream")
+    return StreamingResponse(generate(prompt, user_id), media_type="text/event-stream")
 
 
 @app.get(
