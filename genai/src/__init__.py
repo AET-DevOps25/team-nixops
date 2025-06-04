@@ -5,12 +5,12 @@ Description:
     This module demonstrates a minimal FastAPI setup and endpoint implementation.
 """
 
-from fastapi import FastAPI, Request
+import uuid
+from fastapi import FastAPI
+from fastapi.params import Cookie
 from fastapi.responses import StreamingResponse
 import yaml
 
-from openapi_server.models.pet import Pet
-from typing import List
 import uvicorn
 import logging
 from typing import Annotated
@@ -60,7 +60,7 @@ graph = graph_builder.compile(checkpointer=checkpointer)
 
 
 @app.get("/stream")
-async def stream_response(prompt: str, user_id: str):
+async def stream_response(prompt: str, uid: Annotated[str | None, Cookie()] = None):
     async def generate(user_input: str, user_id: str):
         config = {"configurable": {"thread_id": user_id}}
         async for message_chunk, _ in graph.astream(
@@ -71,31 +71,11 @@ async def stream_response(prompt: str, user_id: str):
             yield message_chunk.content or ""
             await sleep(0.04)  # simply for chat output smoothing
 
-    return StreamingResponse(generate(prompt, user_id), media_type="text/event-stream")
-
-
-@app.get(
-    "/pet/findByStatus",
-    responses={
-        200: {"model": List[Pet], "description": "successful operation"},
-        400: {"description": "Invalid status value"},
-    },
-    tags=["pet"],
-    summary="Finds Pets by status.",
-    response_model_by_alias=True,
-)
-async def find_pets_by_status() -> List[Pet]:
-    """Multiple status values can be provided with comma separated strings."""
-    pet_dict = {
-        "id": 1,
-        "name": "Frany",
-        "category": {"id": 10, "name": "Cats"},
-        "photoUrls": ["http://example.com/photo1.jpg", "http://example.com/photo2.jpg"],
-        "tags": [{"id": 101, "name": "cute"}, {"id": 102, "name": "small"}],
-        "status": "available",
-    }
-    return [Pet.from_dict(pet_dict)]
-
+    if uid is None:
+        uid = str(uuid.uuid4())
+    res = StreamingResponse(generate(prompt, uid), media_type="text/event-stream")
+    res.set_cookie(key="uid", value=uid)
+    return res
 
 def custom_openapi():
     with open("openapi.yml", "r") as openapi:
