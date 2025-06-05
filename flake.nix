@@ -23,6 +23,12 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
+
+    gradle2nix = {
+      url = "github:tadfisher/gradle2nix/v2";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
@@ -77,7 +83,9 @@
             genai = pkgs.callPackage ./genai {
               inherit (inputs) pyproject-nix uv2nix pyproject-build-systems;
             };
-            scraper = pkgs.callPackage ./scraper { };
+            scraper = pkgs.callPackage ./scraper {
+              inherit (inputs) gradle2nix;
+            };
           in
           {
             checks =
