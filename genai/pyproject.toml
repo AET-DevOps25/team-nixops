@@ -8,11 +8,13 @@ authors = [
 dependencies = [
     "dotenv>=0.9.9",
     "fastapi>=0.115.12",
+    "langchain-milvus>=0.2.0",
     "langchain-ollama>=0.3.3",
     "langchain-openai>=0.3.18",
     "langchain[ollama]>=0.3.25",
     "langgraph>=0.4.7",
     "openapi_server",
+    "pymilvus>=2.5.10",
 ]
 # dependencies = ["api"]
 requires-python = "==3.12.*"
