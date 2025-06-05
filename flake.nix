@@ -45,70 +45,87 @@
     };
   };
 
-  outputs = inputs @ {flake-parts, ...}:
-    flake-parts.lib.mkFlake {inherit inputs;} (
+  outputs =
+    inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } (
       {
         self,
         lib,
         ...
-      }: {
+      }:
+      {
         debug = true;
         imports = [
           inputs.devenv.flakeModule
           ./nix/targets/flake-module.nix
           ./nix/modules/flake-module.nix
         ];
-        systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
-        perSystem = {
-          pkgs,
-          system,
-          self',
-          ...
-        }: let
-          genai = pkgs.callPackage ./genai {
-            inherit (inputs) pyproject-nix uv2nix pyproject-build-systems;
-          };
-        in {
-          checks = let
-            nixosMachines = lib.mapAttrs' (
-              name: config: lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel
-            ) ((lib.filterAttrs (_: config: config.pkgs.system == system)) self.nixosConfigurations);
-            packages = lib.mapAttrs' (n: lib.nameValuePair "package-${n}") self'.packages;
-            devShells = lib.mapAttrs' (n: lib.nameValuePair "devShell-${n}") self'.devShells;
+        systems = [
+          "x86_64-linux"
+          "aarch64-linux"
+          "aarch64-darwin"
+          "x86_64-darwin"
+        ];
+        perSystem =
+          {
+            pkgs,
+            system,
+            self',
+            ...
+          }:
+          let
+            genai = pkgs.callPackage ./genai {
+              inherit (inputs) pyproject-nix uv2nix pyproject-build-systems;
+            };
+            scraper = pkgs.callPackage ./scraper { };
           in
-            nixosMachines // packages // devShells;
+          {
+            checks =
+              let
+                nixosMachines = lib.mapAttrs' (
+                  name: config: lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel
+                ) ((lib.filterAttrs (_: config: config.pkgs.system == system)) self.nixosConfigurations);
+                packages = lib.mapAttrs' (n: lib.nameValuePair "package-${n}") self'.packages;
+                devShells = lib.mapAttrs' (n: lib.nameValuePair "devShell-${n}") self'.devShells;
+              in
+              nixosMachines // packages // devShells;
 
-          packages = {
-            donna = pkgs.callPackage server/donna {};
-            genai = genai.package;
-          };
-
-          devShells.genai = genai.devShell;
-          devenv.shells.default = {
-            packages = with pkgs; [
-              jq
-              age
-              sops
-            ];
-            cachix = {
-              enable = true;
-              pull = ["pre-commit-hooks" "nix-community"];
-              push = "team-nixops";
+            packages = {
+              donna = pkgs.callPackage server/donna { };
+              genai = genai.package;
+              scraper = scraper;
             };
-            languages = {
-              kotlin.enable = true;
-              java = {
+
+            devShells.genai = genai.devShell;
+            devenv.shells.default = {
+              packages = with pkgs; [
+                jq
+                age
+                sops
+              ];
+              cachix = {
                 enable = true;
-                gradle.enable = true;
-                maven.enable = true;
+                pull = [
+                  "pre-commit-hooks"
+                  "nix-community"
+                ];
+                push = "team-nixops";
               };
-              python = {
-                uv.enable = true;
+
+              languages = {
+                kotlin.enable = true;
+                java = {
+                  enable = true;
+                  gradle.enable = true;
+                  maven.enable = true;
+                };
+                python = {
+                  uv.enable = true;
+                };
+                opentofu.enable = true;
               };
-              opentofu.enable = true;
             };
           };
-        };
       }
     );
 }
