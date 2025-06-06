@@ -1,3 +1,4 @@
 # shellcheck shell=bash
 # https://console.hetzner.cloud/projects/2643361/security/tokens
 export HCLOUD_TOKEN='<your-hetzner-token>'
+export CACHIX_AUTH_TOKEN='<your-cachix-authtoken>'
