@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genai
+  namespace: "{{ .Values.tumid }}-team-nixops"
+spec:
+  replicas: {{ .Values.server.replicaCount }}
+  selector:
+    matchLabels:
+      app: genai-selector
+  template:
+    metadata:
+      labels:
+        app: genai-selector
+    spec:
+      containers:
+        - name: etcd
+          image: "quay.io/coreos/etcd:v3.5.18"
+          command: ["etcd"]
+          args: ["-advertise-client-urls=http://localhost:2379",  "-listen-client-urls", "http://0.0.0.0:2379",  "--data-dir", "/etcd"]
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+          env:
+            - name: ETCD_AUTO_COMPACTION_MODE
+              value: "revision"
+            - name: ETCD_AUTO_COMPACTION_RETENTION
+              value: "1000"
+            - name: ETCD_QUOTA_BACKEND_BYTES
+              value: "4294967296"
+            - name: ETCD_SNAPSHOT_COUNT
+              value: "50000"
+        - name: minio
+          image: "minio/minio:RELEASE.2023-03-20T20-16-18Z"
+          command: ["minio"]
+          args: ["server", "/minio_data", "--console-address", ":9001"]
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+          env:
+            - name: MINIO_ACCESS_KEY
+              value: minioadmin
+            - name: MINIO_SECRET_KEY
+              value: minioadmin
+          ports:
+            - containerPort: 9000
+              name: minio-api
+            - containerPort: 9001
+              name: minio-dash
+        - name: milvus
+          image: "milvusdb/milvus:v2.5.12"
+          command: ["milvus"]
+          args: [ "run", "standalone" ]
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+          env:
+            - name: MINIO_REGION
+              value: "us-east-1"
+            - name: ETCD_ENDPOINTS
+              value: "localhost:2379"
+            - name: MINIO_ADDRESS
+              value: "localhost:9000"
+          ports:
+            - containerPort: 19530
+              name: milvus-api
+            - containerPort: 9091
+              name: milvus-dash
