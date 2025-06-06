@@ -57,6 +57,9 @@ spec:
               name: minio-api
             - containerPort: 9001
               name: minio-dash
+          volumeMounts:
+            - name: data
+              mountPath: /path/in/container1
         - name: milvus
           image: "milvusdb/milvus:v2.5.12"
           command: ["milvus"]
@@ -81,3 +84,7 @@ spec:
               name: milvus-api
             - containerPort: 9091
               name: milvus-dash
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: genai-pvc
