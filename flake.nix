@@ -100,7 +100,8 @@
 
             packages = {
               donna = pkgs.callPackage server/donna { };
-              genai = genai.package;
+              genai = genai.packages.genai;
+              genai_docker = genai.packages.dockerImage;
               scraper = scraper;
             };
 
