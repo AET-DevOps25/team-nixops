@@ -29,21 +29,10 @@ let
     ];
   };
 
-  # package = pkgs.python3Packages.buildPythonPackage {
-  #   name = "genai-pkg";
-  #   format = "pyproject";
-  #   src = ./.;
-  #   propagatedBuildInputs = [ venv ];
-  # };
   inherit (pkgs.callPackages pyproject-nix.build.util { }) mkApplication;
   package = mkApplication {
     inherit venv;
     package = pythonSet.genai;
-  };
-
-  app = pkgs.lib.fileset.toSource {
-    root = ./.;
-    fileset = ./.;
   };
 
   dockerImage =
@@ -53,27 +42,23 @@ let
         tag = "latest";
         config = {
           Cmd = [
-            "${venv}/bin/fastapi"
-            "run"
-            "--port"
-            "80"
-            "src"
+            "${lib.getExe package}"
           ];
-          WorkingDir = app;
           Env = [
             "PATH=/bin/"
           ];
           ExposedPorts = {
-            "80/tcp" = { };
+            "8000/tcp" = { };
           };
         };
-        contents = [ venv pkgs.coreutils pkgs.util-linux pkgs.bash ];
+        contents = [ pkgs.coreutils pkgs.util-linux pkgs.bash package ];
       };
 in
 {
-  # package doesn't really work (empty derivation), since server is executed by e.g. uvicorn
-  # package = dockerImage;
-  inherit package;
+  packages = {
+    inherit dockerImage;
+    genai = package;
+  };
   devShell = pkgs.mkShell {
     packages = [
       venv
