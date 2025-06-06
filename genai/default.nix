@@ -1,30 +1,26 @@
-{
-  lib,
-  pkgs,
-  pyproject-nix,
-  uv2nix,
-  pyproject-build-systems,
-}: let
-  python = pkgs.python312;
+{ lib
+, pkgs
+, pyproject-nix
+, uv2nix
+, pyproject-build-systems
+,
+}:
+let
+  python = pkgs.python313;
 
-  workspace = uv2nix.lib.workspace.loadWorkspace {workspaceRoot = ./.;};
+  workspace = uv2nix.lib.workspace.loadWorkspace { workspaceRoot = ./.; };
 
   # Create package overlay from workspace.
   overlay = workspace.mkPyprojectOverlay {
     sourcePreference = "wheel";
   };
 
-  pythonSet =
-    (pkgs.callPackage pyproject-nix.build.packages {
-      inherit python;
-    })
-    .overrideScope
-    (
-      lib.composeManyExtensions [
-        pyproject-build-systems.overlays.default
-        overlay
-      ]
-    );
+  pythonSet = (pkgs.callPackage pyproject-nix.build.packages { inherit python; }).overrideScope (
+    lib.composeManyExtensions [
+      pyproject-build-systems.overlays.default
+      overlay
+    ]
+  );
   venv = (pythonSet.mkVirtualEnv "genai-dev-env" workspace.deps.default).overrideAttrs {
     venvIgnoreCollisions = [
       # quick and dirty hack, will probably lead to some weird errors in the future
@@ -33,37 +29,36 @@
     ];
   };
 
-  app = pkgs.lib.fileset.toSource {
-    root = ./.;
-    fileset = ./.;
+  inherit (pkgs.callPackages pyproject-nix.build.util { }) mkApplication;
+  package = mkApplication {
+    inherit venv;
+    package = pythonSet.genai;
   };
 
   dockerImage =
     pkgs.dockerTools.buildLayeredImage
-    {
-      name = "genai";
-      tag = "latest";
-      config = {
-        Cmd = [
-          "${venv}/bin/fastapi"
-          "run"
-          "--port"
-          "80"
-          "src"
-        ];
-        WorkingDir = app;
-        Env = [
-          "PATH=/bin/"
-        ];
-        ExposedPorts = {
-          "80/tcp" = {};
+      {
+        name = "genai";
+        tag = "latest";
+        config = {
+          Cmd = [
+            "${lib.getExe package}"
+          ];
+          Env = [
+            "PATH=/bin/"
+          ];
+          ExposedPorts = {
+            "8000/tcp" = { };
+          };
         };
+        contents = [ pkgs.coreutils pkgs.util-linux pkgs.bash package ];
       };
-      contents = [venv pkgs.coreutils pkgs.util-linux pkgs.bash];
-    };
-in {
-  # package doesn't really work (empty derivation), since server is executed by e.g. uvicorn
-  package = dockerImage;
+in
+{
+  packages = {
+    inherit dockerImage;
+    genai = package;
+  };
   devShell = pkgs.mkShell {
     packages = [
       venv
