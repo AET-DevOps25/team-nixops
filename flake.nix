@@ -101,7 +101,7 @@
             packages = {
               donna = pkgs.callPackage server/donna { };
               genai = genai.package;
-              scraper = scraper;
+              scraper = scraper.packages.scraper;
             };
 
             devShells.genai = genai.devShell;
