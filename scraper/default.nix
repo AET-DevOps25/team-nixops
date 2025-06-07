@@ -4,7 +4,14 @@
   makeBinaryWrapper,
   jre,
   gradle2nix,
+<<<<<<< HEAD
 }: let
+=======
+}:
+
+let
+
+>>>>>>> e64354e (add dockerImage to scraper)
   pname = "scraper";
   version = "0.0.1";
 
