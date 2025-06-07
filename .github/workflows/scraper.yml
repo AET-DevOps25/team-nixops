@@ -1,0 +1,33 @@
+name: "Build Scraper Docker Image"
+on:
+  pull_request:
+    paths:
+      - scraper/**
+  push:
+    paths:
+      - scraper/**
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: cachix/install-nix-action@v25
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+    - uses: cachix/cachix-action@v14
+      with:
+        name: team-nixops
+        # If you chose API tokens for write access OR if you have a private cache
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+    - run: nix build .#scraper.dockerImage
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Load and push Docker image
+      run: |
+        IMAGE_NAME="ghcr.io/aet-devops25/team-nixops-scraper:latest"
+        docker load < result
+        docker push $IMAGE_NAME
