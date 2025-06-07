@@ -30,5 +30,8 @@ jobs:
       run: |
         version=$(nix eval --raw .#scraper.version)
         IMAGE_NAME="ghcr.io/aet-devops25/team-nixops-scraper:${version}"
+        LATEST_IMAGE="ghcr.io/aet-devops25/team-nixops-scraper:latest"
         docker load < result
         docker push $IMAGE_NAME
+        docker tag $IMAGE_NAME $LATEST_IMAGE
+        docker push $LATEST_IMAGE
