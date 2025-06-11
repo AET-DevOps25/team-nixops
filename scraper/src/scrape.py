@@ -59,7 +59,11 @@ try:
 
     curricula = requests.get("https://campus.tum.de/tumonline/ee/rest/slc.cm.cs.student/curricula/204", headers=headers).json()["resource"]
 
-    query = input("Enter Study Program: ")
+    # query = input("Enter Study Program: ")
+    # spo = input("Enter Id: ")
+
+    query = "M.Sc. Informatik"
+    spo = "20231"
 
     for program in get_all(
         url + "/api/v1/programs/search",
@@ -80,6 +84,11 @@ try:
 
         spo_version = program["spo_version"]
         print("spo version:", spo_version)
+
+        if spo_version != spo:
+            print("wrong spo")
+            print()
+            continue
 
         long_name = f"{program['program_name']} [{spo_version}], {program["degree"]["degree_type_name"]}"
         print("long name:", long_name)
@@ -132,13 +141,67 @@ try:
         
         print(len(courses), response["totalCount"])
 
-    for course in courses:
-      # print(json.dumps(course, indent=4))
-      # print(list(course.keys()))
-      print(course["id"], course["courseTitle"]["value"])
-      # print(course["semesterDto"])
+    modules = []
+    response = requests.get(url + "/api/v1/mhb/module", params={"org_id": school_org_id}).json()
+    modules += response["hits"]
 
-        # !!!!!!!!!!!!!!!!!!! The course id can be used to join the apis !!!!!!!!!!!!!!!!!!!!!!
+    total = response["total_count"]
+    while "next_offset" in response and response["next_offset"] is not None:
+        print(f"{len(modules)}/{response['total_count']}")
+        response = requests.get(url + "/api/v1/mhb/module", params={"org_id": school_org_id, "offset": response["next_offset"]}).json()
+        modules += response["hits"]
+
+    extra_module_mapping = {}
+    for module in modules:
+        module_id = module["module_id"]
+        module_title = module["module_title"]
+        module_code = module["module_code"]
+
+        print(module_id, module_title, module_code)
+
+        module = requests.get(url + f"/api/v1/mhb/module/{module_code}").json()
+
+        del module["exams"]
+        if semester_key in module["courses"]:
+            for course in module["courses"][semester_key]:
+                course_id = course["course_id"]
+                print(">>>", course_id)
+
+                if course_id not in extra_module_mapping:
+                    extra_module_mapping[course_id] = []
+                    
+                extra_module_mapping[course_id].append(module_id)
+            
+    for course in courses:
+        # print(json.dumps(course, indent=4))
+        # print(list(course.keys()))
+        course_id = course["id"]
+        # print(course["semesterDto"])
+        new_course = requests.get(url + f"/api/v1/course/{course_id}").json()
+
+    
+        # print(course_id, course["courseTitle"]["value"])
+
+        # if "Operations Research" in course["courseTitle"]["value"]:
+        
+            # print(json.dumps(course, indent=4))
+            # print(json.dumps(new_course, indent=4))
+
+        if new_course["modules"] != []:
+            pass
+            # print([module["module_id"] for module in new_course["modules"]])
+        elif course_id in extra_module_mapping:
+            pass
+            # print(extra_module_mapping[course_id])
+        else:
+            print("no module :(")
+            print(course_id, course["courseTitle"]["value"])
+
+
+
+    # response = requests.get("https://campus.tum.de/tumonline/ee/rest/slc.tm.cp/student/modules", headers=headers)
+    # print(response.text)
+
 
 except requests.exceptions.RequestException as e:
     print(f"An error occurred: {e}")
