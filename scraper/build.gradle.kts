@@ -18,6 +18,13 @@ java {
     }
 }
 
+
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.addAll("-Xjsr305=strict")
+    }
+}
+
 repositories {
     gradlePluginPortal()
     mavenCentral()
@@ -43,42 +50,34 @@ dependencies {
     testImplementation("io.kotest:kotest-framework-engine:5.7.2")
 }
 
-kotlin {
-    compilerOptions {
-        freeCompilerArgs.addAll("-Xjsr305=strict")
+sourceSets {
+    main {
+        kotlin {
+            srcDir(project.layout.buildDirectory.dir("generated/openapi/src/main/kotlin").get().asFile.path)
+            srcDir(project.layout.buildDirectory.dir("generated/source/kaptKotlin/main").get().asFile.path)
+        }
     }
 }
 
-openApiGenerate {
+tasks.openApiGenerate {
     generatorName.set("kotlin")
     inputSpec.set(project.layout.projectDirectory.file("src/main/resources/openapi.json").asFile.path)
     outputDir.set(project.layout.buildDirectory.dir("generated/openapi").get().asFile.path)
+    packageName.set("com.nixops.openapi")
     apiPackage.set("com.nixops.openapi.api")
     modelPackage.set("com.nixops.openapi.model")
-    invokerPackage.set("com.nixops.openapi.invoker")
     configOptions.set(
         mapOf(
             "dateLibrary" to "java8",
             "serializationLibrary" to "jackson",
             "testFramework" to "kotest",
-            "packageName" to "com.nixops.openapi",
-            "invokerPackage" to "com.nixops.openapi.invoker",
         )
     )
     generateModelTests.set(false)
     generateApiTests.set(false)
     generateModelDocumentation.set(false)
     generateApiDocumentation.set(false)
-    validateSpec.set(false)
-}
-
-sourceSets {
-    main {
-        kotlin {
-            srcDir(project.layout.buildDirectory.dir("generated/openapi/src/main/kotlin").get().asFile.path)
-            srcDir(project.layout.buildDirectory.dir("generated/kapt/main").get().asFile.path)
-        }
-    }
+    skipValidateSpec.set(true)
 }
 
 tasks.named("compileKotlin") {
