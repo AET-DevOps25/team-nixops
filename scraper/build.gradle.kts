@@ -10,16 +10,19 @@ plugins {
 }
 
 group = "com.nixops"
-
 version = "0.0.1"
 
-java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
 
 kotlin { compilerOptions { freeCompilerArgs.addAll("-Xjsr305=strict") } }
 
 repositories {
-  gradlePluginPortal()
-  mavenCentral()
+    gradlePluginPortal()
+    mavenCentral()
 }
 
 dependencies {
@@ -40,12 +43,15 @@ dependencies {
   implementation("org.mapstruct:mapstruct:1.5.5.Final")
   kapt("org.mapstruct:mapstruct-processor:1.5.5.Final")
 
-  testImplementation("org.springframework.boot:spring-boot-starter-test")
-  testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-  testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-  testImplementation("io.kotest:kotest-runner-junit5:5.7.2")
-  testImplementation("io.kotest:kotest-assertions-core:5.7.2")
-  testImplementation("io.kotest:kotest-framework-engine:5.7.2")
+    implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    kapt("org.mapstruct:mapstruct-processor:1.5.5.Final")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("io.kotest:kotest-runner-junit5:5.7.2")
+    testImplementation("io.kotest:kotest-assertions-core:5.7.2")
+    testImplementation("io.kotest:kotest-framework-engine:5.7.2")
 }
 
 sourceSets {
@@ -56,7 +62,6 @@ sourceSets {
       srcDir(
           project.layout.buildDirectory.dir("generated/source/kaptKotlin/main").get().asFile.path)
     }
-  }
 }
 
 tasks.openApiGenerate {

@@ -4,14 +4,8 @@
   makeBinaryWrapper,
   jre,
   gradle2nix,
-<<<<<<< HEAD
-}: let
-=======
 }:
-
 let
-
->>>>>>> e64354e (add dockerImage to scraper)
   pname = "scraper";
   version = "0.0.1";
 
@@ -20,11 +14,11 @@ let
 
     lockFile = ./gradle.lock;
 
-    gradleBuildFlags = ["bootJar"];
+    gradleBuildFlags = [ "bootJar" ];
 
     src = ./.;
 
-    nativeBuildInputs = [makeBinaryWrapper];
+    nativeBuildInputs = [ makeBinaryWrapper ];
 
     installPhase = ''
       mkdir -p $out/{bin,share/${pname}}
