@@ -22,6 +22,7 @@ npm-debug.log
 testem.log
 typings/
 .angular/
+cache.sqlite
 
 # e2e
 e2e/*.js
