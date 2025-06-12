@@ -38,15 +38,19 @@ class Course(
     @Column(name = "description_en")
     var descriptionEn: String? = null,
 
+    @Lob
     @Column(name = "teaching_method")
     var teachingMethod: String? = null,
 
+    @Lob
     @Column(name = "teaching_method_en")
     var teachingMethodEn: String? = null,
 
+    @Lob
     @Column(name = "note")
     var note: String? = null,
 
+    @Lob
     @Column(name = "note_en")
     var noteEn: String? = null,
 
