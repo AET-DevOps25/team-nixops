@@ -13,5 +13,8 @@ data class Semester (
     val semesterTag: String,
 
     @Column(name = "semester_title")
-    val semesterTitle: String
+    val semesterTitle: String,
+
+    @Column(name = "semester_id_tumonline")
+    val semesterIdTumOnline: Int,
 )
