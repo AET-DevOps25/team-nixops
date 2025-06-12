@@ -6,6 +6,7 @@ import requests_cache
 url = "https://api.srv.nat.tum.de"
 
 
+
 def get_all(*args, **kwargs):
     items = []
     response = requests.get(*args, **kwargs).json()
