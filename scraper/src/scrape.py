@@ -5,30 +5,6 @@ import requests_cache
 # API endpoint URL
 url = "https://api.srv.nat.tum.de"
 
-
-def get_org_rec(org_id, added=None):
-    if added is None:
-        added = set()
-
-    if org_id in added:
-        return None
-
-    added.add(org_id)
-
-    response = requests.get(url + f"/api/v1/orgs/{org_id}")
-    org = response.json()
-
-    old_set = org.get("org_parents", [])
-
-    org["org_parents"] = {
-        parent_id: get_org_rec(parent_id, added)
-        for parent_id in old_set
-        if parent_id != 1
-    }
-
-    return org
-
-
 def get_all(*args, **kwargs):
     items = []
     response = requests.get(*args, **kwargs).json()

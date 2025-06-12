@@ -1,0 +1,11 @@
+package com.nixops.scraper.tum_api.campus.model
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonSetter
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class CampusCourse(
+    @JsonProperty("id")
+    val id: Int,
+)
