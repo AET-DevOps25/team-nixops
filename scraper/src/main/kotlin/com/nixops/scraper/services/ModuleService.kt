@@ -6,6 +6,7 @@ import com.nixops.scraper.repository.ModuleRepository
 import com.nixops.scraper.tum_api.nat.api.NatModuleApiClient
 import com.nixops.scraper.tum_api.nat.api.mapNotNullIndexed
 import jakarta.transaction.Transactional
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
@@ -14,6 +15,11 @@ class ModuleService(
     private val moduleApiClient: NatModuleApiClient,
     private val moduleMapper: ModuleMapper,
 ) {
+    @Transactional
+    fun getModuleById(id: Int): Module? {
+        return moduleRepository.findByModuleId(id)
+    }
+
     @Transactional
     fun getModuleByCode(code: String): Module? {
         val module = moduleRepository.findByModuleCode(code)
@@ -38,4 +44,7 @@ class ModuleService(
             }
         }
     }
+
+    @Transactional
+    fun getModules(): List<Module> = getModulesByOrg(1)
 }
