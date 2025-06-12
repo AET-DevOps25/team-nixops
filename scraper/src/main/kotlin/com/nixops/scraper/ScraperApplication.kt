@@ -1,6 +1,7 @@
 package com.nixops.scraper
 
 import com.nixops.scraper.services.ModuleService
+import com.nixops.scraper.services.SemesterService
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.web.bind.annotation.*
@@ -17,9 +18,10 @@ import org.springframework.transaction.annotation.Transactional
 class ScraperApplication(
     private val curriculumClient: CampusCurriculumApiClient,
     private val campusCourseClient: CampusCourseApiClient,
-    private val semesterClient: NatSemesterApiClient,
     private val programClient: NatProgramApiClient,
     private val courseClient: NatCourseApiClient,
+    //
+    private val semesterService: SemesterService,
     private val moduleService: ModuleService
 ) {
     @Transactional
@@ -27,7 +29,7 @@ class ScraperApplication(
     fun hello(@RequestParam(value = "name", defaultValue = "World") name: String): String {
         try {
             // 1. Fetch current semester (lecture)
-            val semester = semesterClient.getCurrentLectureSemester()
+            val semester = semesterService.getCurrentLectureSemester()
             println("Semester:")
             println("semester title: ${semester.semesterTitle}")
             println("semester tag: ${semester.semesterTag}")
