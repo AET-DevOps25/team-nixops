@@ -1,14 +1,17 @@
 package com.nixops.scraper
 
-import com.nixops.openapi.api.StudyProgramsApi
-import com.nixops.scraper.tum_api.campus.api.CourseApiClient
-import com.nixops.scraper.tum_api.campus.api.CurriculumApiClient
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
+import org.springframework.web.bind.annotation.*
+
+import com.nixops.scraper.tum_api.campus.api.CampusCourseApiClient
+import com.nixops.scraper.tum_api.campus.api.CampusCurriculumApiClient
+import com.nixops.scraper.tum_api.nat.api.NatCourseApiClient
 import com.nixops.scraper.tum_api.nat.api.NatModuleApiClient
-import com.nixops.scraper.tum_api.nat.api.ProgramApiClient
-import com.nixops.scraper.tum_api.nat.api.SemesterApiClient
+import com.nixops.scraper.tum_api.nat.api.NatProgramApiClient
+import com.nixops.scraper.tum_api.nat.api.NatSemesterApiClient
 import okhttp3.Cache
 import okhttp3.CacheControl
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import org.springframework.transaction.annotation.Transactional
 import java.io.File
@@ -49,11 +52,14 @@ class ScraperApplication {
                 .build()
 
             // Assume you have these clients instantiated:
-            val semesterClient = SemesterApiClient(client=client)
-            val programClient = ProgramApiClient(client=client)
-            val curriculumClient = CurriculumApiClient(client=client)
-            val moduleClient = NatModuleApiClient(client=client)
-            val courseClient = CourseApiClient(client=client)
+            val curriculumClient = CampusCurriculumApiClient(client = client)
+            val campusCourseClient = CampusCourseApiClient(client = client)
+
+            val semesterClient = NatSemesterApiClient(client = client)
+            val programClient = NatProgramApiClient(client = client)
+            val moduleClient = NatModuleApiClient(client = client)
+            val courseClient = NatCourseApiClient(client = client)
+
 
             // 1. Fetch current semester (lecture)
             val semester = semesterClient.getCurrentLectureSemester()
@@ -139,32 +145,25 @@ class ScraperApplication {
 
             // 5. Fetch Courses with paging
             println("Fetch Courses:")
-            val courses = courseClient.getCourses(selectedCurriculumId, semester.semesterIdTumOnline );
+            val courses = campusCourseClient.getCourses(selectedCurriculumId, semester.semesterIdTumOnline);
 
             // 6. Analyze courses for modules
             println("Courses:")
+
+            var num = 0;
             for (course in courses) {
-                // val detailedCourse = courseClient.getCourseById(course.id)
+                val detailedCourse = courseClient.getCourseById(course.id)
 
-                // if (detailedCourse.modules.isNotEmpty()) {
-                    // Course linked to modules normally
-                    // println(detailedCourse.modules.map { it.moduleId })
-                // } else if (extraModuleMapping.containsKey(course.id)) {
-                    // Course linked to modules via extra mapping
-                    // println(extraModuleMapping[course.id])
-                // } else {
-                    //println("no module :(")
-                    //println("${course.id} ${course.courseTitle}")
-                    //println("org_id $orgId ${detailedCourse.org.orgId}")
-                //}
-
-                if (extraModuleMapping.containsKey(course.id)) {
-                    // println(extraModuleMapping[course.id])
-                    // println("${course.id}")
+                if (detailedCourse.modules.isNotEmpty()) {
+                    println(detailedCourse.modules.map { it.moduleId })
+                } else if (extraModuleMapping.containsKey(course.id)) {
+                    println(extraModuleMapping[course.id])
                 } else {
-                    println("No module for: ${course.id}")
+                    println("No module for: ${course.id} ${course.courseTitle?.value}")
+                    num += 1;
                 }
             }
+            println("No module found for $num courses")
         } catch (e: Exception) {
             println("An error occurred: ${e.message}")
         }
@@ -175,5 +174,5 @@ class ScraperApplication {
 }
 
 fun main(args: Array<String>) {
-  runApplication<ScraperApplication>(*args)
+    runApplication<ScraperApplication>(*args)
 }

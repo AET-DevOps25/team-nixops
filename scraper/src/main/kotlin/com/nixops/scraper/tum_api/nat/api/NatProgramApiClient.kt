@@ -3,13 +3,12 @@ package com.nixops.scraper.tum_api.nat.api
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.nixops.scraper.tum_api.nat.model.NatProgram
-import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
 
-class ProgramApiClient(
+class NatProgramApiClient(
     private val baseUrl: String = "https://api.srv.nat.tum.de/api/v1",
     private val client: OkHttpClient = OkHttpClient()
 ) {

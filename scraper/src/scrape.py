@@ -170,6 +170,8 @@ try:
         print(len(courses), response["totalCount"])
     print()
 
+    num = 0
+
     print("Courses:")
     for course in courses:
         # print(json.dumps(course, indent=4))
@@ -196,6 +198,10 @@ try:
             print(course_id, course["courseTitle"]["value"])
 
             print("org_id", org_id, new_course["org"]["org_id"])
+
+            num += 1
+            
+    print(f"No module found for {num} courses")
 
     # response = requests.get("https://campus.tum.de/tumonline/ee/rest/slc.tm.cp/student/modules", headers=headers)
     # print(response.text)

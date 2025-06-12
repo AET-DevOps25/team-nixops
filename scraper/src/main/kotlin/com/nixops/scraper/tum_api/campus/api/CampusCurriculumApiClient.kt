@@ -6,7 +6,7 @@ import com.nixops.scraper.tum_api.campus.model.CampusCurriculum
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
-class CurriculumApiClient(
+class CampusCurriculumApiClient(
     private val baseUrl: String = "https://campus.tum.de/tumonline/ee/rest/slc.cm.cs.student",
     private val client: OkHttpClient = OkHttpClient()
 ) {
