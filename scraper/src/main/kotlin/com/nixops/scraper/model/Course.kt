@@ -5,7 +5,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name= "courses")
-class Course(
+data class Course(
     @Id
     @Column(name = "course_id")
     var id: Int,
