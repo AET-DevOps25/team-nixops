@@ -21,7 +21,7 @@ class ScraperApplication {
     @GetMapping("/hello")
     fun hello(@RequestParam(value = "name", defaultValue = "World") name: String): String {
         try {
-            val cacheSize = 100L * 1024 * 1024
+            val cacheSize = 1000L * 1024 * 1024
             val cacheDirectory = File("cache_directory")
             val cache = Cache(cacheDirectory, cacheSize)
 
