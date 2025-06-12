@@ -1,4 +1,15 @@
 package com.nixops.scraper.model
 
-class Curriculum {
-}
+import jakarta.persistence.*
+
+@Entity
+@Table(name = "curriculums")
+data class Curriculum(
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "curriculum_id")
+    var id: Int = 0,
+
+    @Column(name = "curriculum_name")
+    var name: String = ""
+)

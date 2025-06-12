@@ -19,48 +19,18 @@ import java.util.concurrent.TimeUnit
 
 @SpringBootApplication
 @RestController
-class ScraperApplication {
+class ScraperApplication(
+    private val curriculumClient: CampusCurriculumApiClient,
+    private val campusCourseClient: CampusCourseApiClient,
+    private val semesterClient: NatSemesterApiClient,
+    private val programClient: NatProgramApiClient,
+    private val moduleClient: NatModuleApiClient,
+    private val courseClient: NatCourseApiClient
+) {
     @Transactional
     @GetMapping("/hello")
     fun hello(@RequestParam(value = "name", defaultValue = "World") name: String): String {
         try {
-            val cacheSize = 1000L * 1024 * 1024
-            val cacheDirectory = File("cache_directory")
-            val cache = Cache(cacheDirectory, cacheSize)
-
-            val cacheControl = CacheControl.Builder()
-                .maxAge(5, TimeUnit.DAYS)
-                .build()
-
-            val client = OkHttpClient.Builder()
-                .cache(cache)
-                .connectTimeout(60, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS)
-                .addNetworkInterceptor { chain ->
-                    val response = chain.proceed(chain.request())
-
-                    if (response.header("Cache-Control") == null) {
-                        response.newBuilder()
-                            .removeHeader("Pragma")
-                            .header("Cache-Control", cacheControl.toString())
-                            .build()
-                    } else {
-                        response
-                    }
-                }
-                .build()
-
-            // Assume you have these clients instantiated:
-            val curriculumClient = CampusCurriculumApiClient(client = client)
-            val campusCourseClient = CampusCourseApiClient(client = client)
-
-            val semesterClient = NatSemesterApiClient(client = client)
-            val programClient = NatProgramApiClient(client = client)
-            val moduleClient = NatModuleApiClient(client = client)
-            val courseClient = NatCourseApiClient(client = client)
-
-
             // 1. Fetch current semester (lecture)
             val semester = semesterClient.getCurrentLectureSemester()
             println("Semester:")
