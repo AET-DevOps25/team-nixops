@@ -61,8 +61,6 @@ class CourseApiClient(
                     throw Exception("Unexpected response $response")
                 }
 
-                // println("response: ${response.body?.string()}")
-
                 val body = response.body?.string() ?: throw Exception("Empty response body")
                 val coursesResponse = mapper.readValue<CoursesResponse>(body)
 

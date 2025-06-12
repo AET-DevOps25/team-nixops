@@ -17,9 +17,3 @@ data class NatModule(
     @JsonProperty("courses")
     val courses: Map<String, List<NatCourse>>? = null
 )
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class NatCourse(
-    @JsonProperty("course_id")
-    val courseId: Int
-)
