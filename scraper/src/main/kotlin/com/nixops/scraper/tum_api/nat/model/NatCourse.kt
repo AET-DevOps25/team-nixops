@@ -60,7 +60,10 @@ data class NatCourse(
     val noteEn: String? = null,
 
     @JsonProperty("tumonline_url")
-    val tumonlineUrl: String? = null
+    val tumonlineUrl: String? = null,
+
+    @JsonProperty("modules")
+    val modules: List<NatModule> = emptyList()
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)

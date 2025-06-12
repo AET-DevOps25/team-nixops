@@ -7,7 +7,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
 
-class SemesterApiClient(
+class NatSemesterApiClient(
     private val baseUrl: String = "https://api.srv.nat.tum.de/api/v1",
     private val client: OkHttpClient = OkHttpClient()
 ) {
