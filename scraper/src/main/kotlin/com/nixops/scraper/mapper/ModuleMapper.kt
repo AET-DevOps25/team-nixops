@@ -5,8 +5,10 @@ import com.nixops.scraper.tum_api.nat.model.NatModule
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 
-@Mapper(componentModel = "spring", uses = [CourseMapper::class])
+
+@Mapper(componentModel = "spring", uses = [SemesterCoursesMappingHelper::class, CourseMapper::class])
 interface ModuleMapper {
-    @Mapping(target = "semesterCourses", ignore = true)
+
+    @Mapping(source = "courses", target = "semesterCourses", qualifiedByName = ["mapSemesterCourses"])
     fun natModuleToModule(natModule: NatModule): Module
 }

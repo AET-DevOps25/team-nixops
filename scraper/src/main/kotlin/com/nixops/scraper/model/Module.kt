@@ -15,6 +15,11 @@ data class Module(
     @Column(name = "module_code")
     var moduleCode: String? = null,
 
-    @OneToMany(mappedBy = "module", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    var semesterCourses: List<SemesterCourses> = emptyList()
+    @OneToMany(
+        cascade = [CascadeType.ALL],
+        fetch = FetchType.LAZY,
+        orphanRemoval = true
+    )
+    @JoinColumn(name = "module_id")
+    var semesterCourses: MutableList<SemesterCourses> = mutableListOf()
 )

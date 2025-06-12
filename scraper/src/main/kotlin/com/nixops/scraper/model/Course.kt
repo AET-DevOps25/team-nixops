@@ -28,26 +28,28 @@ class Course(
         joinColumns = [JoinColumn(name = "course_id")]
     )
     @Column(name = "instruction_language")
-    var instructionLanguages: List<String> = listOf(),
+    var instructionLanguages: MutableList<String>? = null,
 
+    @Lob
     @Column(name = "description")
-    var description: String,
+    var description: String? = null,
 
+    @Lob
     @Column(name = "description_en")
-    var descriptionEn: String,
+    var descriptionEn: String? = null,
 
     @Column(name = "teaching_method")
-    var teachingMethod: String,
+    var teachingMethod: String? = null,
 
     @Column(name = "teaching_method_en")
-    var teachingMethodEn: String,
+    var teachingMethodEn: String? = null,
 
     @Column(name = "note")
-    var note: String,
+    var note: String? = null,
 
     @Column(name = "note_en")
-    var noteEn: String,
+    var noteEn: String? = null,
 
-    @ManyToMany(mappedBy = "courses", fetch = FetchType.LAZY)
-    var semesterCourses: Set<SemesterCourses> = HashSet()
+    // @ManyToMany(mappedBy = "courses", fetch = FetchType.LAZY)
+    // var semesterCourses: Set<SemesterCourses> = HashSet()
 )

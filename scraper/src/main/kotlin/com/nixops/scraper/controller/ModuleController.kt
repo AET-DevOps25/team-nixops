@@ -2,6 +2,7 @@ package com.nixops.scraper.controller
 
 import com.nixops.scraper.model.Module
 import com.nixops.scraper.services.ModuleService
+import jakarta.transaction.Transactional
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -10,12 +11,15 @@ import org.springframework.web.bind.annotation.*
 class ModuleController(
     private val moduleService: ModuleService
 ) {
-
     @GetMapping("/{code}")
-    fun getModuleByCode(@PathVariable code: String): ResponseEntity<Module> {
+    @Transactional
+    fun getModuleByCode(@PathVariable code: String): ResponseEntity<List<String>> {
         val module = moduleService.getModuleByCode(code)
-        return if (module != null) {
-            ResponseEntity.ok(module)
+        val courseNames = module?.semesterCourses
+            ?.flatMap { it.courses.map { course -> course.courseName } }
+
+        return if (courseNames != null) {
+            ResponseEntity.ok(courseNames)
         } else {
             ResponseEntity.notFound().build()
         }
