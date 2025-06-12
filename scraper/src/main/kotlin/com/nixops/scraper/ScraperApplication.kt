@@ -1,5 +1,6 @@
 package com.nixops.scraper
 
+import com.nixops.scraper.services.ModuleService
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.web.bind.annotation.*
@@ -7,15 +8,9 @@ import org.springframework.web.bind.annotation.*
 import com.nixops.scraper.tum_api.campus.api.CampusCourseApiClient
 import com.nixops.scraper.tum_api.campus.api.CampusCurriculumApiClient
 import com.nixops.scraper.tum_api.nat.api.NatCourseApiClient
-import com.nixops.scraper.tum_api.nat.api.NatModuleApiClient
 import com.nixops.scraper.tum_api.nat.api.NatProgramApiClient
 import com.nixops.scraper.tum_api.nat.api.NatSemesterApiClient
-import okhttp3.Cache
-import okhttp3.CacheControl
-import okhttp3.OkHttpClient
 import org.springframework.transaction.annotation.Transactional
-import java.io.File
-import java.util.concurrent.TimeUnit
 
 @SpringBootApplication
 @RestController
@@ -24,8 +19,8 @@ class ScraperApplication(
     private val campusCourseClient: CampusCourseApiClient,
     private val semesterClient: NatSemesterApiClient,
     private val programClient: NatProgramApiClient,
-    private val moduleClient: NatModuleApiClient,
-    private val courseClient: NatCourseApiClient
+    private val courseClient: NatCourseApiClient,
+    private val moduleService: ModuleService
 ) {
     @Transactional
     @GetMapping("/hello")
@@ -93,6 +88,7 @@ class ScraperApplication(
 
             // 4. Fetch Modules for school org id
             println("Fetch Modules: $schoolOrgId")
+            /*
             val modules = moduleClient.fetchAllNatModulesWithDetails(schoolOrgId)
 
             println("Modules:")
@@ -112,6 +108,31 @@ class ScraperApplication(
                 }
             }
             println()
+            */
+
+            println("Modules:")
+            val modules = moduleService.getModules();
+            val extraModuleMapping = mutableMapOf<Int, MutableList<Int>>() // courseId -> List<moduleId>
+            for (module in modules) {
+                // Fetch full module details
+
+                // Remove exams (if needed, depends on your model)
+                // In Kotlin, just ignore or don't use exams
+
+                for (semesterCourses in module.semesterCourses) {
+                    if (semesterCourses.semester != semester.semesterKey) {
+                        continue;
+                    }
+
+                    for (course in semesterCourses.courses) {
+                        val courseId = course.id
+                        module.moduleId?.let { extraModuleMapping.getOrPut(courseId) { mutableListOf() }.add(it) }
+                    }
+
+                    break;
+                }
+            }
+            println()
 
             // 5. Fetch Courses with paging
             println("Fetch Courses:")
@@ -124,14 +145,30 @@ class ScraperApplication(
             for (course in courses) {
                 val detailedCourse = courseClient.getCourseById(course.id)
 
-                if (detailedCourse.modules.isNotEmpty()) {
-                    println(detailedCourse.modules.map { it.moduleId })
+                println("course: ${course.id} ${course.courseTitle?.value}")
+
+                val moduleIds = if (detailedCourse.modules.isNotEmpty()) {
+                    detailedCourse.modules.map { it.moduleId }
                 } else if (extraModuleMapping.containsKey(course.id)) {
-                    println(extraModuleMapping[course.id])
+                    extraModuleMapping[course.id]
                 } else {
-                    println("No module for: ${course.id} ${course.courseTitle?.value}")
+                    println("No module found :( {${detailedCourse.org?.orgId}}")
                     num += 1;
+                    listOf()
                 }
+
+                if (moduleIds != null) {
+                    for (moduleId in moduleIds) {
+                        val module = moduleId?.let { moduleService.getModuleById(it) }
+                        if (module != null) {
+                            println("module: ${module.moduleTitle}")
+                        } else {
+                            println("could not find module with id: $moduleId")
+                        }
+                    }
+                }
+
+                println()
             }
             println("No module found for $num courses")
         } catch (e: Exception) {

@@ -63,7 +63,10 @@ data class NatCourse(
     val tumonlineUrl: String? = null,
 
     @JsonProperty("modules")
-    val modules: List<NatModule> = emptyList()
+    val modules: List<NatModule> = emptyList(),
+
+    @JsonProperty("org")
+    val org: Org? = null,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -76,4 +79,10 @@ data class Activity(
 
     @JsonProperty("activity_name_en")
     val activityNameEn: String? = null
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class Org(
+    @JsonProperty("org_id")
+    val orgId: Int?,
 )
