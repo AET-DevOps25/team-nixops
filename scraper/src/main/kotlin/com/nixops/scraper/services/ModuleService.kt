@@ -1,20 +1,25 @@
 package com.nixops.scraper.services
 
+import com.nixops.scraper.mapper.ModuleMapper
 import com.nixops.scraper.model.Module
 import com.nixops.scraper.repository.ModuleRepository
-import org.springframework.data.repository.findByIdOrNull
+import com.nixops.scraper.tum_api.nat.api.NatModuleApiClient
 import org.springframework.stereotype.Service
 
 @Service
-class ModuleServiceService(private val moduleRepository: ModuleRepository) {
-
-    fun getModuleById(id: Long): Module? {
-        val module = moduleRepository.findByIdOrNull(id)
+class ModuleService(
+    private val moduleRepository: ModuleRepository,
+    private val moduleApiClient: NatModuleApiClient,
+    private val moduleMapper: ModuleMapper,
+) {
+    fun getModuleByCode(code: String): Module? {
+        val module = moduleRepository.findByModuleCode(code)
         if (module != null) {
-            println("got module")
+            return module
         } else {
-            println("fetch module")
+            val natModule = moduleApiClient.fetchNatModuleDetail(code)
+            val newModule = moduleMapper.natModuleToModule(natModule)
+            return moduleRepository.save(newModule)
         }
-        return module
     }
 }

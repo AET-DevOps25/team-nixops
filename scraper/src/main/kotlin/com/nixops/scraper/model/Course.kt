@@ -8,19 +8,19 @@ import jakarta.persistence.*
 class Course(
     @Id
     @Column(name = "course_id")
-    val id: Long,
+    var id: Int,
 
     @Column(name = "course_name")
-    val courseName: String,
+    var courseName: String,
 
     @Column(name = "course_name_en")
-    val courseNameEn: String,
+    var courseNameEn: String,
 
     @Column(name = "course_name_list")
-    val courseNameList: String,
+    var courseNameList: String,
 
     @Column(name = "course_name_list_en")
-    val courseNameListEn: String,
+    var courseNameListEn: String,
 
     @ElementCollection
     @CollectionTable(
@@ -28,26 +28,26 @@ class Course(
         joinColumns = [JoinColumn(name = "course_id")]
     )
     @Column(name = "instruction_language")
-    val instructionLanguages: List<String> = listOf(),
+    var instructionLanguages: List<String> = listOf(),
 
     @Column(name = "description")
-    val description: String,
+    var description: String,
 
     @Column(name = "description_en")
-    val descriptionEn: String,
+    var descriptionEn: String,
 
     @Column(name = "teaching_method")
-    val teachingMethod: String,
+    var teachingMethod: String,
 
     @Column(name = "teaching_method_en")
-    val teachingMethodEn: String,
+    var teachingMethodEn: String,
 
     @Column(name = "note")
-    val note: String,
+    var note: String,
 
     @Column(name = "note_en")
-    val noteEn: String,
-    
+    var noteEn: String,
+
     @ManyToMany(mappedBy = "courses", fetch = FetchType.LAZY)
-    val modules: Set<Module> = HashSet()
+    var semesterCourses: Set<SemesterCourses> = HashSet()
 )

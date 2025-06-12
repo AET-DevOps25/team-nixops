@@ -48,9 +48,9 @@ class NatModuleApiClient(
     /**
      * Fetch detailed NatModule info by NatModule_code.
      */
-    fun fetchNatModuleDetail(NatModuleCode: String): NatModule {
+    fun fetchNatModuleDetail(moduleCode: String): NatModule {
         val request = Request.Builder()
-            .url("$baseUrl/mhb/module/$NatModuleCode")
+            .url("$baseUrl/mhb/module/$moduleCode")
             .build()
 
         val response = client.newCall(request).execute()
