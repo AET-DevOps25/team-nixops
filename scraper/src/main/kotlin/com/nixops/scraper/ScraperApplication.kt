@@ -92,7 +92,7 @@ class ScraperApplication(
             }
 
             // 4. Fetch Modules for school org id
-            println("Fetch Modules:")
+            println("Fetch Modules: $schoolOrgId")
             val modules = moduleClient.fetchAllNatModulesWithDetails(schoolOrgId)
 
             println("Modules:")

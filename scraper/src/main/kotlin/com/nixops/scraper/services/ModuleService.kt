@@ -4,6 +4,7 @@ import com.nixops.scraper.mapper.ModuleMapper
 import com.nixops.scraper.model.Module
 import com.nixops.scraper.repository.ModuleRepository
 import com.nixops.scraper.tum_api.nat.api.NatModuleApiClient
+import com.nixops.scraper.tum_api.nat.api.mapNotNullIndexed
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 
@@ -24,6 +25,16 @@ class ModuleService(
             val natModule = moduleApiClient.fetchNatModuleDetail(code)
             val newModule = moduleMapper.natModuleToModule(natModule)
             return moduleRepository.save(newModule)
+        }
+    }
+
+    @Transactional
+    fun getModulesByOrg(org: Int): List<Module> {
+        val modules = moduleApiClient.fetchAllNatModules(org)
+        return modules.mapNotNull { natModule ->
+            natModule.moduleCode?.let {
+                getModuleByCode(it)
+            }
         }
     }
 }

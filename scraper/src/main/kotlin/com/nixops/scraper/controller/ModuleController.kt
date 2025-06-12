@@ -24,4 +24,13 @@ class ModuleController(
             ResponseEntity.notFound().build()
         }
     }
+
+    @GetMapping("/by-org/{org}")
+    @Transactional
+    fun getModulesByOrg(@PathVariable org: Int): ResponseEntity<List<String>> {
+        val modules = moduleService.getModulesByOrg(org)
+        val moduleNames = modules.mapNotNull { it.moduleTitle};
+
+        return ResponseEntity.ok(moduleNames)
+    }
 }
