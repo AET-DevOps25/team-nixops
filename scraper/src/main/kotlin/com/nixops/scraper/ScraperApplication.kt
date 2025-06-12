@@ -158,7 +158,12 @@ class ScraperApplication {
                     //println("org_id $orgId ${detailedCourse.org.orgId}")
                 //}
 
-                println("${course.id}")
+                if (extraModuleMapping.containsKey(course.id)) {
+                    // println(extraModuleMapping[course.id])
+                    // println("${course.id}")
+                } else {
+                    println("No module for: ${course.id}")
+                }
             }
         } catch (e: Exception) {
             println("An error occurred: ${e.message}")
