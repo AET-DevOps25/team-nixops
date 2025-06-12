@@ -31,8 +31,9 @@ class ModuleService(
     @Transactional
     fun getModulesByOrg(org: Int): List<Module> {
         val modules = moduleApiClient.fetchAllNatModules(org)
-        return modules.mapNotNull { natModule ->
+        return modules.mapNotNullIndexed { index, natModule ->
             natModule.moduleCode?.let {
+                println("Fetching detail for module ${index + 1} of ${modules.size}: $it")
                 getModuleByCode(it)
             }
         }

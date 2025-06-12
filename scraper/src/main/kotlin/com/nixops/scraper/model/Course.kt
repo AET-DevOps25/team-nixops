@@ -10,15 +10,19 @@ class Course(
     @Column(name = "course_id")
     var id: Int,
 
+    @Lob
     @Column(name = "course_name")
     var courseName: String,
 
+    @Lob
     @Column(name = "course_name_en")
     var courseNameEn: String,
 
+    @Lob
     @Column(name = "course_name_list")
     var courseNameList: String,
 
+    @Lob
     @Column(name = "course_name_list_en")
     var courseNameListEn: String,
 
