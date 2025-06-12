@@ -110,6 +110,12 @@
                 jq
                 age
                 sops
+                (pkgs.python3.withPackages (
+                  ps: with ps; [
+                    requests
+                    requests-cache
+                  ]
+                ))
               ];
               cachix = {
                 enable = true;
