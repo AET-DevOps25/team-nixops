@@ -4,7 +4,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "semester")
-class Semester (
+data class Semester (
     @Id
     @Column(name = "semester_key")
     val semesterKey: String,

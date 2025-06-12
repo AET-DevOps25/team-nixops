@@ -6,7 +6,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "study_programs")
-class StudyProgram(
+data class StudyProgram(
     @Id
     @Column(name = "study_id")
     val studyId: Int,

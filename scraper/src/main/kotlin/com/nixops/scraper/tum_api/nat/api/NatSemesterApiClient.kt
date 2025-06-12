@@ -17,7 +17,30 @@ class NatSemesterApiClient(
      * Fetch the current lecture semester.
      */
     fun getCurrentLectureSemester(): NatSemester {
-        val url = "$baseUrl/semesters/lecture"
+        return getSemester("lecture")
+    }
+
+    fun getSemester(semesterKey: String): NatSemester {
+        val url = "$baseUrl/semesters/$semesterKey"
+
+        val request = Request.Builder()
+            .url(url)
+            .build()
+
+        val response = client.newCall(request).execute()
+
+        if (!response.isSuccessful) {
+            throw IOException("Failed to fetch semester: $response")
+        }
+
+        val body = response.body?.string()
+            ?: throw IOException("Empty response body")
+
+        return mapper.readValue(body)
+    }
+
+    fun getSemesters(): List<NatSemester> {
+        val url = "$baseUrl/semesters/"
 
         val request = Request.Builder()
             .url(url)
