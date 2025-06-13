@@ -9,7 +9,7 @@ data class NatSemester(
     val semesterKey: String,
 
     @JsonProperty("semester_id_tumonline")
-    val semesterIdTumOnline: Int,
+    val semesterIdTumOnline: Int?,
 
     @JsonProperty("semester_tag")
     val semesterTag: String,

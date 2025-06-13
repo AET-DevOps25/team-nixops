@@ -1,6 +1,8 @@
 package com.nixops.scraper
 
+import com.nixops.scraper.services.CurriculumService
 import com.nixops.scraper.services.ModuleService
+import com.nixops.scraper.services.ProgramService
 import com.nixops.scraper.services.SemesterService
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -16,17 +18,20 @@ import org.springframework.transaction.annotation.Transactional
 @SpringBootApplication
 @RestController
 class ScraperApplication(
-    private val curriculumClient: CampusCurriculumApiClient,
     private val campusCourseClient: CampusCourseApiClient,
     private val programClient: NatProgramApiClient,
     private val courseClient: NatCourseApiClient,
     //
     private val semesterService: SemesterService,
-    private val moduleService: ModuleService
+    private val curriculumService: CurriculumService,
+    private val moduleService: ModuleService,
+    private val programService: ProgramService
 ) {
-    @Transactional
     @GetMapping("/hello")
-    fun hello(@RequestParam(value = "name", defaultValue = "World") name: String): String {
+    fun hello(
+        @RequestParam(value = "query", defaultValue = "M.Sc. Informatik") query: String,
+        @RequestParam(value = "spo", defaultValue = "20231") spo: String
+    ): String {
         try {
             // 1. Fetch current semester (lecture)
             val semester = semesterService.getCurrentLectureSemester()
@@ -37,80 +42,28 @@ class ScraperApplication(
             println("semester id: ${semester.semesterIdTumOnline}")
             println()
 
-            // 2. Fetch curricula from campus API
-            val curricula = curriculumClient.getCurriculaForSemester(semester.semesterIdTumOnline);
-
-            // 3. Search Programs
-            val query = "M.Sc. Informatik"
-            val spo = "20231"
-            var selectedCurriculumId: Int? = null
-            var schoolOrgId: Int? = null
-            var orgId: Int? = null
-
+            // 2. Fetch Programs
             println("Study Program:")
-            val programs = programClient.searchPrograms(query)
-            for (program in programs) {
-                println("program: ${program.degreeProgramName}")
-                println("study id: ${program.studyId}")
-                println("org id: ${program.orgId}")
-                println("school org id: ${program.school.orgId}")
-                println("spo version: ${program.spoVersion}")
+            val program = programService.searchProgramWithSpo(query, spo)
 
-                if (program.spoVersion != spo) {
-                    println("wrong spo")
-                    println()
-                    continue
-                }
-
-                val longName = "${program.programName} [${program.spoVersion}], ${program.degree.degreeTypeName}"
-                println("long name: $longName")
-
-                val matchedCurriculum = curricula.find { curriculum ->
-                    curriculum.name == longName
-                }
-
-                if (matchedCurriculum == null) {
-                    println("no curriculum available")
-                    println()
-                    continue
-                }
-
-                selectedCurriculumId = matchedCurriculum.id
-                schoolOrgId = program.school.orgId
-                orgId = program.orgId
-                println("curriculum id: $selectedCurriculumId")
-                println()
-                break // Assuming you want only the first match
-            }
-
-            if (selectedCurriculumId == null || schoolOrgId == null || orgId == null) {
-                println("No suitable program and curriculum found, aborting.")
+            if (program == null) {
+                println("No program found")
                 return "Abort"
             }
 
-            // 4. Fetch Modules for school org id
-            println("Fetch Modules: $schoolOrgId")
-            /*
-            val modules = moduleClient.fetchAllNatModulesWithDetails(schoolOrgId)
+            println("study id: ${program.studyId}")
+            println("spo version: ${program.spoVersion}")
 
-            println("Modules:")
-            val extraModuleMapping = mutableMapOf<Int, MutableList<Int>>() // courseId -> List<moduleId>
+            val longName = "${program.programName} [${program.spoVersion}], ${program.degree.degreeTypeName}"
+            println("long name: $longName")
 
-            for (module in modules) {
-                // Fetch full module details
+            val curriculum = curriculumService.getCurriculumByProgramName(semester.semesterKey, longName)
 
-                // Remove exams (if needed, depends on your model)
-                // In Kotlin, just ignore or don't use exams
-
-                if (module.courses?.contains(semester.semesterKey) == true) {
-                    for (course in module.courses[semester.semesterKey]!!) {
-                        val courseId = course.courseId
-                        module.moduleId?.let { extraModuleMapping.getOrPut(courseId) { mutableListOf() }.add(it) }
-                    }
-                }
+            val selectedCurriculumId = curriculum?.id;
+            if (selectedCurriculumId == null) {
+                println("No suitable program and curriculum found, aborting.")
+                return "Abort"
             }
-            println()
-            */
 
             println("Modules:")
             val modules = moduleService.getModules();
@@ -138,39 +91,41 @@ class ScraperApplication(
 
             // 5. Fetch Courses with paging
             println("Fetch Courses:")
-            val courses = campusCourseClient.getCourses(selectedCurriculumId, semester.semesterIdTumOnline);
+            val courses = semester.semesterIdTumOnline?.let { campusCourseClient.getCourses(selectedCurriculumId, it) };
 
             // 6. Analyze courses for modules
             println("Courses:")
 
             var num = 0;
-            for (course in courses) {
-                val detailedCourse = courseClient.getCourseById(course.id)
+            if (courses != null) {
+                for (course in courses) {
+                    val detailedCourse = courseClient.getCourseById(course.id)
 
-                println("course: ${course.id} ${course.courseTitle?.value}")
+                    println("course: ${course.id} ${course.courseTitle?.value}")
 
-                val moduleIds = if (detailedCourse.modules.isNotEmpty()) {
-                    detailedCourse.modules.map { it.moduleId }
-                } else if (extraModuleMapping.containsKey(course.id)) {
-                    extraModuleMapping[course.id]
-                } else {
-                    println("No module found :( {${detailedCourse.org?.orgId}}")
-                    num += 1;
-                    listOf()
-                }
+                    val moduleIds = if (detailedCourse.modules.isNotEmpty()) {
+                        detailedCourse.modules.map { it.moduleId }
+                    } else if (extraModuleMapping.containsKey(course.id)) {
+                        extraModuleMapping[course.id]
+                    } else {
+                        println("No module found :( {${detailedCourse.org?.orgId}}")
+                        num += 1;
+                        listOf()
+                    }
 
-                if (moduleIds != null) {
-                    for (moduleId in moduleIds) {
-                        val module = moduleId?.let { moduleService.getModuleById(it) }
-                        if (module != null) {
-                            println("module: ${module.moduleTitle}")
-                        } else {
-                            println("could not find module with id: $moduleId")
+                    if (moduleIds != null) {
+                        for (moduleId in moduleIds) {
+                            val module = moduleId?.let { moduleService.getModuleById(it) }
+                            if (module != null) {
+                                println("module: ${module.moduleTitle}")
+                            } else {
+                                println("could not find module with id: $moduleId")
+                            }
                         }
                     }
-                }
 
-                println()
+                    println()
+                }
             }
             println("No module found for $num courses")
         } catch (e: Exception) {

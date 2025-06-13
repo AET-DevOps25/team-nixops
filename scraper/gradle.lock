@@ -2323,6 +2323,16 @@
       "hash": "sha256-wSRuV+bQ4ilrDrgvAX4vFXu5md1rMzMc+YAT/NcoFWo="
     }
   },
+  "org.jetbrains.kotlin:kotlin-annotation-processing-gradle:1.9.25": {
+    "kotlin-annotation-processing-gradle-1.9.25.jar": {
+      "url": "https://plugins.gradle.org/m2/org/jetbrains/kotlin/kotlin-annotation-processing-gradle/1.9.25/kotlin-annotation-processing-gradle-1.9.25.jar",
+      "hash": "sha256-JLXlnVJOsNXbbkvmxPIBoVtCHQsiVLRXO8mef5Kegno="
+    },
+    "kotlin-annotation-processing-gradle-1.9.25.pom": {
+      "url": "https://plugins.gradle.org/m2/org/jetbrains/kotlin/kotlin-annotation-processing-gradle/1.9.25/kotlin-annotation-processing-gradle-1.9.25.pom",
+      "hash": "sha256-Qe3I+2D+VyI1qF1wZVg/5r7QT5XE7h9GuD8oKQnVoyM="
+    }
+  },
   "org.jetbrains.kotlin:kotlin-bom:1.9.25": {
     "kotlin-bom-1.9.25.pom": {
       "url": "https://plugins.gradle.org/m2/org/jetbrains/kotlin/kotlin-bom/1.9.25/kotlin-bom-1.9.25.pom",
@@ -2745,6 +2755,12 @@
       "hash": "sha256-CbrvTHT2HxkeLUPDIzLKe/1fYEotI0QRwViFvDNrVS4="
     }
   },
+  "org.jetbrains.kotlin.kapt:org.jetbrains.kotlin.kapt.gradle.plugin:1.9.25": {
+    "org.jetbrains.kotlin.kapt.gradle.plugin-1.9.25.pom": {
+      "url": "https://plugins.gradle.org/m2/org/jetbrains/kotlin/kapt/org.jetbrains.kotlin.kapt.gradle.plugin/1.9.25/org.jetbrains.kotlin.kapt.gradle.plugin-1.9.25.pom",
+      "hash": "sha256-L4FfA3gtDT0/FguVX8eOGPoXXWOhwYeTKCSrcr2spNs="
+    }
+  },
   "org.jetbrains.kotlin.plugin.jpa:org.jetbrains.kotlin.plugin.jpa.gradle.plugin:1.9.25": {
     "org.jetbrains.kotlin.plugin.jpa.gradle.plugin-1.9.25.pom": {
       "url": "https://plugins.gradle.org/m2/org/jetbrains/kotlin/plugin/jpa/org.jetbrains.kotlin.plugin.jpa.gradle.plugin/1.9.25/org.jetbrains.kotlin.plugin.jpa.gradle.plugin-1.9.25.pom",
@@ -3087,6 +3103,32 @@
     "junit-platform-suite-api-1.12.2.pom": {
       "url": "https://plugins.gradle.org/m2/org/junit/platform/junit-platform-suite-api/1.12.2/junit-platform-suite-api-1.12.2.pom",
       "hash": "sha256-fH/9bHyEzSjxSHEDEI/FvkTi0x3RYO10RGQAQ8A3TFM="
+    }
+  },
+  "org.mapstruct:mapstruct:1.5.5.Final": {
+    "mapstruct-1.5.5.Final.jar": {
+      "url": "https://plugins.gradle.org/m2/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar",
+      "hash": "sha256-Y5HgeYKFXdgE2CW2OlWrklEANxZUchbl9YESPIQTKNU="
+    },
+    "mapstruct-1.5.5.Final.pom": {
+      "url": "https://plugins.gradle.org/m2/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.pom",
+      "hash": "sha256-A17EGVSk4ZumVytv2XFozb4Tpl4CtWt2/EIXyrgq4dY="
+    }
+  },
+  "org.mapstruct:mapstruct-parent:1.5.5.Final": {
+    "mapstruct-parent-1.5.5.Final.pom": {
+      "url": "https://plugins.gradle.org/m2/org/mapstruct/mapstruct-parent/1.5.5.Final/mapstruct-parent-1.5.5.Final.pom",
+      "hash": "sha256-u4fLdhTR6wjVXCbyTZqVcQRrf6eOn7BSylmMT2PMR64="
+    }
+  },
+  "org.mapstruct:mapstruct-processor:1.5.5.Final": {
+    "mapstruct-processor-1.5.5.Final.jar": {
+      "url": "https://plugins.gradle.org/m2/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar",
+      "hash": "sha256-VdaM6Bm37mIFngE+3BxSdhwlo2Y6BisKdx6nVAx8Hds="
+    },
+    "mapstruct-processor-1.5.5.Final.pom": {
+      "url": "https://plugins.gradle.org/m2/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.pom",
+      "hash": "sha256-J9mqe9uxcxOjwbAFWfny/B4+u59W4HP8auGBndpkHrw="
     }
   },
   "org.mockito:mockito-bom:5.17.0": {
