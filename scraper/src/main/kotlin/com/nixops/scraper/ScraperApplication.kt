@@ -33,7 +33,7 @@ class ScraperApplication(
         @RequestParam(value = "spo", defaultValue = "20231") spo: String
     ): String {
         try {
-            // 1. Fetch current semester (lecture)
+            // 1. Fetch current semester (lecture semester)
             val semester = semesterService.getCurrentLectureSemester()
             println("Semester:")
             println("semester title: ${semester.semesterTitle}")
@@ -42,10 +42,9 @@ class ScraperApplication(
             println("semester id: ${semester.semesterIdTumOnline}")
             println()
 
-            // 2. Fetch Programs
+            // 2. Fetch study program
             println("Study Program:")
             val program = programService.searchProgramWithSpo(query, spo)
-
             if (program == null) {
                 println("No program found")
                 return "Abort"
@@ -57,6 +56,7 @@ class ScraperApplication(
             val longName = "${program.programName} [${program.spoVersion}], ${program.degree.degreeTypeName}"
             println("long name: $longName")
 
+            // 3. Fetch curriculum
             val curriculum = curriculumService.getCurriculumByProgramName(semester.semesterKey, longName)
 
             val selectedCurriculumId = curriculum?.id;
@@ -65,25 +65,19 @@ class ScraperApplication(
                 return "Abort"
             }
 
+            // 4. Preload Modules
             println("Modules:")
             val modules = moduleService.getModules();
-            val extraModuleMapping = mutableMapOf<Int, MutableList<Int>>() // courseId -> List<moduleId>
+            val extraModuleMapping = mutableMapOf<Int, MutableList<Int>>()
             for (module in modules) {
-                // Fetch full module details
-
-                // Remove exams (if needed, depends on your model)
-                // In Kotlin, just ignore or don't use exams
-
                 for (semesterCourses in module.semesterCourses) {
                     if (semesterCourses.semester != semester.semesterKey) {
                         continue;
                     }
-
                     for (course in semesterCourses.courses) {
                         val courseId = course.id
                         module.moduleId?.let { extraModuleMapping.getOrPut(courseId) { mutableListOf() }.add(it) }
                     }
-
                     break;
                 }
             }
