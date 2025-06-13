@@ -21,5 +21,9 @@ data class StudyProgram(
     val programName: String,
 
     @Column(name = "degree_program_name")
-    val degreeProgramName: String
+    val degreeProgramName: String,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "degree_id", referencedColumnName = "id")
+    val degree: Degree
 )

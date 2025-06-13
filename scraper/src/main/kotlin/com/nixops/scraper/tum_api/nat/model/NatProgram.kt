@@ -29,10 +29,12 @@ data class NatProgram(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class NatSchool(
-    @JsonProperty("org_id") val orgId: Int
+    @JsonProperty("org_id")
+    val orgId: Int
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class NatDegree(
-    @JsonProperty("degree_type_name") val degreeTypeName: String
+    @JsonProperty("degree_type_name")
+    val degreeTypeName: String
 )

@@ -7,14 +7,14 @@ import jakarta.persistence.*
 data class Semester (
     @Id
     @Column(name = "semester_key")
-    val semesterKey: String,
+    var semesterKey: String,
 
     @Column(name = "semester_tag")
-    val semesterTag: String,
+    var semesterTag: String,
 
     @Column(name = "semester_title")
-    val semesterTitle: String,
+    var semesterTitle: String,
 
     @Column(name = "semester_id_tumonline")
-    val semesterIdTumOnline: Int,
+    var semesterIdTumOnline: Int?,
 )
