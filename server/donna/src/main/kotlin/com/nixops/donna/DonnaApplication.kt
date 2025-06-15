@@ -14,5 +14,5 @@ class DonnaApplication {
 }
 
 fun main(args: Array<String>) {
-	runApplication<DonnaApplication>(*args)
+  runApplication<DonnaApplication>(*args)
 }

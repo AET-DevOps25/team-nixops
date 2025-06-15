@@ -9,13 +9,10 @@ plugins {
 }
 
 group = "com.nixops"
+
 version = "0.0.1"
 
-java {
-  toolchain {
-    languageVersion = JavaLanguageVersion.of(21)
-  }
-}
+java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
 
 repositories {
   gradlePluginPortal()
@@ -39,45 +36,35 @@ dependencies {
   testImplementation("io.kotest:kotest-framework-engine:5.7.2")
 }
 
-kotlin {
-  compilerOptions {
-    freeCompilerArgs.addAll("-Xjsr305=strict")
-  }
-}
+kotlin { compilerOptions { freeCompilerArgs.addAll("-Xjsr305=strict") } }
 
 openApiGenerate {
-    generatorName.set("kotlin")
-    inputSpec.set(project.layout.projectDirectory.file("src/main/resources/openapi.json").asFile.path)
-    outputDir.set(project.layout.buildDirectory.dir("generated").get().asFile.path)
-    apiPackage.set("com.example.api")
-    modelPackage.set("com.example.model")
-    invokerPackage.set("com.example.invoker")
-    configOptions.set(
-        mapOf(
-            "dateLibrary" to "java8",
-            "serializationLibrary" to "jackson",
-            "testFramework" to "kotest"
-        )
-    )
-    generateModelTests.set(false)
-    generateApiTests.set(false)
-    generateModelDocumentation.set(false)
-    generateApiDocumentation.set(false)
-    validateSpec.set(false)
+  generatorName.set("kotlin")
+  inputSpec.set(project.layout.projectDirectory.file("src/main/resources/openapi.json").asFile.path)
+  outputDir.set(project.layout.buildDirectory.dir("generated").get().asFile.path)
+  apiPackage.set("com.example.api")
+  modelPackage.set("com.example.model")
+  invokerPackage.set("com.example.invoker")
+  configOptions.set(
+      mapOf(
+          "dateLibrary" to "java8",
+          "serializationLibrary" to "jackson",
+          "testFramework" to "kotest"))
+  generateModelTests.set(false)
+  generateApiTests.set(false)
+  generateModelDocumentation.set(false)
+  generateApiDocumentation.set(false)
+  validateSpec.set(false)
 }
 
 sourceSets {
-    main {
-        kotlin {
-            srcDir(project.layout.buildDirectory.dir("generated/src/main/kotlin").get().asFile.path)
-        }
+  main {
+    kotlin {
+      srcDir(project.layout.buildDirectory.dir("generated/src/main/kotlin").get().asFile.path)
     }
+  }
 }
 
-tasks.named("compileKotlin") {
-    dependsOn("openApiGenerate")
-}
+tasks.named("compileKotlin") { dependsOn("openApiGenerate") }
 
-tasks.test {
-    useJUnitPlatform()
-}
+tasks.test { useJUnitPlatform() }

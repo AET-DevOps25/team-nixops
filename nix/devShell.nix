@@ -1,8 +1,11 @@
-{...}: {
+{inputs, ...}: {
+  imports = [
+    inputs.devenv.flakeModule
+  ];
   perSystem = {
     pkgs,
-    system,
     self',
+    config,
     ...
   }: {
     devenv.shells = rec {
@@ -16,6 +19,10 @@
           enable = true;
           pull = ["pre-commit-hooks" "nix-community"];
           push = "team-nixops";
+        };
+        git-hooks.hooks.treefmt = {
+          enable = true;
+          packageOverrides.treefmt = config.treefmt.build.wrapper;
         };
       };
       ops = {

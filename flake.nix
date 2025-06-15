@@ -4,17 +4,27 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    pyproject-nix = {
-      url = "github:pyproject-nix/pyproject.nix";
+    disko = {
+      url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    uv2nix = {
-      url = "github:pyproject-nix/uv2nix";
-      inputs.pyproject-nix.follows = "pyproject-nix";
+    devenv = {
+      url = "github:cachix/devenv";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+    gradle2nix = {
+      url = "github:tadfisher/gradle2nix/v2";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
+    nix2container = {
+      url = "github:nlewo/nix2container";
+      inputs = {nixpkgs.follows = "nixpkgs";};
+    };
     pyproject-build-systems = {
       url = "github:pyproject-nix/build-system-pkgs";
       inputs = {
@@ -23,37 +33,22 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
-
-    nix2container = {
-      url = "github:nlewo/nix2container";
-      inputs = {nixpkgs.follows = "nixpkgs";};
-    };
-
-    mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
-
-    gradle2nix = {
-      url = "github:tadfisher/gradle2nix/v2";
+    pyproject-nix = {
+      url = "github:pyproject-nix/pyproject.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    flake-parts = {
-      url = "github:hercules-ci/flake-parts";
-      inputs.nixpkgs-lib.follows = "nixpkgs";
-    };
-    devenv = {
-      url = "github:cachix/devenv";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    disko = {
-      url = "github:nix-community/disko";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     srvos = {
       url = "github:nix-community/srvos";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    sops-nix = {
-      url = "github:Mic92/sops-nix";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
+    uv2nix = {
+      url = "github:pyproject-nix/uv2nix";
+      inputs.pyproject-nix.follows = "pyproject-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -67,10 +62,10 @@
       }: {
         debug = true;
         imports = [
-          inputs.devenv.flakeModule
           ./nix/targets/flake-module.nix
           ./nix/modules/flake-module.nix
           ./nix/devShell.nix
+          ./nix/treefmt.nix
         ];
         systems = [
           "x86_64-linux"

@@ -15,9 +15,13 @@ class BasePetApi:
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
         BasePetApi.subclasses = BasePetApi.subclasses + (cls,)
+
     async def find_pets_by_status(
         self,
-        status: Annotated[Optional[StrictStr], Field(description="Status values that need to be considered for filter")],
+        status: Annotated[
+            Optional[StrictStr],
+            Field(description="Status values that need to be considered for filter"),
+        ],
     ) -> List[Pet]:
         """Multiple status values can be provided with comma separated strings."""
         ...
