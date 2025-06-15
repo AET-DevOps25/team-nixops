@@ -382,6 +382,7 @@ sketch
 **/result
 **/result/
 **/.devenv/
+.pre-commit-config.yaml
 .terraform.lock.hcl
 **/.terraform
 .direnv

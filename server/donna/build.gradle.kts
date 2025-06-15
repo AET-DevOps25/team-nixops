@@ -8,17 +8,12 @@ plugins {
 }
 
 group = "com.nixops"
+
 version = "0.0.1-SNAPSHOT"
 
-java {
-  toolchain {
-    languageVersion = JavaLanguageVersion.of(21)
-  }
-}
+java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
 
-repositories {
-  mavenCentral()
-}
+repositories { mavenCentral() }
 
 dependencies {
   implementation("org.springframework.boot:spring-boot-starter-web")
@@ -29,9 +24,4 @@ dependencies {
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-kotlin {
-  compilerOptions {
-    freeCompilerArgs.addAll("-Xjsr305=strict")
-  }
-}
-
+kotlin { compilerOptions { freeCompilerArgs.addAll("-Xjsr305=strict") } }
