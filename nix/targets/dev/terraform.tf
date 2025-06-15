@@ -19,7 +19,7 @@ terraform {
 
 module "dev" {
   source           = "../../../terraform/hcloud"
-  name = "dev"
+  name             = "dev"
   domain           = "nixops.aet.cit.tum.de"
   nixos_flake_attr = "dev"
   nixos_vars_file  = "${path.module}/nixos-vars.json"
