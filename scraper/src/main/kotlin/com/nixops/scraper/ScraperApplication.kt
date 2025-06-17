@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional
 @RestController
 class ScraperApplication(
     private val campusCourseClient: CampusCourseApiClient,
-    private val programClient: NatProgramApiClient,
     private val courseClient: NatCourseApiClient,
     //
     private val semesterService: SemesterService,
@@ -27,6 +26,7 @@ class ScraperApplication(
     private val moduleService: ModuleService,
     private val programService: ProgramService
 ) {
+    @Transactional
     @GetMapping("/hello")
     fun hello(
         @RequestParam(value = "query", defaultValue = "M.Sc. Informatik") query: String,
@@ -83,7 +83,7 @@ class ScraperApplication(
             }
             println()
 
-            // 5. Fetch Courses with paging
+            // 5. Fetch Courses
             println("Fetch Courses:")
             val courses = semester.semesterIdTumOnline?.let { campusCourseClient.getCourses(selectedCurriculumId, it) };
 

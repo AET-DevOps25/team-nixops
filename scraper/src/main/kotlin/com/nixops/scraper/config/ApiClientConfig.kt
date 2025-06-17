@@ -19,7 +19,7 @@ class ApiClientConfig {
 
     @Bean
     fun okHttpClient(): OkHttpClient {
-        val cacheSize = 1000L * 1024 * 1024 // 1GB
+        val cacheSize = Long.MAX_VALUE
         val cacheDirectory = File("cache_directory")
         val cache = Cache(cacheDirectory, cacheSize)
 
