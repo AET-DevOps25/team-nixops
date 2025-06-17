@@ -5,7 +5,7 @@
   uv2nix,
   pyproject-build-systems,
 }: let
-  python = pkgs.python312;
+  python = pkgs.python313;
 
   workspace = uv2nix.lib.workspace.loadWorkspace {workspaceRoot = ./.;};
 
@@ -14,17 +14,12 @@
     sourcePreference = "wheel";
   };
 
-  pythonSet =
-    (pkgs.callPackage pyproject-nix.build.packages {
-      inherit python;
-    })
-    .overrideScope
-    (
-      lib.composeManyExtensions [
-        pyproject-build-systems.overlays.default
-        overlay
-      ]
-    );
+  pythonSet = (pkgs.callPackage pyproject-nix.build.packages {inherit python;}).overrideScope (
+    lib.composeManyExtensions [
+      pyproject-build-systems.overlays.default
+      overlay
+    ]
+  );
   venv = (pythonSet.mkVirtualEnv "genai-dev-env" workspace.deps.default).overrideAttrs {
     venvIgnoreCollisions = [
       # quick and dirty hack, will probably lead to some weird errors in the future
@@ -33,9 +28,10 @@
     ];
   };
 
-  app = pkgs.lib.fileset.toSource {
-    root = ./.;
-    fileset = ./.;
+  inherit (pkgs.callPackages pyproject-nix.build.util {}) mkApplication;
+  drv = mkApplication {
+    inherit venv;
+    package = pythonSet.genai;
   };
 
   dockerImage =
@@ -45,40 +41,19 @@
       tag = "latest";
       config = {
         Cmd = [
-          "${venv}/bin/fastapi"
-          "run"
-          "--port"
-          "80"
-          "src"
+          "${lib.getExe drv}"
         ];
-        WorkingDir = app;
         Env = [
           "PATH=/bin/"
         ];
         ExposedPorts = {
-          "80/tcp" = {};
+          "8000/tcp" = {};
         };
       };
-      contents = [venv pkgs.coreutils pkgs.util-linux pkgs.bash];
+      contents = [pkgs.coreutils pkgs.util-linux pkgs.bash drv];
     };
-in {
-  # package doesn't really work (empty derivation), since server is executed by e.g. uvicorn
-  package = dockerImage;
-  devShell = pkgs.mkShell {
-    packages = [
-      venv
-      pkgs.uv
-      pkgs.openapi-generator-cli
-    ];
-    env = {
-      UV_NO_SYNC = "1";
-      UV_PYTHON = "${venv}/bin/python";
-      UV_PYTHON_DOWNLOADS = "never";
-      PYTHONPATH = "${venv}/bin/python";
-    };
-
-    shellHook = ''
-      export REPO_ROOT=$(git rev-parse --show-toplevel)
-    '';
-  };
-}
+in
+  lib.extendDerivation true {
+    inherit dockerImage venv;
+  }
+  drv
