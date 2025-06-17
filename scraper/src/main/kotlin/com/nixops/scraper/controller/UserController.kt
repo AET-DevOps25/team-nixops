@@ -1,14 +1,15 @@
 package com.nixops.scraper.controller
 
-import com.nixops.scraper.model.User
-import com.nixops.scraper.repository.UserRepository
+import com.nixops.scraper.services.UserService
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/users")
-class UserController(private val userRepository: UserRepository) {
+class UserController(private val userService: UserService) {
 
-  @GetMapping fun getAll(): List<User> = userRepository.findAll()
+    @PostMapping
+    fun createUser(@RequestParam name: String): Int = userService.createUser(name)
 
-  @PostMapping fun create(@RequestBody user: User): User = userRepository.save(user)
+    @GetMapping
+    fun getUsers(): List<String> = userService.getAllUsers()
 }
