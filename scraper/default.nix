@@ -36,6 +36,7 @@ let
         copyToRoot = pkgs.buildEnv {
           name = "image-root";
           paths = [
+            scraper
             (pkgs.runCommand "empty-tmp" { } ''
               mkdir -p $out/tmp
               chmod 1777 $out/tmp
@@ -45,9 +46,7 @@ let
         };
 
         config = {
-          Cmd = [
-            "${placeholder "out"}/bin/${pname}"
-          ];
+          Cmd = [ "/bin/${pname}" ];
           WorkingDir = "/";
         };
       };
