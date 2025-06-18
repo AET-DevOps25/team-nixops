@@ -2049,11 +2049,21 @@
       "hash": "sha256-evnOiglYEhFVfmzI4pCb2AZms06SKihYfHcwlsECIJM="
     }
   },
-  "org.checkerframework:checker-qual:3.48.3": {
-    "checker-qual-3.48.3.jar": {
-      "url": "https://plugins.gradle.org/m2/org/checkerframework/checker-qual/3.48.3/checker-qual-3.48.3.jar",
-      "hash": "sha256-RDaFsbIygDuq+APBXW9aQlRzxve4HF8nbfz5MojjiaU="
+  "org.checkerframework:checker-qual:3.49.3": {
+    "checker-qual-3.49.3.jar": {
+      "url": "https://plugins.gradle.org/m2/org/checkerframework/checker-qual/3.49.3/checker-qual-3.49.3.jar",
+      "hash": "sha256-Nn7b8v6fYGwf21qLpuHJwnYlmT4f+VTjho3nC8xkFrc="
     },
+    "checker-qual-3.49.3.module": {
+      "url": "https://plugins.gradle.org/m2/org/checkerframework/checker-qual/3.49.3/checker-qual-3.49.3.module",
+      "hash": "sha256-dv9CWNsfoaC8bOeur0coPfEGD9Q3oJvm7zxcMmnqWtM="
+    },
+    "checker-qual-3.49.3.pom": {
+      "url": "https://plugins.gradle.org/m2/org/checkerframework/checker-qual/3.49.3/checker-qual-3.49.3.pom",
+      "hash": "sha256-i+QBdkYoXZFCx/sibPuARFwXfcfBNjsj2UH6bJuwXc8="
+    }
+  },
+  "org.checkerframework:checker-qual:3.48.3": {
     "checker-qual-3.48.3.module": {
       "url": "https://plugins.gradle.org/m2/org/checkerframework/checker-qual/3.48.3/checker-qual-3.48.3.module",
       "hash": "sha256-Enu8VRPkHM/ms8tvqngBQjNJqVQUNnrLfPdil2dUnlk="
@@ -2277,6 +2287,48 @@
     "annotations-13.0.pom": {
       "url": "https://plugins.gradle.org/m2/org/jetbrains/annotations/13.0/annotations-13.0.pom",
       "hash": "sha256-llrrK+3/NpgZvd4b96CzuJuCR91pyIuGN112Fju4w5c="
+    }
+  },
+  "org.jetbrains.exposed:exposed-core:0.61.0": {
+    "exposed-core-0.61.0.jar": {
+      "url": "https://plugins.gradle.org/m2/org/jetbrains/exposed/exposed-core/0.61.0/exposed-core-0.61.0.jar",
+      "hash": "sha256-cvz991CNGf9PXZHuChdNRRSfmF9xekMsbkJt78pDGIk="
+    },
+    "exposed-core-0.61.0.module": {
+      "url": "https://plugins.gradle.org/m2/org/jetbrains/exposed/exposed-core/0.61.0/exposed-core-0.61.0.module",
+      "hash": "sha256-QMwGP+CvHjpLX3poYrWGL+W6gD2IJoKd0cBRch6nS+o="
+    },
+    "exposed-core-0.61.0.pom": {
+      "url": "https://plugins.gradle.org/m2/org/jetbrains/exposed/exposed-core/0.61.0/exposed-core-0.61.0.pom",
+      "hash": "sha256-U+bWurpTF2U35+X4ZTR54RT4cEKGYmxyw6RzqnPpdhI="
+    }
+  },
+  "org.jetbrains.exposed:exposed-dao:0.61.0": {
+    "exposed-dao-0.61.0.jar": {
+      "url": "https://plugins.gradle.org/m2/org/jetbrains/exposed/exposed-dao/0.61.0/exposed-dao-0.61.0.jar",
+      "hash": "sha256-2bTKn/NSpkeW9+GnnjQmCpki5+NdPYvYxKGKZK2zlSA="
+    },
+    "exposed-dao-0.61.0.module": {
+      "url": "https://plugins.gradle.org/m2/org/jetbrains/exposed/exposed-dao/0.61.0/exposed-dao-0.61.0.module",
+      "hash": "sha256-6i/Ot2cbbfgzpJVoGI7lgEqsvBgptjqq3h8ZfgGhUxc="
+    },
+    "exposed-dao-0.61.0.pom": {
+      "url": "https://plugins.gradle.org/m2/org/jetbrains/exposed/exposed-dao/0.61.0/exposed-dao-0.61.0.pom",
+      "hash": "sha256-WAxDQP51HlMsq121WanbxspwXEN8mANnz25itSRMBnI="
+    }
+  },
+  "org.jetbrains.exposed:exposed-jdbc:0.61.0": {
+    "exposed-jdbc-0.61.0.jar": {
+      "url": "https://plugins.gradle.org/m2/org/jetbrains/exposed/exposed-jdbc/0.61.0/exposed-jdbc-0.61.0.jar",
+      "hash": "sha256-7ilCviKIbnSRuowUvDgDqu3ceytBqvXi2k+p/mK+C1s="
+    },
+    "exposed-jdbc-0.61.0.module": {
+      "url": "https://plugins.gradle.org/m2/org/jetbrains/exposed/exposed-jdbc/0.61.0/exposed-jdbc-0.61.0.module",
+      "hash": "sha256-3lIM2/6psQlUzJDiIh7K++/QY4hB8TZHe+N5yfeKaNI="
+    },
+    "exposed-jdbc-0.61.0.pom": {
+      "url": "https://plugins.gradle.org/m2/org/jetbrains/exposed/exposed-jdbc/0.61.0/exposed-jdbc-0.61.0.pom",
+      "hash": "sha256-IHkdPpgreK3V3hL8/qzCtBgpn/Nl+th+gqpui6cRE28="
     }
   },
   "org.jetbrains.intellij.deps:trove4j:1.0.20200330": {
@@ -3271,11 +3323,17 @@
       "hash": "sha256-cimwOzCnPukQCActnkVppR2FR/roxQ9SeEGu9MGwuqg="
     }
   },
-  "org.postgresql:postgresql:42.7.5": {
-    "postgresql-42.7.5.jar": {
-      "url": "https://plugins.gradle.org/m2/org/postgresql/postgresql/42.7.5/postgresql-42.7.5.jar",
-      "hash": "sha256-aQILO9IJhFQ+gXOT8ubAGokO8uN6d90R1thQgYHQeas="
+  "org.postgresql:postgresql:42.7.7": {
+    "postgresql-42.7.7.jar": {
+      "url": "https://plugins.gradle.org/m2/org/postgresql/postgresql/42.7.7/postgresql-42.7.7.jar",
+      "hash": "sha256-FXlj1grmbWB+CUZujAzfgIfpyyDQFZiZ/8qWvKJShGA="
     },
+    "postgresql-42.7.7.pom": {
+      "url": "https://plugins.gradle.org/m2/org/postgresql/postgresql/42.7.7/postgresql-42.7.7.pom",
+      "hash": "sha256-qCA7TCFN12Zi0VIdwZaeUYszcJ8IL9nNgTjP9MNpQMw="
+    }
+  },
+  "org.postgresql:postgresql:42.7.5": {
     "postgresql-42.7.5.pom": {
       "url": "https://plugins.gradle.org/m2/org/postgresql/postgresql/42.7.5/postgresql-42.7.5.pom",
       "hash": "sha256-FB6pP8GF3rFdKPz+P+qAivQBic9pEtaPMW6GjXzq/kg="
