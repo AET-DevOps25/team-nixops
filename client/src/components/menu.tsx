@@ -19,6 +19,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { version } from '../../package.json';
 
 export function MenuButton() {
   const { setTheme } = useTheme();
@@ -62,7 +63,7 @@ export function MenuButton() {
               }
             >
               <CodeXml /> Source
-              <Badge variant="outline">v0.0</Badge>
+              <Badge variant="outline">v{version}</Badge>
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>
