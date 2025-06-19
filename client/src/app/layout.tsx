@@ -5,6 +5,7 @@ import { ModeToggle } from "@/components/theme-toggle";
 import "./globals.css";
 import Chat from "./chat";
 import { MenuButton } from "@/components/menu";
+import { TabBar } from "@/components/tab-bar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -26,6 +27,7 @@ export default function RootLayout({
           >
 			 <Chat/>
 			 <MenuButton/>
+			 <TabBar/>
           </ThemeProvider>
         </body>
       </html>
