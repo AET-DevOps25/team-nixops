@@ -12,6 +12,7 @@ import { CornerDownLeft, Mic, Paperclip } from "lucide-react";
 import { useState } from "react";
 import useChat from "./lib/chat";
 import { useForm } from "react-hook-form";
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 export default function Chat() {
   const { messages, sendMessage } = useChat("");
@@ -19,11 +20,11 @@ export default function Chat() {
     register,
     handleSubmit,
 	 reset,
-    formState: { errors },
   } = useForm();
 
   return (
-    <>
+    <div className="flex flex-col h-screen">
+	     <ScrollArea className="h-17/20">
       <ChatMessageList>
         {messages.map((message) => (
           <ChatBubble variant={message.role === "user" ? "sent" : "received"} key={message.id}>
@@ -39,8 +40,10 @@ export default function Chat() {
           </ChatBubble>
         ))}
       </ChatMessageList>
+		    </ScrollArea>
+	 		<div className = "flex-grow"/>
       <form
-        className="relative rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring p-1"
+        className="relative rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring p-1 m-5"
         onSubmit={
 			  handleSubmit((data) => {
 			reset({
@@ -64,6 +67,6 @@ export default function Chat() {
           </Button>
         </div>
       </form>
-    </>
+    </div>
   );
 }
