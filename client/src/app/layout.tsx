@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/theme-toggle";
 import "./globals.css";
 import Chat from "./chat";
+import { MenuButton } from "@/components/menu";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -24,7 +25,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
 			 <Chat/>
-			 <ModeToggle/>
+			 <MenuButton/>
           </ThemeProvider>
         </body>
       </html>
