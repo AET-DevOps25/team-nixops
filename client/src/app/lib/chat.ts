@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { SSE } from "sse.js";
+import { v4 as uuidv4 } from 'uuid';
 
 type Message = {
 	id: number;
@@ -10,10 +11,11 @@ type Message = {
 function useChat(api: string) {
   const [currentQuestion, setCurrentQuestion] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
+  const [conversationId, _] = useState(uuidv4());
 
 useEffect(() => {
 	if(currentQuestion !== ""){
-    const source = new SSE("http://localhost:8000/stream?prompt=" + currentQuestion, {withCredentials: true}); // credentials passess cookies
+    const source = new SSE("http://localhost:8000/stream?prompt=" + currentQuestion + "&id=" + conversationId);
 
     source.addEventListener("message", (e: any) => {
         setMessages(prev => {
