@@ -14,8 +14,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <>
-      <html lang="en" suppressHydrationWarning>
+      <html lang="en" suppressHydrationWarning >
         <head />
         <body>
           <ThemeProvider
@@ -24,11 +23,10 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <ModeToggle />
-            <Chat />
+			 <Chat/>
+			 <ModeToggle/>
           </ThemeProvider>
         </body>
       </html>
-    </>
   );
 }
