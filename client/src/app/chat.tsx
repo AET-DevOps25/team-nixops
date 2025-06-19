@@ -3,12 +3,14 @@
 import { Button } from "@/components/ui/button";
 import {
   ChatBubble,
+  ChatBubbleAction,
+  ChatBubbleActionWrapper,
   ChatBubbleAvatar,
   ChatBubbleMessage,
 } from "@/components/ui/chat/chat-bubble";
 import { ChatInput } from "@/components/ui/chat/chat-input";
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
-import { CornerDownLeft, Mic, Paperclip } from "lucide-react";
+import { Copy, CornerDownLeft, Mic, Paperclip, RefreshCcw } from "lucide-react";
 import { useState } from "react";
 import useChat from "./lib/chat";
 import { useForm } from "react-hook-form";
@@ -16,7 +18,23 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Chat() {
   const { messages, sendMessage, isGenerating } = useChat("");
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, getValues } = useForm();
+
+  const submit = (data: string) => {
+    sendMessage(data);
+    reset({
+      message: "",
+    });
+  };
+  const handleOnKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      if (isGenerating) return;
+      let message = getValues("message");
+      console.log(message);
+      submit(message);
+    }
+  };
 
   return (
     <div className="flex flex-col h-screen">
@@ -35,6 +53,18 @@ export default function Chat() {
                 isLoading={message.content === ""}
               >
                 {message.content}
+                {message.role === "bot" && (
+                  <ChatBubbleActionWrapper>
+                    <ChatBubbleAction
+                      className="size-6"
+                      key="copy"
+                      icon={<Copy className="size-3" />}
+                      onClick={() =>
+                        navigator.clipboard.writeText(message.content)
+                      }
+                    />
+                  </ChatBubbleActionWrapper>
+                )}
               </ChatBubbleMessage>
             </ChatBubble>
           ))}
@@ -44,21 +74,13 @@ export default function Chat() {
       <form
         className="relative rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring p-1 m-5"
         onSubmit={handleSubmit((data) => {
-          reset(
-            {
-              message: "",
-            },
-            {
-              keepErrors: true,
-              keepDirty: true,
-            },
-          );
-          sendMessage(data.message);
+          submit(data.message);
         })}
       >
         <ChatInput
           placeholder="Type your message here..."
           className="min-h-12 resize-none rounded-lg bg-background border-0 p-3 shadow-none focus-visible:ring-0"
+          onKeyDown={handleOnKeyDown}
           {...register("message")}
         />
         <div className="flex items-center p-3 pt-0">
