@@ -11,10 +11,8 @@ export function TabBar() {
           <TabsTrigger value="chat">Chat</TabsTrigger>
           <TabsTrigger value="calendar">Calendar</TabsTrigger>
         </TabsList>
-        <TabsContent value="chat">
-        </TabsContent>
-        <TabsContent value="calendar">
-	  		</TabsContent>
+        <TabsContent value="chat"></TabsContent>
+        <TabsContent value="calendar"></TabsContent>
       </Tabs>
     </div>
   );
