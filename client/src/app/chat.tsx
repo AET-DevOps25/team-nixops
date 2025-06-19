@@ -33,6 +33,7 @@ export default function Chat() {
             />
             <ChatBubbleMessage
               variant={message.role === "user" ? "sent" : "received"}
+				  isLoading={message.content === ""}
             >
               {message.content}
             </ChatBubbleMessage>
