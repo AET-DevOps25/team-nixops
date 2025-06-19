@@ -10,7 +10,6 @@ import { ChatInput } from "@/components/ui/chat/chat-input";
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 import { CornerDownLeft, Mic, Paperclip } from "lucide-react";
 import { useState } from "react";
-import useSSE from "./lib/sse";
 import useChat from "./lib/chat";
 import { useForm } from "react-hook-form";
 
