@@ -12,6 +12,7 @@ function useChat(api: string) {
   const [currentQuestion, setCurrentQuestion] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversationId, _] = useState(uuidv4());
+  const [isGenerating, setIsGenerating] = useState(false);
 
 useEffect(() => {
 	if(currentQuestion !== ""){
@@ -28,6 +29,14 @@ useEffect(() => {
             return newMessages; // Return the new state
         });
     });
+	     source.addEventListener("readystatechange", (e: any) => {
+			  if(e.readyState===1){
+					setIsGenerating(true);
+			  }
+			  else if(e.readyState===2){
+					setIsGenerating(false);
+			  }
+		  });
 
     return () => source.close();
 	}
@@ -35,12 +44,12 @@ useEffect(() => {
 
   const sendMessage = useCallback(async (msg: string) => {
 	if(msg !== ""){
-	  setCurrentQuestion(msg);
+	  	setCurrentQuestion(msg);
 		setMessages(prev => [...prev, {id: messages.length, role: "user", content: msg}])
 		setMessages(prev => [...prev, {id: messages.length + 1, role: "bot", content: ""}])
 	}
-	 }, [api]);
-  return { messages, sendMessage };
+	 }, [api, messages]);
+  return { messages, sendMessage, isGenerating};
 }
 
 export default useChat;

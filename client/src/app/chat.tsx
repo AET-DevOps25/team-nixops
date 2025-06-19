@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import { ScrollArea } from "@/components/ui/scroll-area"
 
 export default function Chat() {
-  const { messages, sendMessage } = useChat("");
+  const { messages, sendMessage, isGenerating } = useChat("");
   const {
     register,
     handleSubmit,
@@ -61,7 +61,7 @@ export default function Chat() {
           {...register("message")}
         />
         <div className="flex items-center p-3 pt-0">
-          <Button type="submit" size="sm" className="ml-auto gap-1.5">
+          <Button type="submit" disabled={isGenerating} size="sm" className="ml-auto gap-1.5">
             Send Message
             <CornerDownLeft className="size-3.5" />
           </Button>
