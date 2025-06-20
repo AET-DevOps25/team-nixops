@@ -1,17 +1,9 @@
 package com.nixops.scraper.services
 
-import com.nixops.scraper.mapper.CurriculumMapper
 import com.nixops.scraper.mapper.StudyProgramMapper
-import com.nixops.scraper.model.Curriculum
 import com.nixops.scraper.model.StudyProgram
-import com.nixops.scraper.repository.CurriculumRepository
 import com.nixops.scraper.repository.StudyProgramRepository
-import com.nixops.scraper.tum_api.campus.api.CampusCurriculumApiClient
 import com.nixops.scraper.tum_api.nat.api.NatProgramApiClient
-import com.nixops.scraper.tum_api.nat.api.NatSemesterApiClient
-import jakarta.persistence.EntityManager
-import jakarta.persistence.PersistenceContext
-import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 
 @Service
@@ -20,13 +12,13 @@ class ProgramService(
     private val programApiClient: NatProgramApiClient,
     private val programMapper: StudyProgramMapper
 ) {
-    fun searchPrograms(query: String): List<StudyProgram> {
-        val programs = programApiClient.searchPrograms(query)
-        return programs.map { programMapper.natStudyProgramToStudyProgram(it) }
-    }
+  fun searchPrograms(query: String): List<StudyProgram> {
+    val programs = programApiClient.searchPrograms(query)
+    return programs.map { programMapper.natStudyProgramToStudyProgram(it) }
+  }
 
-    fun searchProgramWithSpo(query: String, spo: String): StudyProgram? {
-        val programs = searchPrograms(query)
-        return programs.find { it.spoVersion == spo }
-    }
+  fun searchProgramWithSpo(query: String, spo: String): StudyProgram? {
+    val programs = searchPrograms(query)
+    return programs.find { it.spoVersion == spo }
+  }
 }

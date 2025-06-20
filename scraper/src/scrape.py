@@ -5,6 +5,7 @@ import requests_cache
 # API endpoint URL
 url = "https://api.srv.nat.tum.de"
 
+
 def get_all(*args, **kwargs):
     items = []
     response = requests.get(*args, **kwargs).json()
@@ -32,14 +33,13 @@ try:
     semester_id = semester["semester_id_tumonline"]
     semester_tag = semester["semester_tag"]
     semester_title = semester["semester_title"]
-    
+
     print("Semester:")
     print("semester title:", semester_title)
     print("semester tag:", semester_tag)
     print("semester key:", semester_key)
     print("semester id:", semester_id)
     print()
-
 
     headers = {"Accept": "application/json"}
 
@@ -200,7 +200,7 @@ try:
             print("org_id", org_id, new_course["org"]["org_id"])
 
             num += 1
-            
+
     print(f"No module found for {num} courses")
 
     # response = requests.get("https://campus.tum.de/tumonline/ee/rest/slc.tm.cp/student/modules", headers=headers)

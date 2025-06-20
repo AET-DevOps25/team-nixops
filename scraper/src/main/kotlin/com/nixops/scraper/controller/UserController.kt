@@ -7,9 +7,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/users")
 class UserController(private val userService: UserService) {
 
-    @PostMapping
-    fun createUser(@RequestParam name: String): Int = userService.createUser(name)
+  @PostMapping fun createUser(@RequestParam name: String): Int = userService.createUser(name)
 
-    @GetMapping
-    fun getUsers(): List<String> = userService.getAllUsers()
+  @GetMapping fun getUsers(): List<String> = userService.getAllUsers()
 }

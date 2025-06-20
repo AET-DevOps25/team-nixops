@@ -6,5 +6,5 @@ import org.mapstruct.Mapper
 
 @Mapper(componentModel = "spring")
 interface StudyProgramMapper {
-    fun natStudyProgramToStudyProgram(natStudyProgram: NatProgram): StudyProgram
+  fun natStudyProgramToStudyProgram(natStudyProgram: NatProgram): StudyProgram
 }

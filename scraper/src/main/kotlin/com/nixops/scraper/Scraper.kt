@@ -10,12 +10,12 @@ class Scraper(
     private val moduleRepository: ModuleRepository,
     private val courseRepository: CourseRepository
 ) {
-    fun getModuleById(id: Long) {
-        val module = moduleRepository.findByIdOrNull(id)
-        if (module != null) {
-            println("got module")
-        } else {
-            println("fetch module")
-        }
+  fun getModuleById(id: Long) {
+    val module = moduleRepository.findByIdOrNull(id)
+    if (module != null) {
+      println("got module")
+    } else {
+      println("fetch module")
     }
+  }
 }

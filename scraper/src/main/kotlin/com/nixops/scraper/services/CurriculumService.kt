@@ -20,24 +20,25 @@ class CurriculumService(
     private val semesterApiClient: NatSemesterApiClient,
     @PersistenceContext private val entityManager: EntityManager
 ) {
-    fun getCurriculaBySemesterKey(semesterKey: String): List<Curriculum> {
-        val semester = semesterApiClient.getSemester(semesterKey)
-        val curricula = semester.semesterIdTumOnline?.let { curriculumApiClient.getCurriculaForSemester(it) }
+  fun getCurriculaBySemesterKey(semesterKey: String): List<Curriculum> {
+    val semester = semesterApiClient.getSemester(semesterKey)
+    val curricula =
+        semester.semesterIdTumOnline
+            ?.let { curriculumApiClient.getCurriculaForSemester(it) }
             ?.map { curriculumMapper.natCurriculumToCurriculum(it) } ?: emptyList()
 
-        return curricula
-    }
+    return curricula
+  }
 
-    @Transactional
-    fun saveCurricula(curricula: List<Curriculum>): List<Curriculum> {
-        return curricula.map { curriculumRepository.save(it) }
-    }
+  @Transactional
+  fun saveCurricula(curricula: List<Curriculum>): List<Curriculum> {
+    return curricula.map { curriculumRepository.save(it) }
+  }
 
-    fun getCurriculumByProgramName(semesterKey: String, name: String): Curriculum? {
-        val curricula = getCurriculaBySemesterKey(semesterKey)
-        // val savedCurricula = saveCurricula(curricula)
+  fun getCurriculumByProgramName(semesterKey: String, name: String): Curriculum? {
+    val curricula = getCurriculaBySemesterKey(semesterKey)
+    // val savedCurricula = saveCurricula(curricula)
 
-        return curricula.find { it.name == name }
-    }
-
+    return curricula.find { it.name == name }
+  }
 }

@@ -4,8 +4,7 @@
   makeBinaryWrapper,
   jre,
   gradle2nix,
-}:
-let
+}: let
   pname = "scraper";
   version = "0.0.1";
 
@@ -14,11 +13,11 @@ let
 
     lockFile = ./gradle.lock;
 
-    gradleBuildFlags = [ "bootJar" ];
+    gradleBuildFlags = ["bootJar"];
 
     src = ./.;
 
-    nativeBuildInputs = [ makeBinaryWrapper ];
+    nativeBuildInputs = [makeBinaryWrapper];
 
     installPhase = ''
       mkdir -p $out/{bin,share/${pname}}
@@ -37,24 +36,22 @@ let
           name = "image-root";
           paths = [
             scraper
-            (pkgs.runCommand "empty-tmp" { } ''
+            (pkgs.runCommand "empty-tmp" {} ''
               mkdir -p $out/tmp
               chmod 1777 $out/tmp
             '')
           ];
-          pathsToLink = [ "/" ];
+          pathsToLink = ["/"];
         };
 
         config = {
-          Cmd = [ "/bin/${pname}" ];
+          Cmd = ["/bin/${pname}"];
           WorkingDir = "/";
         };
       };
     };
   };
-
-in
-{
+in {
   packages = {
     inherit scraper;
   };

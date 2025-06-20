@@ -9,7 +9,5 @@ data class Curriculum(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "curriculum_id")
     var id: Int = 0,
-
-    @Column(name = "curriculum_name")
-    var name: String = ""
+    @Column(name = "curriculum_name") var name: String = ""
 )

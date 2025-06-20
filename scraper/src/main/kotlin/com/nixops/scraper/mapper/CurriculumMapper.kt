@@ -6,5 +6,5 @@ import org.mapstruct.Mapper
 
 @Mapper(componentModel = "spring")
 interface CurriculumMapper {
-    fun natCurriculumToCurriculum(natCurriculum: CampusCurriculum): Curriculum
+  fun natCurriculumToCurriculum(natCurriculum: CampusCurriculum): Curriculum
 }

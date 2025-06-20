@@ -10,28 +10,22 @@ class CampusCurriculumApiClient(
     private val baseUrl: String = "https://campus.tum.de/tumonline/ee/rest/slc.cm.cs.student",
     private val client: OkHttpClient = OkHttpClient()
 ) {
-    private val mapper = jacksonObjectMapper()
+  private val mapper = jacksonObjectMapper()
 
-    /**
-     * Fetch all curricula for a given semester (e.g., "204")
-     */
-    fun getCurriculaForSemester(semesterId: Int): List<CampusCurriculum> {
-        val url = "$baseUrl/curricula/$semesterId"
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("Accept", "application/json")
-            .build()
+  /** Fetch all curricula for a given semester (e.g., "204") */
+  fun getCurriculaForSemester(semesterId: Int): List<CampusCurriculum> {
+    val url = "$baseUrl/curricula/$semesterId"
+    val request = Request.Builder().url(url).addHeader("Accept", "application/json").build()
 
-        client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful) throw Exception("Unexpected code $response")
+    client.newCall(request).execute().use { response ->
+      if (!response.isSuccessful) throw Exception("Unexpected code $response")
 
-            val body = response.body?.string() ?: throw Exception("Empty response body")
+      val body = response.body?.string() ?: throw Exception("Empty response body")
 
-            val node = mapper.readTree(body)
-            val resourceNode = node["resource"] ?: throw Exception("Missing 'resource' node")
+      val node = mapper.readTree(body)
+      val resourceNode = node["resource"] ?: throw Exception("Missing 'resource' node")
 
-            return mapper.readValue(resourceNode.toString())
-        }
+      return mapper.readValue(resourceNode.toString())
     }
+  }
 }
-
