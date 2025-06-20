@@ -4,8 +4,7 @@
   makeBinaryWrapper,
   jre,
   gradle2nix,
-}:
-let
+}: let
   pname = "scraper";
   version = "0.0.1";
 
@@ -14,11 +13,11 @@ let
 
     lockFile = ./gradle.lock;
 
-    gradleBuildFlags = [ "bootJar" ];
+    gradleBuildFlags = ["bootJar"];
 
     src = ./.;
 
-    nativeBuildInputs = [ makeBinaryWrapper ];
+    nativeBuildInputs = [makeBinaryWrapper];
 
     installPhase = ''
       mkdir -p $out/{bin,share/${pname}}

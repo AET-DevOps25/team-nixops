@@ -42,6 +42,5 @@ data class Org(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Org(
-    @JsonProperty("org_id")
-    val orgId: Int?,
+    @JsonProperty("org_id") val orgId: Int?,
 )

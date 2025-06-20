@@ -3,7 +3,6 @@ package com.nixops.scraper.mapper
 import com.nixops.scraper.model.Semester
 import com.nixops.scraper.tum_api.nat.model.NatSemester
 import org.mapstruct.Mapper
-import org.mapstruct.Mapping
 
 @Mapper(componentModel = "spring")
 interface SemesterMapper {

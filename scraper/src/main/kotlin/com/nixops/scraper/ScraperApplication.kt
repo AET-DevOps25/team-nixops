@@ -134,5 +134,5 @@ class ScraperApplication(
 }
 
 fun main(args: Array<String>) {
-    runApplication<ScraperApplication>(*args)
+  runApplication<ScraperApplication>(*args)
 }
