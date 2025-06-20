@@ -1,16 +1,14 @@
 {
   lib,
-  stdenv,
+  pkgs,
   makeBinaryWrapper,
-  gradle,
   jre,
-  jdk21,
   gradle2nix,
 }: let
   pname = "scraper";
   version = "0.0.1";
 
-  self = gradle2nix.builders.x86_64-linux.buildGradlePackage {
+  scraper = gradle2nix.builders.x86_64-linux.buildGradlePackage {
     inherit pname version;
 
     lockFile = ./gradle.lock;
@@ -28,6 +26,33 @@
       makeWrapper ${lib.getExe jre} $out/bin/${pname} \
         --add-flags "-jar $out/share/${pname}/${pname}-${version}.jar"
     '';
+
+    passthru = {
+      dockerImage = pkgs.dockerTools.buildImage {
+        name = "ghcr.io/aet-devops25/scraper";
+        tag = version;
+
+        copyToRoot = pkgs.buildEnv {
+          name = "image-root";
+          paths = [
+            scraper
+            (pkgs.runCommand "empty-tmp" {} ''
+              mkdir -p $out/tmp
+              chmod 1777 $out/tmp
+            '')
+          ];
+          pathsToLink = ["/"];
+        };
+
+        config = {
+          Cmd = ["/bin/${pname}"];
+          WorkingDir = "/";
+        };
+      };
+    };
   };
-in
-  self
+in {
+  packages = {
+    inherit scraper;
+  };
+}

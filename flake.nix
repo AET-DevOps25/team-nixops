@@ -23,7 +23,9 @@
     mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
     nix2container = {
       url = "github:nlewo/nix2container";
-      inputs = {nixpkgs.follows = "nixpkgs";};
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
     };
     pyproject-build-systems = {
       url = "github:pyproject-nix/build-system-pkgs";
@@ -97,7 +99,7 @@
             genai = pkgs.callPackage ./genai {
               inherit (inputs) pyproject-nix uv2nix pyproject-build-systems;
             };
-            scraper = scraper;
+            scraper = scraper.packages.scraper;
           };
         };
       }

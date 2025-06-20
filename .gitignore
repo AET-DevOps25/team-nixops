@@ -22,6 +22,8 @@ npm-debug.log
 testem.log
 typings/
 .angular/
+cache.sqlite
+cache_directory
 
 # e2e
 e2e/*.js
