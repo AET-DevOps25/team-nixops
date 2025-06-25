@@ -10,8 +10,7 @@ object StudyPrograms : IntIdTable("study_programs") {
   val spoVersion = varchar("spo_version", 255)
   val programName = varchar("program_name", 255)
   val degreeProgramName = varchar("degree_program_name", 255)
-
-  // val degree = reference("degree_id", Degrees)
+  val degreeTypeName = varchar("degree_type_name", 255)
 
   init {
     uniqueIndex("uq_study_id_spo_version", studyId, spoVersion)
@@ -26,5 +25,5 @@ class StudyProgram(id: EntityID<Int>) : Entity<Int>(id) {
   var spoVersion by StudyPrograms.spoVersion
   var programName by StudyPrograms.programName
   var degreeProgramName by StudyPrograms.degreeProgramName
-  // var degree by Degree referencedOn StudyPrograms.degree
+  var degreeTypeName by StudyPrograms.degreeTypeName
 }

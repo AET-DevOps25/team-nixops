@@ -169,7 +169,7 @@ class ScraperApplication(
   fun courses(
       @RequestParam(value = "study_id", defaultValue = "163016030") studyId: Long,
       @RequestParam(value = "spo", defaultValue = "20231") spo: String,
-      @RequestParam(value = "semester", defaultValue = "2025S") semesterKey: String,
+      @RequestParam(value = "semester", defaultValue = "2025s") semesterKey: String,
   ): ResponseEntity<String> {
     val studyProgram =
         transaction {
@@ -179,7 +179,8 @@ class ScraperApplication(
               .firstOrNull()
         } ?: return ResponseEntity.notFound().build()
 
-    val longName = "${studyProgram.programName} [${studyProgram.spoVersion}], Master of Science"
+    val longName =
+        "${studyProgram.programName} [${studyProgram.spoVersion}], ${studyProgram.degreeTypeName}"
     println("long name: $longName")
 
     val curriculum =
@@ -196,8 +197,32 @@ class ScraperApplication(
 
     val courses = campusCourseClient.getCourses(curriculum.id.value, tumOnlineId)
 
+    // Phase 1: Collect distinct module IDs>
+    val moduleIds = mutableSetOf<Int>()
     for (course in courses) {
       println("course: ${course.id} ${course.courseTitle.value}")
+
+      transaction {
+        ModuleCourses.select(ModuleCourses.module)
+            .where {
+              (ModuleCourses.semester eq natSemester.semesterKey) and
+                  (ModuleCourses.course eq course.id)
+            }
+            .withDistinct()
+            .map { it[ModuleCourses.module] }
+            .toCollection(moduleIds)
+      }
+    }
+
+    // Phase 2: Fetch Module entities from collected IDs
+    val allModules = mutableListOf<Module>()
+    transaction {
+      moduleIds.forEach { moduleId -> Module.findById(moduleId)?.let { allModules.add(it) } }
+    }
+
+    // Print result
+    for (module in allModules) {
+      println("module: ${module.moduleCode} ${module.moduleTitle} ${module.id}")
     }
 
     return ResponseEntity.ok("done")

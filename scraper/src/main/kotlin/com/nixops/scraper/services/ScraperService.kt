@@ -10,6 +10,7 @@ import com.nixops.scraper.tum_api.nat.api.NatSemesterApiClient
 import java.time.Duration
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.insertIgnore
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 
@@ -67,6 +68,7 @@ class ScraperService(
               existing.spoVersion = it.spoVersion
               existing.programName = it.programName
               existing.degreeProgramName = it.degreeProgramName
+              existing.degreeTypeName = it.degree.degreeTypeName
             } else {
               StudyProgram.new {
                 studyId = it.studyId
@@ -74,6 +76,7 @@ class ScraperService(
                 spoVersion = it.spoVersion
                 programName = it.programName
                 degreeProgramName = it.degreeProgramName
+                degreeTypeName = it.degree.degreeTypeName
               }
             }
           }
@@ -106,18 +109,30 @@ class ScraperService(
 
   fun scrapeModuleByCode(code: String): Module? {
     return transaction {
-      val it = moduleApiClient.fetchNatModuleDetail(code)
+      val natModule = moduleApiClient.fetchNatModuleDetail(code)
       println("Saving module with id: $code")
 
-      val existing = it.moduleId?.let { it1 -> Module.findById(it1) }
+      natModule.courses?.let {
+        for ((semester, courses) in natModule.courses.entries) {
+          for (course in courses) {
+            ModuleCourses.insertIgnore {
+              it[ModuleCourses.semester] = semester
+              it[ModuleCourses.module] = natModule.moduleId
+              it[ModuleCourses.course] = course.courseId
+            }
+          }
+        }
+      }
+
+      val existing = natModule.moduleId.let { it1 -> Module.findById(it1) }
       if (existing != null) {
-        existing.moduleTitle = it.moduleTitle
-        existing.moduleCode = it.moduleCode
+        existing.moduleTitle = natModule.moduleTitle
+        existing.moduleCode = natModule.moduleCode
         existing
       } else {
-        Module.new(it.moduleId) {
-          moduleTitle = it.moduleTitle
-          moduleCode = it.moduleCode
+        Module.new(natModule.moduleId) {
+          moduleTitle = natModule.moduleTitle
+          moduleCode = natModule.moduleCode
         }
       }
     }
@@ -126,7 +141,7 @@ class ScraperService(
   fun scrapeModulesByOrg(org: Int): List<Module> {
     val modules = moduleApiClient.fetchAllNatModules(org)
     return modules.mapIndexedNotNull { index, natModule ->
-      natModule.moduleCode?.let { code ->
+      natModule.moduleCode.let { code ->
         println("Fetching detail for module ${index + 1} of ${modules.size}: $code")
         scrapeModuleByCode(code)
       }
