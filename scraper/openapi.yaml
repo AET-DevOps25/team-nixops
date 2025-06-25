@@ -174,9 +174,13 @@ components:
       type: object
       properties:
         courseId:
-          type: string
-          example: "12345"
+          type: integer
+          example: 12345
           description: "Unique identifier of the course"
+        courseType:
+          type: string
+          example: "exercise"
+          description: "Type of the course"
         courseName:
           type: string
           example: "Advanced Algorithms"

@@ -71,6 +71,8 @@ class ModuleApiController(
     val courses =
         courseService.getCourses(module, semester).map { course ->
           Course(
+              courseId = course.id.value,
+              courseType = course.activityId,
               courseName = course.courseName,
               courseNameEn = course.courseNameEn,
               courseNameList = course.courseNameList,
