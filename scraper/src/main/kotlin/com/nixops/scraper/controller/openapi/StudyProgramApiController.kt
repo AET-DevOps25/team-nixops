@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller
 @Controller
 class StudyProgramsApiController(private val studyProgramService: StudyProgramService) :
     StudyProgramsApi {
-  override fun studyProgramsGet(): ResponseEntity<List<StudyProgram>> {
+  override fun getStudyPrograms(): ResponseEntity<List<StudyProgram>> {
     val studyPrograms =
         studyProgramService.getStudyPrograms().map { studyProgram ->
           StudyProgram(

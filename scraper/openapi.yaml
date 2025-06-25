@@ -7,6 +7,7 @@ info:
 paths:
   /semesters:
     get:
+      operationId: getSemesters
       summary: Get all semesters
       responses:
         '200':
@@ -20,6 +21,7 @@ paths:
 
   /semesters/current:
     get:
+      operationId: getCurrentSemester
       summary: Get the current semester
       responses:
         '200':
@@ -31,6 +33,7 @@ paths:
 
   /study-programs:
     get:
+      operationId: getStudyPrograms
       summary: Get all study programs
       responses:
         '200':
@@ -44,6 +47,7 @@ paths:
 
   /modules:
     get:
+      operationId: getModules
       summary: Get modules by program and semester
       parameters:
         - in: query
@@ -71,6 +75,7 @@ paths:
 
   /modules/{module_code}:
     get:
+      operationId: getModuleByCode
       summary: Get a module by its module code
       parameters:
         - in: path
@@ -88,6 +93,35 @@ paths:
                 $ref: '#/components/schemas/Module'
         '404':
           description: Module not found
+
+  /modules/{module_code}/courses:
+    get:
+      operationId: getCoursesByModuleCode
+      summary: Get courses for a module in a specific semester
+      parameters:
+        - in: path
+          name: module_code
+          required: true
+          schema:
+            type: string
+          description: Code of the module
+        - in: query
+          name: semesterKey
+          required: true
+          schema:
+            type: string
+          description: Key of the semester
+      responses:
+        '200':
+          description: List of courses for the specified module and semester
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+        '404':
+          description: Module or courses not found
 
 components:
   schemas:
@@ -142,15 +176,56 @@ components:
         courseId:
           type: string
           example: "12345"
-        title:
+          description: "Unique identifier of the course"
+        courseName:
           type: string
           example: "Advanced Algorithms"
-        lecturer:
+          description: "Course name (native language)"
+        courseNameEn:
           type: string
-          example: "Prof. Dr. Example"
-        type:
+          nullable: true
+          example: "Advanced Algorithms (EN)"
+          description: "Course name (English)"
+        courseNameList:
           type: string
+          nullable: true
+          example: "Algorithms, Data Structures"
+          description: "List of course names or keywords (native language)"
+        courseNameListEn:
+          type: string
+          nullable: true
+          example: "Algorithms, Data Structures (EN)"
+          description: "List of course names or keywords (English)"
+        description:
+          type: string
+          nullable: true
+          example: "Detailed course description"
+          description: "Course description (native language)"
+        descriptionEn:
+          type: string
+          nullable: true
+          example: "Detailed course description (EN)"
+          description: "Course description (English)"
+        teachingMethod:
+          type: string
+          nullable: true
           example: "Lecture"
+          description: "Teaching method or course type (native language)"
+        teachingMethodEn:
+          type: string
+          nullable: true
+          example: "Lecture (EN)"
+          description: "Teaching method or course type (English)"
+        note:
+          type: string
+          nullable: true
+          example: "Additional notes"
+          description: "Additional notes about the course (native language)"
+        noteEn:
+          type: string
+          nullable: true
+          example: "Additional notes (EN)"
+          description: "Additional notes about the course (English)"
 
     Module:
       type: object
@@ -191,9 +266,3 @@ components:
         module_exam_en:
           type: string
           example: "Written exam (EN)"
-        courses:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              $ref: '#/components/schemas/Course'
