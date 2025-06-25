@@ -13,9 +13,6 @@ class ScraperApplication(
     private val campusCourseClient: CampusCourseApiClient,
     private val courseClient: NatCourseApiClient,
     //
-    private val moduleService: ModuleService,
-    private val programService: StudyProgramService,
-    //
     private val scraperService: ScraperService
 ) {
 

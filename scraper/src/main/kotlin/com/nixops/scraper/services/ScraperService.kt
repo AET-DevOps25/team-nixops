@@ -2,6 +2,8 @@ package com.nixops.scraper.services
 
 import com.nixops.scraper.model.*
 import com.nixops.scraper.tum_api.campus.api.CampusCurriculumApiClient
+import com.nixops.scraper.tum_api.nat.api.NatModuleApiClient
+import com.nixops.scraper.tum_api.nat.api.NatProgramApiClient
 import com.nixops.scraper.tum_api.nat.api.NatSemesterApiClient
 import java.time.Duration
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -10,26 +12,23 @@ import org.springframework.stereotype.Service
 @Service
 class ScraperService(
     private val semesterApiClient: NatSemesterApiClient,
+    private val studyProgramApiClient: NatProgramApiClient,
     private val curriculumApiClient: CampusCurriculumApiClient,
+    private val moduleApiClient: NatModuleApiClient,
 ) {
   fun scrapeSemester(semesterKey: String): Semester {
     return transaction {
-      val existing = Semester.findById(semesterKey)
-      if (existing != null) {
-        existing
-      } else {
-        val natSemester = semesterApiClient.getSemester(semesterKey)
-        println("Saving semester with key: ${natSemester.semesterKey}")
+      val natSemester = semesterApiClient.getSemester(semesterKey)
+      println("Saving semester with key: ${natSemester.semesterKey}")
 
-        val semester =
-            Semester.new(natSemester.semesterKey) {
-              semesterTag = natSemester.semesterTag
-              semesterTitle = natSemester.semesterTitle
-              semesterIdTumOnline = natSemester.semesterIdTumOnline
-            }
+      val semester =
+          Semester.new(natSemester.semesterKey) {
+            semesterTag = natSemester.semesterTag
+            semesterTitle = natSemester.semesterTitle
+            semesterIdTumOnline = natSemester.semesterIdTumOnline
+          }
 
-        semester
-      }
+      semester
     }
   }
 
@@ -38,17 +37,41 @@ class ScraperService(
     semesters.map { scrapeSemester(it.semesterKey) }
   }
 
+  fun scrapeStudyPrograms() {
+    val studyPrograms = studyProgramApiClient.getPrograms()
+    transaction {
+      studyPrograms.map {
+        println("Saving study program with name: ${it.degreeProgramName}")
+
+        val existing = StudyProgram.findById(it.studyId)
+        if (existing != null) {
+          existing.orgId = it.orgId
+          existing.spoVersion = it.spoVersion
+          existing.programName = it.programName
+          existing.degreeProgramName = it.degreeProgramName
+        } else {
+          StudyProgram.new(it.studyId) {
+            orgId = it.orgId
+            spoVersion = it.spoVersion
+            programName = it.programName
+            degreeProgramName = it.degreeProgramName
+          }
+        }
+      }
+    }
+  }
+
   fun scrapeCurricula(tumId: Int): List<Curriculum> {
     return transaction {
-      curriculumApiClient.getCurriculaForSemester(tumId).map {
-        println("Saving curriculum with name: ${it.name}")
+      curriculumApiClient.getCurriculaForSemester(tumId).map { apiCurriculum ->
+        println("Saving curriculum with name: ${apiCurriculum.name}")
 
-        val existing = Curriculum.findById(it.id)
+        val existing = Curriculum.findById(apiCurriculum.id)
         if (existing != null) {
-          existing.name = it.name
+          existing.name = apiCurriculum.name
           existing
         } else {
-          Curriculum.new(it.id) { name = it.name }
+          Curriculum.new(apiCurriculum.id) { name = apiCurriculum.name }
         }
       }
     }
@@ -62,6 +85,39 @@ class ScraperService(
     }
   }
 
+  fun scrapeModuleByCode(code: String): Module? {
+    return transaction {
+      val it = moduleApiClient.fetchNatModuleDetail(code)
+      println("Saving module with id: $code")
+
+      val existing = it.moduleId?.let { it1 -> Module.findById(it1) }
+      if (existing != null) {
+        existing.moduleTitle = it.moduleTitle
+        existing.moduleCode = it.moduleCode
+        existing
+      } else {
+        Module.new(it.moduleId) {
+          moduleTitle = it.moduleTitle
+          moduleCode = it.moduleCode
+        }
+      }
+    }
+  }
+
+  fun scrapeModulesByOrg(org: Int): List<Module> {
+    val modules = moduleApiClient.fetchAllNatModules(org)
+    return modules.mapIndexedNotNull { index, natModule ->
+      natModule.moduleCode?.let { code ->
+        println("Fetching detail for module ${index + 1} of ${modules.size}: $code")
+        scrapeModuleByCode(code)
+      }
+    }
+  }
+
+  fun scrapeModules() {
+    scrapeModulesByOrg(1)
+  }
+
   fun check(name: String, scrape: () -> Unit) {
     val lastUpdated = getTimeSinceLastUpdated(name)
     if (lastUpdated == null || lastUpdated > Duration.ofHours(2)) {
@@ -73,6 +129,8 @@ class ScraperService(
 
   fun check() {
     check("semesters", ::scrapeSemesters)
+    check("study_programs", ::scrapeStudyPrograms)
     check("curricula", ::scrapeCurricula)
+    check("modules", ::scrapeModules)
   }
 }
