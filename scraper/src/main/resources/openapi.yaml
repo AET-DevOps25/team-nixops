@@ -1,0 +1,141 @@
+openapi: 3.0.3
+info:
+  title: University Course API
+  version: 1.0.0
+  description: API to query semesters, study programs, and modules at a university
+
+paths:
+  /semesters:
+    get:
+      summary: Get all semesters
+      responses:
+        '200':
+          description: List of semesters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Semester'
+
+  /study-programs:
+    get:
+      summary: Get all study programs
+      responses:
+        '200':
+          description: List of study programs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudyProgram'
+
+  /modules:
+    get:
+      summary: Get modules by program and semester
+      parameters:
+        - in: query
+          name: study_id
+          schema:
+            type: string
+          required: true
+          description: ID of the study program
+        - in: query
+          name: semesterKey
+          schema:
+            type: string
+          required: true
+          description: Key of the semester
+      responses:
+        '200':
+          description: List of modules for the specified program and semester
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Module'
+
+components:
+  schemas:
+    Semester:
+      type: object
+      properties:
+        semesterKey:
+          type: string
+          example: "2023FS"
+        semesterTitle:
+          type: string
+          example: "Spring Semester 2023"
+        semesterTag:
+          type: string
+          example: "spring"
+
+    StudyProgram:
+      type: object
+      properties:
+        study_id:
+          type: string
+          example: "CS101"
+        program_name:
+          type: string
+          example: "Computer Science"
+        degree_program_name:
+          type: string
+          example: "Bachelor of Science in Computer Science"
+        degree_type_name:
+          type: string
+          example: "Bachelor"
+
+    Module:
+      type: object
+      properties:
+        module_id:
+          type: string
+          example: "CS123"
+        module_title:
+          type: string
+          example: "Introduction to Programming"
+        subtitle:
+          type: string
+          example: "Basics of programming with Python"
+        short_name:
+          type: string
+          example: "IntroProg"
+        credits:
+          type: number
+          format: float
+          example: 6
+        description:
+          type: string
+          example: "This module introduces programming concepts..."
+        languages:
+          type: array
+          items:
+            type: string
+          example: ["English", "German"]
+        module_levels:
+          type: array
+          items:
+            type: string
+          example: ["Bachelor"]
+        people_responsible:
+          type: array
+          items:
+            type: string
+          example: ["Prof. John Doe", "Dr. Jane Smith"]
+        content:
+          type: string
+          example: "Lecture content covers variables, control flow..."
+        outcome:
+          type: string
+          example: "Students will learn to write basic programs..."
+        module_methods:
+          type: array
+          items:
+            type: string
+          example: ["Lecture", "Videos", "Inverted Teaching"]
+        module_exam:
+          type: string
+          example: "Written exam (70%) and practical assignment (30%)"

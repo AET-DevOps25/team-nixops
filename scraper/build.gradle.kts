@@ -46,4 +46,38 @@ dependencies {
   testImplementation("io.kotest:kotest-framework-engine:5.7.2")
 }
 
+sourceSets {
+  main {
+    kotlin {
+      srcDir(
+          project.layout.buildDirectory.dir("generated/openapi/src/main/kotlin").get().asFile.path)
+    }
+  }
+}
+
+tasks.openApiGenerate {
+  generatorName.set("kotlin-spring")
+  inputSpec.set(project.layout.projectDirectory.file("src/main/resources/openapi.yaml").asFile.path)
+  outputDir.set(project.layout.buildDirectory.dir("generated/openapi").get().asFile.path)
+  packageName.set("com.nixops.openapi")
+  apiPackage.set("com.nixops.openapi.api")
+  modelPackage.set("com.nixops.openapi.model")
+  configOptions.set(
+      mapOf(
+          "interfaceOnly" to "true",
+          "library" to "spring-boot",
+          "useSpringBoot3" to "true",
+          "dateLibrary" to "java8",
+          "serializationLibrary" to "jackson",
+          "testFramework" to "kotest",
+      ))
+  generateModelTests.set(false)
+  generateApiTests.set(false)
+  generateModelDocumentation.set(false)
+  generateApiDocumentation.set(false)
+  skipValidateSpec.set(true)
+}
+
+tasks.named("compileKotlin") { dependsOn("openApiGenerate") }
+
 tasks.test { useJUnitPlatform() }
