@@ -1,7 +1,8 @@
 package com.nixops.scraper.config
 
-import com.nixops.scraper.model.LastUpdated
-import com.nixops.scraper.model.Users
+import Courses
+import Degrees
+import com.nixops.scraper.model.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -25,6 +26,12 @@ class DatabaseConfig {
     transaction(db) {
       SchemaUtils.create(Users)
       SchemaUtils.create(LastUpdated)
+      SchemaUtils.create(Semesters)
+      SchemaUtils.create(Curriculums)
+      SchemaUtils.create(Modules)
+      SchemaUtils.create(StudyPrograms)
+      SchemaUtils.create(Courses)
+      SchemaUtils.create(Degrees)
     }
     println(">>> Exposed connected and tables created!")
     return db
