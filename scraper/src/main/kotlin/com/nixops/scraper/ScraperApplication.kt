@@ -5,7 +5,6 @@ import com.nixops.scraper.tum_api.campus.api.CampusCourseApiClient
 import com.nixops.scraper.tum_api.nat.api.NatCourseApiClient
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
 @SpringBootApplication
@@ -14,13 +13,13 @@ class ScraperApplication(
     private val campusCourseClient: CampusCourseApiClient,
     private val courseClient: NatCourseApiClient,
     //
-    private val semesterService: SemesterService,
-    private val curriculumService: CurriculumService,
     private val moduleService: ModuleService,
     private val programService: StudyProgramService,
     //
     private val scraperService: ScraperService
 ) {
+
+  /*
   @Transactional
   @GetMapping("/hello")
   fun hello(
@@ -130,6 +129,7 @@ class ScraperApplication(
 
     return "Hallo Welt"
   }
+   */
 
   @GetMapping("/check")
   fun check(): String {
