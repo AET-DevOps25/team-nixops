@@ -1,9 +1,7 @@
 package com.nixops.scraper.services
 
 import Course
-import com.nixops.scraper.model.CurriculumCourses
-import com.nixops.scraper.model.Semester
-import com.nixops.scraper.model.StudyProgram
+import com.nixops.scraper.model.*
 import com.nixops.scraper.services.scraper.CourseScraper
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
@@ -45,6 +43,22 @@ class CourseService(
         it[CurriculumCourses.course] = course.id.value
       }
     }
+
+    return courses
+  }
+
+  fun getCourses(module: Module, semester: Semester): Set<Course> {
+    val courses =
+        transaction {
+              ModuleCourses.select(ModuleCourses.course)
+                  .where {
+                    (ModuleCourses.semester eq semester.id.value) and
+                        (ModuleCourses.module eq module.id.value)
+                  }
+                  .withDistinct()
+                  .mapNotNull { getCourse(it[ModuleCourses.course]) }
+            }
+            .toSet()
 
     return courses
   }

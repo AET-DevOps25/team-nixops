@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller
 
 @Controller
 class SemestersApiController(private val semesterService: SemesterService) : SemestersApi {
-  override fun semestersGet(): ResponseEntity<List<Semester>> {
+  override fun getSemesters(): ResponseEntity<List<Semester>> {
     val semesters =
         semesterService.getSemesters().map { semester ->
           Semester(
@@ -19,7 +19,7 @@ class SemestersApiController(private val semesterService: SemesterService) : Sem
     return ResponseEntity.ok(semesters)
   }
 
-  override fun semestersCurrentGet(): ResponseEntity<Semester> {
+  override fun getCurrentSemester(): ResponseEntity<Semester> {
     val semester =
         semesterService.getSemester("lecture") ?: return ResponseEntity.notFound().build()
 
