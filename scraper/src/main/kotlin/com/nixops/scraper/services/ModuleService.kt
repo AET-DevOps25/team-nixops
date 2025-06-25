@@ -7,10 +7,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 
 @Service
-class ModuleService(
-    private val curriculumService: CurriculumService,
-    private val courseService: CourseService
-) {
+class ModuleService(private val courseService: CourseService) {
   fun getModuleIds(studyProgram: StudyProgram, semester: Semester): Set<Int> {
     val courses = courseService.getCourseIds(studyProgram, semester)
 
