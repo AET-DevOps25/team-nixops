@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: University Course API
+  title: Scraper API
   version: 1.0.0
-  description: API to query semesters, study programs, and modules at a university
+  description: API to query TUM courses
 
 paths:
   /semesters:
@@ -17,6 +17,17 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Semester'
+
+  /semesters/current:
+    get:
+      summary: Get the current semester
+      responses:
+        '200':
+          description: The current semester
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Semester'
 
   /study-programs:
     get:
@@ -105,7 +116,7 @@ components:
           type: string
           example: "DE"
 
-    NatCourse:
+    Course:
       type: object
       properties:
         courseId:

@@ -18,4 +18,17 @@ class SemestersApiController(private val semesterService: SemesterService) : Sem
         }
     return ResponseEntity.ok(semesters)
   }
+
+  override fun semestersCurrentGet(): ResponseEntity<Semester> {
+    val semester =
+        semesterService.getSemester("lecture") ?: return ResponseEntity.notFound().build()
+
+    val apiSemester =
+        Semester(
+            semesterKey = semester.id.value,
+            semesterTitle = semester.semesterTitle,
+            semesterTag = semester.semesterTag)
+
+    return ResponseEntity.ok(apiSemester)
+  }
 }
