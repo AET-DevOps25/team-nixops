@@ -4,7 +4,7 @@ import org.jetbrains.exposed.dao.*
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
 
-object Semesters : IdTable<String>("semester") {
+object Semesters : IdTable<String>("semesters") {
   override val id = varchar("semester_key", 255).entityId()
   val semesterTag = varchar("semester_tag", 255)
   val semesterTitle = varchar("semester_title", 255)

@@ -1,10 +1,8 @@
 package com.nixops.scraper
 
-import com.nixops.scraper.model.getTimeSinceLastUpdated
 import com.nixops.scraper.services.*
 import com.nixops.scraper.tum_api.campus.api.CampusCourseApiClient
 import com.nixops.scraper.tum_api.nat.api.NatCourseApiClient
-import java.time.Duration
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.transaction.annotation.Transactional
@@ -136,15 +134,8 @@ class ScraperApplication(
   @Transactional
   @GetMapping("/check")
   fun check(): String {
-    val semesterLastUpdate = getTimeSinceLastUpdated("semesters")
-
-    if (semesterLastUpdate == null || semesterLastUpdate > Duration.ofHours(2)) {
-      println("should update semesters")
-
-      scraperService.scrapeSemesters()
-    }
-
-    return semesterLastUpdate.toString()
+    scraperService.check()
+    return "done"
   }
 }
 

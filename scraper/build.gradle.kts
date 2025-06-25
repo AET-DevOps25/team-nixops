@@ -2,7 +2,6 @@ plugins {
   java
   kotlin("jvm") version "1.9.25"
   kotlin("plugin.spring") version "1.9.25"
-  kotlin("plugin.jpa") version "1.9.25"
   id("org.springframework.boot") version "3.5.0"
   id("io.spring.dependency-management") version "1.1.7"
   id("org.openapi.generator") version "7.13.0"
@@ -27,10 +26,9 @@ dependencies {
   implementation("org.jetbrains.kotlin:kotlin-reflect")
   implementation("com.squareup.okhttp3:okhttp:4.11.0")
   implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-  implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
-  runtimeOnly("org.postgresql:postgresql:42.7.7")
-
+  // Exposed
+  implementation("org.springframework.boot:spring-boot-starter-jdbc")
   implementation("org.postgresql:postgresql:42.7.7")
   implementation("org.jetbrains.exposed:exposed-core:0.61.0")
   implementation("org.jetbrains.exposed:exposed-dao:0.61.0")
