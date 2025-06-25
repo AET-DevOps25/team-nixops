@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class NatCourse(
     @JsonProperty("course_id") val courseId: Int,
-    @JsonProperty("course_code") val courseCode: String? = null,
-    @JsonProperty("course_name") val courseName: String? = null,
+    @JsonProperty("course_code") val courseCode: String,
+    @JsonProperty("course_name") val courseName: String,
     @JsonProperty("course_name_en") val courseNameEn: String? = null,
     @JsonProperty("course_name_list") val courseNameList: String? = null,
     @JsonProperty("course_name_list_en") val courseNameListEn: String? = null,

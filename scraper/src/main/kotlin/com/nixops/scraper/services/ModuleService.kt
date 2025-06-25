@@ -11,16 +11,15 @@ class ModuleService(
     private val semesterService: SemesterService
 ) {
   fun getModuleIds(studyProgram: StudyProgram, semester: Semester): Set<Int> {
-    val courses = courseService.getCourseIds(studyProgram, semester)
+    val courses = courseService.getCourses(studyProgram, semester)
 
     val moduleIds = mutableSetOf<Int>()
     for (course in courses) {
-      println("course: $course")
-
       transaction {
         ModuleCourses.select(ModuleCourses.module)
             .where {
-              (ModuleCourses.semester eq semester.id.value) and (ModuleCourses.course eq course)
+              (ModuleCourses.semester eq semester.id.value) and
+                  (ModuleCourses.course eq course.id.value)
             }
             .withDistinct()
             .map { it[ModuleCourses.module] }
