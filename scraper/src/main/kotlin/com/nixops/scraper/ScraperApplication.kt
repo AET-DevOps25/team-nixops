@@ -1,10 +1,12 @@
 package com.nixops.scraper
 
-import com.nixops.scraper.model.StudyProgram
-import com.nixops.scraper.model.StudyPrograms
+import com.nixops.scraper.model.*
 import com.nixops.scraper.services.*
 import com.nixops.scraper.tum_api.campus.api.CampusCourseApiClient
 import com.nixops.scraper.tum_api.nat.api.NatCourseApiClient
+import com.nixops.scraper.tum_api.nat.api.NatSemesterApiClient
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -19,7 +21,8 @@ class ScraperApplication(
     private val campusCourseClient: CampusCourseApiClient,
     private val courseClient: NatCourseApiClient,
     //
-    private val scraperService: ScraperService
+    private val scraperService: ScraperService,
+    private val semesterApiClient: NatSemesterApiClient,
 ) {
 
   /*
@@ -154,11 +157,50 @@ class ScraperApplication(
                 "id" to it.id.value.toString(),
                 "programName" to it.programName,
                 "degreeProgramName" to it.degreeProgramName,
-                "spoVersion" to it.spoVersion.toString())
+                "studyId" to it.studyId.toString(),
+                "spoVersion" to it.spoVersion)
           }
     }
 
     return ResponseEntity.ok(results)
+  }
+
+  @GetMapping("/courses", produces = [MediaType.APPLICATION_JSON_VALUE])
+  fun courses(
+      @RequestParam(value = "study_id", defaultValue = "163016030") studyId: Long,
+      @RequestParam(value = "spo", defaultValue = "20231") spo: String,
+      @RequestParam(value = "semester", defaultValue = "2025S") semesterKey: String,
+  ): ResponseEntity<String> {
+    val studyProgram =
+        transaction {
+          StudyProgram.find {
+                (StudyPrograms.studyId eq studyId) and (StudyPrograms.spoVersion eq spo)
+              }
+              .firstOrNull()
+        } ?: return ResponseEntity.notFound().build()
+
+    val longName = "${studyProgram.programName} [${studyProgram.spoVersion}], Master of Science"
+    println("long name: $longName")
+
+    val curriculum =
+        transaction { Curriculum.find(Curriculums.name eq longName).firstOrNull() }
+            ?: return ResponseEntity.notFound().build()
+
+    val natSemester = semesterApiClient.getSemester(semesterKey)
+
+    val semester =
+        transaction { Semester.findById(natSemester.semesterKey) }
+            ?: return ResponseEntity.notFound().build()
+
+    val tumOnlineId = semester.semesterIdTumOnline ?: return ResponseEntity.notFound().build()
+
+    val courses = campusCourseClient.getCourses(curriculum.id.value, tumOnlineId)
+
+    for (course in courses) {
+      println("course: ${course.id} ${course.courseTitle.value}")
+    }
+
+    return ResponseEntity.ok("done")
   }
 }
 
