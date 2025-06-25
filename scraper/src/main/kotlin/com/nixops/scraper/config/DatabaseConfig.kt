@@ -23,6 +23,7 @@ class DatabaseConfig {
       SchemaUtils.create(StudyPrograms)
       SchemaUtils.create(Courses)
       SchemaUtils.create(ModuleCourses)
+      SchemaUtils.create(CurriculumCourses)
     }
     println(">>> Exposed connected and tables created!")
     return db

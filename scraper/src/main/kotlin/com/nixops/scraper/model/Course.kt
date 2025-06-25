@@ -1,16 +1,14 @@
 import org.jetbrains.exposed.dao.*
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
-import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.ReferenceOption
 
 object Courses : IdTable<Int>("courses") {
   override val id = integer("course_id").entityId()
 
   val courseName = text("course_name")
-  val courseNameEn = text("course_name_en")
-  val courseNameList = text("course_name_list")
-  val courseNameListEn = text("course_name_list_en")
+  val courseNameEn = text("course_name_en").nullable()
+  val courseNameList = text("course_name_list").nullable()
+  val courseNameListEn = text("course_name_list_en").nullable()
   val description = text("description").nullable()
   val descriptionEn = text("description_en").nullable()
   val teachingMethod = text("teaching_method").nullable()
@@ -19,10 +17,10 @@ object Courses : IdTable<Int>("courses") {
   val noteEn = text("note_en").nullable()
 }
 
-object CourseInstructionLanguages : IntIdTable("course_instruction_languages") {
+/* object CourseInstructionLanguages : IntIdTable("course_instruction_languages") {
   val course = reference("course_id", Courses, onDelete = ReferenceOption.CASCADE)
   val instructionLanguage = varchar("instruction_language", 255)
-}
+}*/
 
 class Course(id: EntityID<Int>) : Entity<Int>(id) {
   companion object : EntityClass<Int, Course>(Courses)
@@ -38,13 +36,13 @@ class Course(id: EntityID<Int>) : Entity<Int>(id) {
   var note by Courses.note
   var noteEn by Courses.noteEn
 
-  val instructionLanguages by
-      CourseInstructionLanguage referrersOn CourseInstructionLanguages.course
+  // val instructionLanguages by
+  //   CourseInstructionLanguage referrersOn CourseInstructionLanguages.course
 }
 
-class CourseInstructionLanguage(id: EntityID<Int>) : IntEntity(id) {
+/* class CourseInstructionLanguage(id: EntityID<Int>) : IntEntity(id) {
   companion object : IntEntityClass<CourseInstructionLanguage>(CourseInstructionLanguages)
 
   var course by Course referencedOn CourseInstructionLanguages.course
   var instructionLanguage by CourseInstructionLanguages.instructionLanguage
-}
+}*/
