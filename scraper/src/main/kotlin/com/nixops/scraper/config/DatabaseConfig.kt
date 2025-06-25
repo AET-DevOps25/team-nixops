@@ -1,5 +1,6 @@
 package com.nixops.scraper.config
 
+import com.nixops.scraper.model.LastUpdated
 import com.nixops.scraper.model.Users
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -22,7 +23,8 @@ class DatabaseConfig {
         }
     val db = Database.connect(dataSource)
     transaction(db) {
-      SchemaUtils.create(Users) // this creates the table if missing
+      SchemaUtils.create(Users)
+      SchemaUtils.create(LastUpdated)
     }
     println(">>> Exposed connected and tables created!")
     return db

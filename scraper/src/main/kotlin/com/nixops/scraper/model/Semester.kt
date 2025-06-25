@@ -1,12 +1,20 @@
 package com.nixops.scraper.model
 
-import jakarta.persistence.*
+import org.jetbrains.exposed.dao.*
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.IdTable
 
-@Entity
-@Table(name = "semester")
-data class Semester(
-    @Id @Column(name = "semester_key") var semesterKey: String,
-    @Column(name = "semester_tag") var semesterTag: String,
-    @Column(name = "semester_title") var semesterTitle: String,
-    @Column(name = "semester_id_tumonline") var semesterIdTumOnline: Int?,
-)
+object Semesters : IdTable<String>("semester") {
+  override val id = varchar("semester_key", 255).entityId()
+  val semesterTag = varchar("semester_tag", 255)
+  val semesterTitle = varchar("semester_title", 255)
+  val semesterIdTumOnline = integer("semester_id_tumonline").nullable()
+}
+
+class Semester(id: EntityID<String>) : Entity<String>(id) {
+  companion object : EntityClass<String, Semester>(Semesters)
+
+  var semesterTag by Semesters.semesterTag
+  var semesterTitle by Semesters.semesterTitle
+  var semesterIdTumOnline by Semesters.semesterIdTumOnline
+}
