@@ -57,7 +57,7 @@ sourceSets {
 
 tasks.openApiGenerate {
   generatorName.set("kotlin-spring")
-  inputSpec.set(project.layout.projectDirectory.file("src/main/resources/openapi.yaml").asFile.path)
+  inputSpec.set(project.layout.projectDirectory.file("openapi.yaml").asFile.path)
   outputDir.set(project.layout.buildDirectory.dir("generated/openapi").get().asFile.path)
   packageName.set("com.nixops.openapi")
   apiPackage.set("com.nixops.openapi.api")
