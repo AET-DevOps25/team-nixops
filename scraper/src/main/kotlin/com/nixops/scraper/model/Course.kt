@@ -13,6 +13,9 @@ object Courses : IdTable<Int>("courses") {
   val descriptionEn = text("description_en").nullable()
   val teachingMethod = text("teaching_method").nullable()
   val teachingMethodEn = text("teaching_method_en").nullable()
+  val activityId = text("activity_id").nullable()
+  val activityName = text("activity_name").nullable()
+  val activityNameEn = text("activity_name_en").nullable()
   val note = text("note").nullable()
   val noteEn = text("note_en").nullable()
 }
@@ -33,6 +36,9 @@ class Course(id: EntityID<Int>) : Entity<Int>(id) {
   var descriptionEn by Courses.descriptionEn
   var teachingMethod by Courses.teachingMethod
   var teachingMethodEn by Courses.teachingMethodEn
+  var activityId by Courses.activityId
+  var activityName by Courses.activityName
+  var activityNameEn by Courses.activityNameEn
   var note by Courses.note
   var noteEn by Courses.noteEn
 

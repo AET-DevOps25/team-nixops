@@ -40,6 +40,9 @@ class CourseScraper(
         existing.teachingMethodEn = natCourse.teachingMethodEn
         existing.note = natCourse.note
         existing.noteEn = natCourse.noteEn
+        existing.activityId = natCourse.activity?.activityId
+        existing.activityName = natCourse.activity?.activityName
+        existing.activityNameEn = natCourse.activity?.activityNameEn
         existing
       } else {
         Course.new(natCourse.courseId) {
@@ -53,6 +56,9 @@ class CourseScraper(
           teachingMethodEn = natCourse.teachingMethodEn
           note = natCourse.note
           noteEn = natCourse.noteEn
+          activityId = natCourse.activity?.activityId
+          activityName = natCourse.activity?.activityName
+          activityNameEn = natCourse.activity?.activityNameEn
         }
       }
     }
