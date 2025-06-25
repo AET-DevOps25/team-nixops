@@ -26,4 +26,8 @@ class StudyProgram(id: EntityID<Int>) : Entity<Int>(id) {
   var programName by StudyPrograms.programName
   var degreeProgramName by StudyPrograms.degreeProgramName
   var degreeTypeName by StudyPrograms.degreeTypeName
+
+  fun fullName(): String {
+    return "${this.programName} [${this.spoVersion}], ${this.degreeTypeName}"
+  }
 }

@@ -1,10 +1,6 @@
-package com.nixops.scraper.services
+package com.nixops.scraper.services.scraper
 
 import com.nixops.scraper.model.*
-import com.nixops.scraper.services.scraper.CurriculumScraper
-import com.nixops.scraper.services.scraper.ModuleScraper
-import com.nixops.scraper.services.scraper.SemesterScraper
-import com.nixops.scraper.services.scraper.StudyProgramScraper
 import java.time.Duration
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component

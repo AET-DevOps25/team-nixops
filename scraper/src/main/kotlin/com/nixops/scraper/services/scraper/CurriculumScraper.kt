@@ -27,9 +27,7 @@ class CurriculumScraper(
 
   fun scrapeCurricula() {
     transaction {
-      Semester.all().forEach { semester ->
-        semester.semesterIdTumOnline?.let { scrapeCurricula(it) }
-      }
+      Semester.all().forEach { semester -> scrapeCurricula(semester.semesterIdTumOnline) }
     }
   }
 }
