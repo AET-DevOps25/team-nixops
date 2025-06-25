@@ -1,7 +1,9 @@
 package com.nixops.scraper.services
 
 import com.nixops.scraper.model.*
+import com.nixops.scraper.tum_api.campus.api.CampusCourseApiClient
 import com.nixops.scraper.tum_api.campus.api.CampusCurriculumApiClient
+import com.nixops.scraper.tum_api.nat.api.NatCourseApiClient
 import com.nixops.scraper.tum_api.nat.api.NatModuleApiClient
 import com.nixops.scraper.tum_api.nat.api.NatProgramApiClient
 import com.nixops.scraper.tum_api.nat.api.NatSemesterApiClient
@@ -15,20 +17,27 @@ class ScraperService(
     private val studyProgramApiClient: NatProgramApiClient,
     private val curriculumApiClient: CampusCurriculumApiClient,
     private val moduleApiClient: NatModuleApiClient,
+    private val campusCourseApiClient: CampusCourseApiClient,
+    private val natCourseApiClient: NatCourseApiClient
 ) {
   fun scrapeSemester(semesterKey: String): Semester {
     return transaction {
       val natSemester = semesterApiClient.getSemester(semesterKey)
       println("Saving semester with key: ${natSemester.semesterKey}")
 
-      val semester =
-          Semester.new(natSemester.semesterKey) {
-            semesterTag = natSemester.semesterTag
-            semesterTitle = natSemester.semesterTitle
-            semesterIdTumOnline = natSemester.semesterIdTumOnline
-          }
-
-      semester
+      val existing = Semester.findById(natSemester.semesterKey)
+      if (existing != null) {
+        existing.semesterTag = natSemester.semesterTag
+        existing.semesterTitle = natSemester.semesterTitle
+        existing.semesterIdTumOnline = natSemester.semesterIdTumOnline
+        existing
+      } else {
+        Semester.new(natSemester.semesterKey) {
+          semesterTag = natSemester.semesterTag
+          semesterTitle = natSemester.semesterTitle
+          semesterIdTumOnline = natSemester.semesterIdTumOnline
+        }
+      }
     }
   }
 
@@ -118,6 +127,21 @@ class ScraperService(
     scrapeModulesByOrg(1)
   }
 
+  /* fun scrapeCourses() {
+      transaction {
+          Curriculum.all().forEach { curriculum ->
+              Semester.all().forEach { semester ->
+                  semester.semesterIdTumOnline?.let { tumOnlineId ->
+                      if (tumOnlineId == 204) {
+                          println("fetching courses for curriculum: ${curriculum.id.value} $tumOnlineId")
+                          campusCourseApiClient.getCourses(curriculum.id.value, tumOnlineId)
+                      }
+                  }
+              }
+          }
+      }
+  } */
+
   fun check(name: String, scrape: () -> Unit) {
     val lastUpdated = getTimeSinceLastUpdated(name)
     if (lastUpdated == null || lastUpdated > Duration.ofHours(2)) {
@@ -132,5 +156,6 @@ class ScraperService(
     check("study_programs", ::scrapeStudyPrograms)
     check("curricula", ::scrapeCurricula)
     check("modules", ::scrapeModules)
+    // check("courses", ::scrapeCourses)
   }
 }
