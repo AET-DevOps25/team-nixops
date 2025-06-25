@@ -1,11 +1,13 @@
 package com.nixops.scraper
 
+import com.nixops.scraper.model.getTimeSinceLastUpdated
 import com.nixops.scraper.services.CurriculumService
 import com.nixops.scraper.services.ModuleService
-import com.nixops.scraper.services.ProgramService
 import com.nixops.scraper.services.SemesterService
+import com.nixops.scraper.services.StudyProgramService
 import com.nixops.scraper.tum_api.campus.api.CampusCourseApiClient
 import com.nixops.scraper.tum_api.nat.api.NatCourseApiClient
+import java.time.Duration
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.transaction.annotation.Transactional
@@ -20,7 +22,7 @@ class ScraperApplication(
     private val semesterService: SemesterService,
     private val curriculumService: CurriculumService,
     private val moduleService: ModuleService,
-    private val programService: ProgramService
+    private val programService: StudyProgramService
 ) {
   @Transactional
   @GetMapping("/hello")
@@ -34,7 +36,7 @@ class ScraperApplication(
       println("Semester:")
       println("semester title: ${semester.semesterTitle}")
       println("semester tag: ${semester.semesterTag}")
-      println("semester key: ${semester.semesterKey}")
+      println("semester key: ${semester.id}")
       println("semester id: ${semester.semesterIdTumOnline}")
       println()
 
@@ -46,7 +48,7 @@ class ScraperApplication(
         return "Abort"
       }
 
-      println("study id: ${program.studyId}")
+      println("study id: ${program.id}")
       println("spo version: ${program.spoVersion}")
 
       val longName =
@@ -54,7 +56,7 @@ class ScraperApplication(
       println("long name: $longName")
 
       // 3. Fetch curriculum
-      val curriculum = curriculumService.getCurriculumByProgramName(semester.semesterKey, longName)
+      val curriculum = curriculumService.getCurriculumByProgramName(semester.id.value, longName)
 
       val selectedCurriculumId = curriculum?.id
       if (selectedCurriculumId == null) {
@@ -66,27 +68,27 @@ class ScraperApplication(
       println("Modules:")
       val modules = moduleService.getModules()
       val extraModuleMapping = mutableMapOf<Int, MutableList<Int>>()
-      for (module in modules) {
-        for (semesterCourses in module.semesterCourses) {
-          if (semesterCourses.semester != semester.semesterKey) {
-            continue
+      /*for (module in modules) {
+          for (semesterCourses in module.semesterCourses) {
+              if (semesterCourses.semester != semester.semesterKey) {
+                  continue
+              }
+              for (course in semesterCourses.courses) {
+                  val courseId = course.id
+                  module.moduleId?.let {
+                      extraModuleMapping.getOrPut(courseId) { mutableListOf() }.add(it)
+                  }
+              }
+              break
           }
-          for (course in semesterCourses.courses) {
-            val courseId = course.id
-            module.moduleId?.let {
-              extraModuleMapping.getOrPut(courseId) { mutableListOf() }.add(it)
-            }
-          }
-          break
-        }
-      }
+      }*/
       println()
 
       // 5. Fetch Courses
       println("Fetch Courses:")
       val courses =
           semester.semesterIdTumOnline?.let {
-            campusCourseClient.getCourses(selectedCurriculumId, it)
+            campusCourseClient.getCourses(selectedCurriculumId.value, it)
           }
 
       // 6. Analyze courses for modules
@@ -130,6 +132,18 @@ class ScraperApplication(
     }
 
     return "Hallo Welt"
+  }
+
+  @Transactional
+  @GetMapping("/check")
+  fun check(): String {
+    val semesterLastUpdate = getTimeSinceLastUpdated("semesters")
+
+    if (semesterLastUpdate == null || semesterLastUpdate > Duration.ofHours(2)) {
+      println("should update semesters")
+    }
+
+    return semesterLastUpdate.toString()
   }
 }
 

@@ -1,10 +1,13 @@
-package com.nixops.scraper.model
+import org.jetbrains.exposed.dao.*
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.LongIdTable
 
-import jakarta.persistence.*
+object Degrees : LongIdTable("degrees") {
+  val degreeTypeName = varchar("degree_type_name", 255)
+}
 
-@Entity
-@Table(name = "degrees")
-data class Degree(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Long = 0,
-    @Column(name = "degree_type_name") val degreeTypeName: String
-)
+class Degree(id: EntityID<Long>) : LongEntity(id) {
+  companion object : LongEntityClass<Degree>(Degrees)
+
+  var degreeTypeName by Degrees.degreeTypeName
+}
