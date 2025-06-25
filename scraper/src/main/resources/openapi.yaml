@@ -38,7 +38,8 @@ paths:
         - in: query
           name: study_id
           schema:
-            type: string
+            type: integer
+            format: int64
           required: true
           description: ID of the study program
         - in: query
@@ -88,54 +89,84 @@ components:
           type: string
           example: "Bachelor"
 
+    Language:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Deutsch"
+        nameEn:
+          type: string
+          example: "German"
+        short:
+          type: string
+          example: "DE"
+        shortEn:
+          type: string
+          example: "DE"
+
+    NatCourse:
+      type: object
+      properties:
+        courseId:
+          type: string
+          example: "12345"
+        title:
+          type: string
+          example: "Advanced Algorithms"
+        lecturer:
+          type: string
+          example: "Prof. Dr. Example"
+        type:
+          type: string
+          example: "Lecture"
+
     Module:
       type: object
       properties:
         module_id:
           type: string
           example: "CS123"
+        module_code:
+          type: string
+          example: "CS123"
         module_title:
           type: string
           example: "Introduction to Programming"
-        subtitle:
+        module_title_en:
           type: string
-          example: "Basics of programming with Python"
-        short_name:
+          example: "Introduction to Programming (EN)"
+        module_content:
           type: string
-          example: "IntroProg"
-        credits:
-          type: number
-          format: float
-          example: 6
-        description:
+          example: "Covers basics such as loops, variables, conditionals..."
+        module_content_en:
           type: string
-          example: "This module introduces programming concepts..."
+          example: "Covers basics such as loops, variables, conditionals... (EN)"
+        module_outcome:
+          type: string
+          example: "Students can write basic code."
+        module_outcome_en:
+          type: string
+          example: "Students can write basic code. (EN)"
+        module_methods:
+          type: string
+          example: "Lecture, Exercises"
+        module_methods_en:
+          type: string
+          example: "Lecture, Exercises (EN)"
+        module_exam:
+          type: string
+          example: "Written exam"
+        module_exam_en:
+          type: string
+          example: "Written exam (EN)"
         languages:
           type: array
           items:
-            type: string
-          example: ["English", "German"]
-        module_levels:
-          type: array
-          items:
-            type: string
-          example: ["Bachelor"]
-        people_responsible:
-          type: array
-          items:
-            type: string
-          example: ["Prof. John Doe", "Dr. Jane Smith"]
-        content:
-          type: string
-          example: "Lecture content covers variables, control flow..."
-        outcome:
-          type: string
-          example: "Students will learn to write basic programs..."
-        module_methods:
-          type: array
-          items:
-            type: string
-          example: ["Lecture", "Videos", "Inverted Teaching"]
-        module_exam:
-          type: string
-          example: "Written exam (70%) and practical assignment (30%)"
+            $ref: '#/components/schemas/Language'
+        courses:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/NatCourse'

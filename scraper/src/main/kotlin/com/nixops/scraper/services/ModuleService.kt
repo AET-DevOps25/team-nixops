@@ -1,13 +1,15 @@
 package com.nixops.scraper.services
 
 import com.nixops.scraper.model.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 
 @Service
-class ModuleService(private val courseService: CourseService) {
+class ModuleService(
+    private val courseService: CourseService,
+    private val semesterService: SemesterService
+) {
   fun getModuleIds(studyProgram: StudyProgram, semester: Semester): Set<Int> {
     val courses = courseService.getCourseIds(studyProgram, semester)
 
@@ -42,6 +44,18 @@ class ModuleService(private val courseService: CourseService) {
   }
 
   fun getModules(studyId: Long, semester: Semester): List<Module> {
+    val allModules = mutableListOf<Module>()
+    transaction {
+      getModuleIds(studyId, semester).forEach { moduleId ->
+        Module.findById(moduleId)?.let { allModules.add(it) }
+      }
+    }
+    return allModules
+  }
+
+  fun getModules(studyId: Long, semesterKey: String): List<Module> {
+    val semester = semesterService.getSemester(semesterKey) ?: return listOf()
+
     val allModules = mutableListOf<Module>()
     transaction {
       getModuleIds(studyId, semester).forEach { moduleId ->
