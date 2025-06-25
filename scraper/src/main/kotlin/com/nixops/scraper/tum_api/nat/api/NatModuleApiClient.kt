@@ -58,7 +58,7 @@ class NatModuleApiClient(
     println("Get Module Details")
 
     return overviewNatModules.mapNotNullIndexed { index, natModule ->
-      natModule.moduleCode?.let {
+      natModule.moduleCode.let {
         println("Fetching detail for module ${index + 1} of ${overviewNatModules.size}: $it")
         fetchNatModuleDetail(it)
       }
