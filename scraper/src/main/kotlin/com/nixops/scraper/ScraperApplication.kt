@@ -13,15 +13,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.web.bind.annotation.*
 
 @SpringBootApplication
+@EnableScheduling
 @RestController
 class ScraperApplication(
     private val campusCourseClient: CampusCourseApiClient,
     private val courseClient: NatCourseApiClient,
     //
-    private val scraperService: ScraperService,
+    private val scraperService: ScraperScheduler,
     private val semesterApiClient: NatSemesterApiClient,
 ) {
 
