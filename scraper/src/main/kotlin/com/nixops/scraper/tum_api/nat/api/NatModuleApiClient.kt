@@ -64,16 +64,17 @@ class NatModuleApiClient(
       }
     }
   }
-}
 
-inline fun <T, R : Any> Iterable<T>.mapNotNullIndexed(transform: (index: Int, T) -> R?): List<R> {
-  val destination = ArrayList<R>()
-  var index = 0
-  for (item in this) {
-    val result = transform(index++, item)
-    if (result != null) {
-      destination.add(result)
+  private inline fun <T, R : Any> Iterable<T>.mapNotNullIndexed(
+      transform: (index: Int, T) -> R?
+  ): List<R> {
+    val destination = ArrayList<R>()
+    for ((index, item) in this.withIndex()) {
+      val result = transform(index, item)
+      if (result != null) {
+        destination.add(result)
+      }
     }
+    return destination
   }
-  return destination
 }

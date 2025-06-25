@@ -3,6 +3,7 @@ package com.nixops.scraper.services.scraper
 import com.nixops.scraper.model.*
 import com.nixops.scraper.tum_api.nat.api.NatModuleApiClient
 import com.nixops.scraper.tum_api.nat.model.NatModule
+import java.io.IOException
 import org.jetbrains.exposed.sql.insertIgnore
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
@@ -58,10 +59,14 @@ class ModuleScraper(
   }
 
   fun scrapeModuleByCode(code: String): Module? {
-    val natModule = moduleApiClient.fetchNatModuleDetail(code)
-    println("Saving module with id: $code")
+    try {
+      val natModule = moduleApiClient.fetchNatModuleDetail(code)
+      println("Saving module with id: $code")
 
-    return updateNatModule(natModule)
+      return updateNatModule(natModule)
+    } catch (e: IOException) {
+      return null
+    }
   }
 
   fun scrapeModulesByOrg(org: Int): List<Module> {
