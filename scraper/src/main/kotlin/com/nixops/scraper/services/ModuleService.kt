@@ -1,6 +1,8 @@
 package com.nixops.scraper.services
 
 import com.nixops.scraper.model.*
+import com.nixops.scraper.services.scraper.ModuleScraper
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
@@ -8,8 +10,14 @@ import org.springframework.stereotype.Service
 @Service
 class ModuleService(
     private val courseService: CourseService,
-    private val semesterService: SemesterService
+    private val semesterService: SemesterService,
+    private val moduleScraper: ModuleScraper,
 ) {
+  fun getModule(code: String): Module? {
+    return transaction { Module.find(Modules.moduleCode eq code).firstOrNull() }
+        ?: moduleScraper.scrapeModuleByCode(code)
+  }
+
   fun getModuleIds(studyProgram: StudyProgram, semester: Semester): Set<Int> {
     val courses = courseService.getCourses(studyProgram, semester)
 
