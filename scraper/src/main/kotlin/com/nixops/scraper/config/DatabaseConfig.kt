@@ -1,7 +1,6 @@
 package com.nixops.scraper.config
 
 import Courses
-import Degrees
 import com.nixops.scraper.model.*
 import javax.sql.DataSource
 import org.jetbrains.exposed.sql.Database
@@ -17,14 +16,12 @@ class DatabaseConfig {
   fun exposedDatabase(dataSource: DataSource): Database {
     val db = Database.connect(dataSource)
     transaction(db) {
-      SchemaUtils.create(Users)
       SchemaUtils.create(LastUpdated)
       SchemaUtils.create(Semesters)
       SchemaUtils.create(Curriculums)
       SchemaUtils.create(Modules)
       SchemaUtils.create(StudyPrograms)
       SchemaUtils.create(Courses)
-      SchemaUtils.create(Degrees)
       SchemaUtils.create(ModuleCourses)
     }
     println(">>> Exposed connected and tables created!")

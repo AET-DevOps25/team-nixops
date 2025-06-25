@@ -1,4 +1,3 @@
-import com.nixops.scraper.model.Users
 import org.jetbrains.exposed.dao.*
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
@@ -18,7 +17,6 @@ object Courses : IdTable<Int>("courses") {
   val teachingMethodEn = text("teaching_method_en").nullable()
   val note = text("note").nullable()
   val noteEn = text("note_en").nullable()
-  override val primaryKey = PrimaryKey(Users.id)
 }
 
 object CourseInstructionLanguages : IntIdTable("course_instruction_languages") {
