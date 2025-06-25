@@ -1,6 +1,5 @@
 package com.nixops.scraper.services
 
-import com.nixops.scraper.mapper.SemesterMapper
 import com.nixops.scraper.model.Semester
 import com.nixops.scraper.tum_api.nat.api.NatSemesterApiClient
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Service
 @Service
 class SemesterService(
     private val semesterApiClient: NatSemesterApiClient,
-    private val semesterMapper: SemesterMapper,
 ) {
 
   fun getCurrentLectureSemester(): Semester = getSemester("lecture")
@@ -23,7 +21,12 @@ class SemesterService(
         val natSemester = semesterApiClient.getSemester(semesterKey)
         println("Saving semester with key: ${natSemester.semesterKey}")
 
-        val semester = semesterMapper.natSemesterToSemester(natSemester)
+        val semester =
+            Semester.new(natSemester.semesterKey) {
+              semesterTag = natSemester.semesterTag
+              semesterTitle = natSemester.semesterTitle
+              semesterIdTumOnline = natSemester.semesterIdTumOnline
+            }
 
         println("Saved semester with key: $Semester")
         semester

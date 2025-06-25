@@ -1,10 +1,7 @@
 package com.nixops.scraper
 
 import com.nixops.scraper.model.getTimeSinceLastUpdated
-import com.nixops.scraper.services.CurriculumService
-import com.nixops.scraper.services.ModuleService
-import com.nixops.scraper.services.SemesterService
-import com.nixops.scraper.services.StudyProgramService
+import com.nixops.scraper.services.*
 import com.nixops.scraper.tum_api.campus.api.CampusCourseApiClient
 import com.nixops.scraper.tum_api.nat.api.NatCourseApiClient
 import java.time.Duration
@@ -22,7 +19,9 @@ class ScraperApplication(
     private val semesterService: SemesterService,
     private val curriculumService: CurriculumService,
     private val moduleService: ModuleService,
-    private val programService: StudyProgramService
+    private val programService: StudyProgramService,
+    //
+    private val scraperService: ScraperService
 ) {
   @Transactional
   @GetMapping("/hello")
@@ -141,6 +140,8 @@ class ScraperApplication(
 
     if (semesterLastUpdate == null || semesterLastUpdate > Duration.ofHours(2)) {
       println("should update semesters")
+
+      scraperService.scrapeSemesters()
     }
 
     return semesterLastUpdate.toString()
