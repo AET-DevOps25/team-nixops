@@ -69,6 +69,26 @@ paths:
                 items:
                   $ref: '#/components/schemas/Module'
 
+  /modules/{module_code}:
+    get:
+      summary: Get a module by its module code
+      parameters:
+        - in: path
+          name: module_code
+          required: true
+          schema:
+            type: string
+          description: Code of the module to retrieve
+      responses:
+        '200':
+          description: The requested module
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Module'
+        '404':
+          description: Module not found
+
 components:
   schemas:
     Semester:
@@ -171,13 +191,9 @@ components:
         module_exam_en:
           type: string
           example: "Written exam (EN)"
-        languages:
-          type: array
-          items:
-            $ref: '#/components/schemas/Language'
         courses:
           type: object
           additionalProperties:
             type: array
             items:
-              $ref: '#/components/schemas/NatCourse'
+              $ref: '#/components/schemas/Course'

@@ -2,6 +2,7 @@ package com.nixops.scraper.services.scraper
 
 import com.nixops.scraper.model.*
 import com.nixops.scraper.tum_api.nat.api.NatModuleApiClient
+import com.nixops.scraper.tum_api.nat.model.NatModule
 import org.jetbrains.exposed.sql.insertIgnore
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
@@ -10,11 +11,8 @@ import org.springframework.stereotype.Service
 class ModuleScraper(
     private val moduleApiClient: NatModuleApiClient,
 ) {
-  fun scrapeModuleByCode(code: String): Module? {
+  fun updateNatModule(natModule: NatModule): Module? {
     return transaction {
-      val natModule = moduleApiClient.fetchNatModuleDetail(code)
-      println("Saving module with id: $code")
-
       natModule.courses.let {
         for ((semester, courses) in natModule.courses.entries) {
           for (course in courses) {
@@ -57,6 +55,13 @@ class ModuleScraper(
         }
       }
     }
+  }
+
+  fun scrapeModuleByCode(code: String): Module? {
+    val natModule = moduleApiClient.fetchNatModuleDetail(code)
+    println("Saving module with id: $code")
+
+    return updateNatModule(natModule)
   }
 
   fun scrapeModulesByOrg(org: Int): List<Module> {

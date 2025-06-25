@@ -28,4 +28,28 @@ class ModuleApiController(private val moduleService: ModuleService) : ModulesApi
 
     return ResponseEntity.ok(modules)
   }
+
+  override fun modulesModuleCodeGet(moduleCode: String): ResponseEntity<Module> {
+    val module = moduleService.getModule(moduleCode)
+
+    return if (module != null) {
+      val apiModule =
+          Module(
+              moduleId = module.id.value.toString(),
+              moduleCode = module.moduleCode,
+              moduleTitle = module.moduleTitle,
+              moduleTitleEn = module.moduleTitleEn,
+              moduleContent = module.moduleContent,
+              moduleContentEn = module.moduleContentEn,
+              moduleOutcome = module.moduleOutcome,
+              moduleOutcomeEn = module.moduleOutcomeEn,
+              moduleMethods = module.moduleMethods,
+              moduleMethodsEn = module.moduleMethodsEn,
+              moduleExam = module.moduleExam,
+              moduleExamEn = module.moduleExamEn)
+      ResponseEntity.ok(apiModule)
+    } else {
+      ResponseEntity.notFound().build()
+    }
+  }
 }

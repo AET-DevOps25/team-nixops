@@ -17,7 +17,7 @@ class CourseService(
     private val courseScraper: CourseScraper,
 ) {
   fun getCourse(id: Int): Course? {
-    return Course.findById(id) ?: courseScraper.scrapeCourse(id)
+    return transaction { Course.findById(id) } ?: courseScraper.scrapeCourse(id)
   }
 
   fun getCourses(studyProgram: StudyProgram, semester: Semester): Set<Course> {
