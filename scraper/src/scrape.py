@@ -137,7 +137,7 @@ try:
                 extra_module_mapping[course_id].append(module_id)
     print()
 
-    print("Fetch Courses:")
+    print(f"Fetch Courses: {curriculum_id} {semester_id}")
     courses = []
 
     params = {
