@@ -1,10 +1,16 @@
 package com.nixops.scraper
 
+import com.nixops.scraper.model.StudyProgram
+import com.nixops.scraper.model.StudyPrograms
 import com.nixops.scraper.services.*
 import com.nixops.scraper.tum_api.campus.api.CampusCourseApiClient
 import com.nixops.scraper.tum_api.nat.api.NatCourseApiClient
+import org.jetbrains.exposed.sql.or
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @SpringBootApplication
@@ -132,6 +138,27 @@ class ScraperApplication(
   fun check(): String {
     scraperService.check()
     return "done"
+  }
+
+  @GetMapping("/study_programs/search", produces = [MediaType.APPLICATION_JSON_VALUE])
+  fun studyProgramSearch(
+      @RequestParam(value = "query", defaultValue = "") query: String
+  ): ResponseEntity<List<Map<String, String>>> {
+    val results = transaction {
+      StudyProgram.find {
+            (StudyPrograms.degreeProgramName like "%$query%") or
+                (StudyPrograms.programName like "%$query%")
+          }
+          .map {
+            mapOf(
+                "id" to it.id.value.toString(),
+                "programName" to it.programName,
+                "degreeProgramName" to it.degreeProgramName,
+                "spoVersion" to it.spoVersion.toString())
+          }
+    }
+
+    return ResponseEntity.ok(results)
   }
 }
 

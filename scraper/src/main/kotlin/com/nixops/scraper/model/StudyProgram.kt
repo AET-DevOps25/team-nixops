@@ -2,20 +2,26 @@ package com.nixops.scraper.model
 
 import org.jetbrains.exposed.dao.*
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.dao.id.IdTable
+import org.jetbrains.exposed.dao.id.IntIdTable
 
-object StudyPrograms : IdTable<Long>("study_programs") {
-  override val id = long("study_id").entityId()
+object StudyPrograms : IntIdTable("study_programs") {
+  val studyId = long("study_id")
   val orgId = integer("org_id")
   val spoVersion = varchar("spo_version", 255)
   val programName = varchar("program_name", 255)
   val degreeProgramName = varchar("degree_program_name", 255)
+
   // val degree = reference("degree_id", Degrees)
+
+  init {
+    uniqueIndex("uq_study_id_spo_version", studyId, spoVersion)
+  }
 }
 
-class StudyProgram(id: EntityID<Long>) : Entity<Long>(id) {
-  companion object : EntityClass<Long, StudyProgram>(StudyPrograms)
+class StudyProgram(id: EntityID<Int>) : Entity<Int>(id) {
+  companion object : EntityClass<Int, StudyProgram>(StudyPrograms)
 
+  var studyId by StudyPrograms.studyId
   var orgId by StudyPrograms.orgId
   var spoVersion by StudyPrograms.spoVersion
   var programName by StudyPrograms.programName
