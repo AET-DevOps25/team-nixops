@@ -131,7 +131,6 @@ class ScraperApplication(
     return "Hallo Welt"
   }
 
-  @Transactional
   @GetMapping("/check")
   fun check(): String {
     scraperService.check()

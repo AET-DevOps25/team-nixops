@@ -6,6 +6,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.insertIgnore
 import org.jetbrains.exposed.sql.javatime.datetime
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 
@@ -26,7 +27,7 @@ fun setLastUpdated(key: String, time: LocalDateTime = LocalDateTime.now()) {
 
 fun getLastUpdated(key: String): LocalDateTime? {
   return transaction {
-    LastUpdated.select(listOf(LastUpdated.key eq key)).firstOrNull()?.get(LastUpdated.timestamp)
+    LastUpdated.selectAll().where(LastUpdated.key eq key).firstOrNull()?.get(LastUpdated.timestamp)
   }
 }
 
