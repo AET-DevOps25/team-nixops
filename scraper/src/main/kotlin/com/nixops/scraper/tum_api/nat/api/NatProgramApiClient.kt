@@ -19,6 +19,7 @@ class NatProgramApiClient(
   }
 
   /** Search programs by query string, returns all paged results combined. */
+  @Throws(IOException::class)
   fun searchPrograms(query: String): List<NatProgram> {
     val items = mutableListOf<NatProgram>()
     var offset: Int? = null

@@ -14,16 +14,20 @@ class NatSemesterApiClient(
   private val mapper = jacksonObjectMapper()
 
   /** Fetch the current lecture semester. */
-  fun getCurrentLectureSemester(): NatSemester {
+  @Throws(IOException::class)
+  fun getCurrentLectureSemester(): NatSemester? {
     return getSemester("lecture")
   }
 
-  fun getSemester(semesterKey: String): NatSemester {
+  @Throws(IOException::class)
+  fun getSemester(semesterKey: String): NatSemester? {
     val url = "$baseUrl/semesters/$semesterKey"
 
     val request = Request.Builder().url(url).build()
 
     val response = client.newCall(request).execute()
+
+    if (response.code == 422) return null
 
     if (!response.isSuccessful) {
       throw IOException("Failed to fetch semester: $response")
@@ -34,6 +38,7 @@ class NatSemesterApiClient(
     return mapper.readValue(body)
   }
 
+  @Throws(IOException::class)
   fun getSemesters(): List<NatSemester> {
     val url = "$baseUrl/semesters/"
 

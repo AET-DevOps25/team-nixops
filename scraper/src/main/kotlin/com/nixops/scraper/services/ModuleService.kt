@@ -38,37 +38,38 @@ class ModuleService(
     return moduleIds
   }
 
-  fun getModuleIds(studyId: Long, semester: Semester): Set<Int> {
+  fun getModuleIds(studyId: Long, semester: Semester): Set<Int>? {
     val moduleIds = mutableSetOf<Int>()
-    transaction {
-      StudyProgram.find { (StudyPrograms.studyId eq studyId) }
-          .forEach { studyProgram ->
-            val newModuleIds = getModuleIds(studyProgram, semester)
-            moduleIds.addAll(newModuleIds)
-          }
+
+    val studyPrograms = transaction {
+      StudyProgram.find { (StudyPrograms.studyId eq studyId) }.toList()
     }
+
+    if (studyPrograms.isEmpty()) {
+      return null
+    }
+
+    transaction {
+      studyPrograms.forEach { studyProgram ->
+        val newModuleIds = getModuleIds(studyProgram, semester)
+        moduleIds.addAll(newModuleIds)
+      }
+    }
+
     return moduleIds
   }
 
-  fun getModules(studyId: Long, semester: Semester): List<Module> {
+  fun getModules(studyId: Long, semester: Semester): List<Module>? {
     val allModules = mutableListOf<Module>()
+    val moduleIds = transaction { getModuleIds(studyId, semester) } ?: return null
     transaction {
-      getModuleIds(studyId, semester).forEach { moduleId ->
-        Module.findById(moduleId)?.let { allModules.add(it) }
-      }
+      moduleIds.forEach { moduleId -> Module.findById(moduleId)?.let { allModules.add(it) } }
     }
     return allModules
   }
 
-  fun getModules(studyId: Long, semesterKey: String): List<Module> {
-    val semester = semesterService.getSemester(semesterKey) ?: return listOf()
-
-    val allModules = mutableListOf<Module>()
-    transaction {
-      getModuleIds(studyId, semester).forEach { moduleId ->
-        Module.findById(moduleId)?.let { allModules.add(it) }
-      }
-    }
-    return allModules
+  fun getModules(studyId: Long, semesterKey: String): List<Module>? {
+    val semester = semesterService.getSemester(semesterKey) ?: return null
+    return getModules(studyId, semester)
   }
 }
