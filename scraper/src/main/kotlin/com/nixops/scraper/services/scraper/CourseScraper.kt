@@ -2,10 +2,12 @@ package com.nixops.scraper.services.scraper
 
 import Course
 import com.nixops.scraper.model.Curriculum
+import com.nixops.scraper.model.CurriculumCourses
 import com.nixops.scraper.model.Semester
 import com.nixops.scraper.services.SemesterService
 import com.nixops.scraper.tum_api.campus.api.CampusCourseApiClient
 import com.nixops.scraper.tum_api.nat.api.NatCourseApiClient
+import org.jetbrains.exposed.sql.insertIgnore
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 
@@ -78,10 +80,24 @@ class CourseScraper(
     val curriculumIds = transaction { Curriculum.all().map { curriculum -> curriculum.id.value } }
 
     curriculumIds.forEach { curriculumId ->
-      val courses = campusCourseApiClient.getCourses(curriculumId, semester.semesterIdTumOnline)
+      println("fetch courses for $curriculumId ${semester.semesterIdTumOnline}")
 
-      courses.mapNotNull { course ->
-        transaction { Course.findById(course.id) } ?: scrapeCourse(course.id)
+      val campusCourses =
+          campusCourseApiClient.getCourses(curriculumId, semester.semesterIdTumOnline)
+
+      val courses =
+          campusCourses.mapNotNull { course ->
+            transaction { Course.findById(course.id) } ?: scrapeCourse(course.id)
+          }
+
+      transaction {
+        for (course in courses) {
+          CurriculumCourses.insertIgnore {
+            it[CurriculumCourses.curriculum] = curriculumId
+            it[CurriculumCourses.semester] = semester.semesterIdTumOnline
+            it[CurriculumCourses.course] = course.id.value
+          }
+        }
       }
     }
   }
