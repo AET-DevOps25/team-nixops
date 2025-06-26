@@ -1,8 +1,9 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: genai-milvus
-  namespace: "{{ .Values.tumid }}-team-nixops"
+  name: milvus
+  # namespace: "jqvqzx3-team-nixops"
+  # namespace: genai-nixops
 spec:
   accessModes:
   - ReadWriteOnce
@@ -10,3 +11,27 @@ spec:
     requests:
       storage: 10Gi
   storageClassName: csi-rbd-sc
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: etcd
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
