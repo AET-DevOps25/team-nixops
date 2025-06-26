@@ -14,21 +14,22 @@ class NatCourseApiClient(
   private val mapper = jacksonObjectMapper()
 
   @Throws(IOException::class)
-  fun getCourseById(courseId: Int): NatCourse {
+  fun getCourseById(courseId: Int): NatCourse? {
     val url = "$baseUrl/course/$courseId"
 
     val request = Request.Builder().url(url).header("Accept", "application/json").build()
 
-    client.newCall(request).execute().use { response ->
-      if (!response.isSuccessful) {
-        throw IOException("Unexpected response: $response")
-      }
+    val response = client.newCall(request).execute()
 
-      val body =
-          response.body?.string()
-              ?: throw IOException("Empty response body for courseId: $courseId")
+    if (response.code == 404) return null
 
-      return mapper.readValue(body)
+    if (!response.isSuccessful) {
+      throw IOException("Unexpected response: $response")
     }
+
+    val body =
+        response.body?.string() ?: throw IOException("Empty response body for courseId: $courseId")
+
+    return mapper.readValue(body)
   }
 }

@@ -17,7 +17,10 @@ class ModuleApiController(
 ) : ModulesApi {
   override fun getModules(studyId: Long, semesterKey: String): ResponseEntity<List<Module>> {
     val modules =
-        moduleService.getModules(studyId, semesterKey).map { module ->
+        moduleService.getModules(studyId, semesterKey) ?: return ResponseEntity.notFound().build()
+
+    val apiModules =
+        modules.map { module ->
           Module(
               moduleId = module.id.value.toString(),
               moduleCode = module.moduleCode,
@@ -33,7 +36,7 @@ class ModuleApiController(
               moduleExamEn = module.moduleExamEn)
         }
 
-    return ResponseEntity.ok(modules)
+    return ResponseEntity.ok(apiModules)
   }
 
   override fun getModuleByCode(moduleCode: String): ResponseEntity<Module> {

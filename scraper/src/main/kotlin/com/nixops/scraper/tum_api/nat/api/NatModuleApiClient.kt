@@ -14,6 +14,7 @@ class NatModuleApiClient(
   private val mapper = jacksonObjectMapper()
 
   /** Fetch all NatModules (overview) with optional org_id. */
+  @Throws(IOException::class)
   fun fetchAllNatModules(orgId: Int? = null): List<NatModule> {
     val natModules = mutableListOf<NatModule>()
     var nextOffset: Int? = null
@@ -42,10 +43,13 @@ class NatModuleApiClient(
   }
 
   /** Fetch detailed NatModule info by NatModule_code. */
-  fun fetchNatModuleDetail(moduleCode: String): NatModule {
+  @Throws(IOException::class)
+  fun fetchNatModuleDetail(moduleCode: String): NatModule? {
     val request = Request.Builder().url("$baseUrl/mhb/module/$moduleCode").build()
 
     val response = client.newCall(request).execute()
+
+    if (response.code == 404) return null
 
     if (!response.isSuccessful) throw IOException("Unexpected code $response")
 
@@ -53,6 +57,7 @@ class NatModuleApiClient(
   }
 
   /** Combined function: Fetch overview and then full details per NatModule. */
+  @Throws(IOException::class)
   fun fetchAllNatModulesWithDetails(orgId: Int): List<NatModule> {
     val overviewNatModules = fetchAllNatModules(orgId)
     println("Get Module Details")

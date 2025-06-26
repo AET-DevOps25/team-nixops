@@ -25,7 +25,9 @@ class ScraperApplication(
   ): ResponseEntity<String> {
     val semester =
         semesterService.getSemester(semesterKey) ?: return ResponseEntity.notFound().build()
-    val modules = moduleService.getModules(studyId, semester)
+
+    val modules =
+        moduleService.getModules(studyId, semester) ?: return ResponseEntity.notFound().build()
 
     for (module in modules) {
       println("module: ${module.moduleCode} ${module.moduleTitle} ${module.id}")

@@ -13,7 +13,7 @@ class CourseScraper(
 ) {
   fun scrapeCourse(id: Int): Course? {
     return transaction {
-      val natCourse = natCourseApiClient.getCourseById(id)
+      val natCourse = natCourseApiClient.getCourseById(id) ?: return@transaction null
       println("Saving course with id: $id")
 
       /* natCourse.modules.let {

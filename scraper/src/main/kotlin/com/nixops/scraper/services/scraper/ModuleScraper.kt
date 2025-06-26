@@ -60,7 +60,7 @@ class ModuleScraper(
 
   fun scrapeModuleByCode(code: String): Module? {
     try {
-      val natModule = moduleApiClient.fetchNatModuleDetail(code)
+      val natModule = moduleApiClient.fetchNatModuleDetail(code) ?: return null
       println("Saving module with id: $code")
 
       return updateNatModule(natModule)
