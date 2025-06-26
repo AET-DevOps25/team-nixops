@@ -62,7 +62,9 @@ class CampusCourseApiClient(
         totalCount = coursesResponse.totalCount
       }
 
-      println("Fetched ${allCourses.size}/${totalCount} courses")
+      if (totalCount > 0) {
+        println("Fetched ${allCourses.size}/${totalCount} courses")
+      }
 
       skip = allCourses.size
     } while (allCourses.size < totalCount)
