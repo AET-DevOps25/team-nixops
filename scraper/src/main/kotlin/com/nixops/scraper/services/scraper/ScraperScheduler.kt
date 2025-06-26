@@ -11,10 +11,11 @@ class ScraperScheduler(
     private val curriculumScraper: CurriculumScraper,
     private val moduleScraper: ModuleScraper,
     private val studyProgramScraper: StudyProgramScraper,
+    private val courseScraper: CourseScraper
 ) {
-  fun check(name: String, scrape: () -> Unit) {
+  fun check(name: String, scrape: () -> Unit, interval: Duration = Duration.ofHours(2)) {
     val lastUpdated = getTimeSinceLastUpdated(name)
-    if (lastUpdated == null || lastUpdated > Duration.ofHours(2)) {
+    if (lastUpdated == null || lastUpdated > interval) {
       println("should update $name")
       scrape()
       setLastUpdated(name)
@@ -27,6 +28,6 @@ class ScraperScheduler(
     check("study_programs", studyProgramScraper::scrapeStudyPrograms)
     check("curricula", curriculumScraper::scrapeCurricula)
     check("modules", moduleScraper::scrapeModules)
-    // check("courses", ::scrapeCourses)
+    check("courses", courseScraper::scrapeCourses, Duration.ofDays(2))
   }
 }
