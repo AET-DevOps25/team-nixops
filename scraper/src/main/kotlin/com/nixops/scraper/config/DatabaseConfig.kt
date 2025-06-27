@@ -25,7 +25,7 @@ class DatabaseConfig {
       SchemaUtils.create(ModuleCourses)
       SchemaUtils.create(CurriculumCourses)
     }
-    println(">>> Exposed connected and tables created!")
+    println("Exposed connected and tables created!")
     return db
   }
 }
