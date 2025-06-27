@@ -1,11 +1,10 @@
-name: "Build Scraper Docker Image"
+name: "Build and Release GenAI Docker Image"
 on:
-  pull_request:
-    paths:
-      - scraper/**
   push:
+    branches:
+      - main
     paths:
-      - scraper/**
+      - genai/**
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -19,7 +18,7 @@ jobs:
         name: team-nixops
         # If you chose API tokens for write access OR if you have a private cache
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-    - run: nix build .#scraper.dockerImage
+    - run: nix build .#genai.dockerImage
     - name: Log in to GitHub Container Registry
       uses: docker/login-action@v3
       with:
@@ -28,10 +27,12 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Load and push Docker image
       run: |
-        version=$(nix eval --raw .#scraper.version)
-        IMAGE_NAME="ghcr.io/aet-devops25/scraper:${version}"
-        LATEST_IMAGE="ghcr.io/aet-devops25/scraper:latest"
+        version=$(nix eval --raw .#genai.version)
+        LOCAL_IMAGE="nixops-genai:${version}"
+        REMOTE_VERSIONED_IMAGE="ghcr.io/aet-devops25/nixops-genai:${version}"
+        REMOTE_LATEST_IMAGE="ghcr.io/aet-devops25/nixops-genai:latest"
         docker load < result
-        docker push $IMAGE_NAME
-        docker tag $IMAGE_NAME $LATEST_IMAGE
-        docker push $LATEST_IMAGE
+        docker tag $LOCAL_IMAGE $REMOTE_VERSIONED_IMAGE
+        docker push $REMOTE_VERSIONED_IMAGE
+        docker tag $LOCAL_IMAGE $REMOTE_LATEST_IMAGE
+        docker push $REMOTE_LATEST_IMAGE

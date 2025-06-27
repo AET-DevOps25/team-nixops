@@ -29,7 +29,7 @@
 
     passthru = {
       dockerImage = pkgs.dockerTools.buildImage {
-        name = "ghcr.io/aet-devops25/scraper";
+        name = "nixops-scraper";
         tag = version;
 
         copyToRoot = pkgs.buildEnv {

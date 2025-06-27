@@ -5,38 +5,35 @@ Description:
     This module demonstrates a minimal FastAPI setup and endpoint implementation.
 """
 
-from fastapi import FastAPI
 import yaml
 import uvicorn
+import logging
 
-from openapi_server.models.pet import Pet
-from typing import List
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from .routers import embed, stream
+
+
+logger = logging.getLogger("uvicorn.error")
 
 app = FastAPI()
+app.include_router(stream.router)
+app.include_router(embed.router)
 
+origins = [
+    "http://localhost",
+    "http://localhost:8000",
+    "http://localhost:3000",
+]
 
-@app.get(
-    "/pet/findByStatus",
-    responses={
-        200: {"model": List[Pet], "description": "successful operation"},
-        400: {"description": "Invalid status value"},
-    },
-    tags=["pet"],
-    summary="Finds Pets by status.",
-    response_model_by_alias=True,
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
-async def find_pets_by_status() -> List[Pet]:
-    """Multiple status values can be provided with comma separated strings."""
-    pet_dict = {
-        "id": 1,
-        "name": "Frany",
-        "category": {"id": 10, "name": "Cats"},
-        "photoUrls": ["http://example.com/photo1.jpg", "http://example.com/photo2.jpg"],
-        "tags": [{"id": 101, "name": "cute"}, {"id": 102, "name": "small"}],
-        "status": "available",
-    }
-    return [Pet.from_dict(pet_dict)]
-
 
 def custom_openapi():
     with open("openapi.yml", "r") as openapi:
@@ -45,6 +42,5 @@ def custom_openapi():
 
 app.openapi = custom_openapi
 
-
 def run():
-    uvicorn.run(app, host="0.0.0.0", log_level="info")
+    uvicorn.run(app, host="0.0.0.0", log_level="trace")
