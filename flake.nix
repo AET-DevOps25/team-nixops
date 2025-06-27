@@ -95,7 +95,7 @@
             nixosMachines // packages // devShells;
 
           packages = {
-            donna = pkgs.callPackage server/donna {};
+            schedulingEngine = pkgs.callPackage ./schedulingEngine {};
             genai = pkgs.callPackage ./genai {
               inherit (inputs) pyproject-nix uv2nix pyproject-build-systems;
             };

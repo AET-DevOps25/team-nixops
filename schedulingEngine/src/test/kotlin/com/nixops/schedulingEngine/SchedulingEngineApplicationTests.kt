@@ -1,10 +1,10 @@
-package com.nixops.donna
+package com.nixops.schedulingEngine
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class DonnaApplicationTests {
+class SchedulingEngineApplicationTests {
 
   @Test fun contextLoads() {}
 }
