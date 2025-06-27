@@ -36,7 +36,7 @@ let
   };
 
   dockerImage =
-    pkgs.dockerTools.buildImage
+    pkgs.dockerTools.buildLayeredImage
       {
         name = "ghcr.io/aet-devops25/genai";
         tag = "${pythonSet.genai.version}";
