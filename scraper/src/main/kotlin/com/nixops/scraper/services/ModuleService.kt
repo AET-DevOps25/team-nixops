@@ -1,48 +1,75 @@
 package com.nixops.scraper.services
 
-import com.nixops.scraper.mapper.ModuleMapper
-import com.nixops.scraper.model.Module
-import com.nixops.scraper.repository.ModuleRepository
-import com.nixops.scraper.tum_api.nat.api.NatModuleApiClient
-import com.nixops.scraper.tum_api.nat.api.mapNotNullIndexed
-import jakarta.transaction.Transactional
+import com.nixops.scraper.model.*
+import com.nixops.scraper.services.scraper.ModuleScraper
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 
 @Service
 class ModuleService(
-    private val moduleRepository: ModuleRepository,
-    private val moduleApiClient: NatModuleApiClient,
-    private val moduleMapper: ModuleMapper,
+    private val courseService: CourseService,
+    private val semesterService: SemesterService,
+    private val moduleScraper: ModuleScraper,
 ) {
-  @Transactional
-  fun getModuleById(id: Int): Module? {
-    return moduleRepository.findByModuleId(id)
+  fun getModule(code: String): Module? {
+    return transaction { Module.find(Modules.moduleCode eq code).firstOrNull() }
+        ?: moduleScraper.scrapeModuleByCode(code)
   }
 
-  @Transactional
-  fun getModuleByCode(code: String): Module? {
-    val module = moduleRepository.findByModuleCode(code)
-    if (module != null) {
-      println("module from db")
-      return module
-    } else {
-      println("fetch module")
-      val natModule = moduleApiClient.fetchNatModuleDetail(code)
-      val newModule = moduleMapper.natModuleToModule(natModule)
-      return moduleRepository.save(newModule)
-    }
-  }
+  fun getModuleIds(studyProgram: StudyProgram, semester: Semester): Set<Int> {
+    val courses = courseService.getCourses(studyProgram, semester)
 
-  @Transactional
-  fun getModulesByOrg(org: Int): List<Module> {
-    val modules = moduleApiClient.fetchAllNatModules(org)
-    return modules.mapNotNullIndexed { index, natModule ->
-      natModule.moduleCode?.let {
-        println("Fetching detail for module ${index + 1} of ${modules.size}: $it")
-        getModuleByCode(it)
+    val moduleIds = mutableSetOf<Int>()
+    for (course in courses) {
+      transaction {
+        ModuleCourses.select(ModuleCourses.module)
+            .where {
+              (ModuleCourses.semester eq semester.id.value) and
+                  (ModuleCourses.course eq course.id.value)
+            }
+            .withDistinct()
+            .map { it[ModuleCourses.module] }
+            .toCollection(moduleIds)
       }
     }
+
+    return moduleIds
   }
 
-  @Transactional fun getModules(): List<Module> = getModulesByOrg(1)
+  fun getModuleIds(studyId: Long, semester: Semester): Set<Int>? {
+    val moduleIds = mutableSetOf<Int>()
+
+    val studyPrograms = transaction {
+      StudyProgram.find { (StudyPrograms.studyId eq studyId) }.toList()
+    }
+
+    if (studyPrograms.isEmpty()) {
+      return null
+    }
+
+    transaction {
+      studyPrograms.forEach { studyProgram ->
+        val newModuleIds = getModuleIds(studyProgram, semester)
+        moduleIds.addAll(newModuleIds)
+      }
+    }
+
+    return moduleIds
+  }
+
+  fun getModules(studyId: Long, semester: Semester): List<Module>? {
+    val allModules = mutableListOf<Module>()
+    val moduleIds = transaction { getModuleIds(studyId, semester) } ?: return null
+    transaction {
+      moduleIds.forEach { moduleId -> Module.findById(moduleId)?.let { allModules.add(it) } }
+    }
+    return allModules
+  }
+
+  fun getModules(studyId: Long, semesterKey: String): List<Module>? {
+    val semester = semesterService.getSemester(semesterKey) ?: return null
+    return getModules(studyId, semester)
+  }
 }

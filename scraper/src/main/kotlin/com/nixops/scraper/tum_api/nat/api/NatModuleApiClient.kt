@@ -14,6 +14,7 @@ class NatModuleApiClient(
   private val mapper = jacksonObjectMapper()
 
   /** Fetch all NatModules (overview) with optional org_id. */
+  @Throws(IOException::class)
   fun fetchAllNatModules(orgId: Int? = null): List<NatModule> {
     val natModules = mutableListOf<NatModule>()
     var nextOffset: Int? = null
@@ -42,10 +43,13 @@ class NatModuleApiClient(
   }
 
   /** Fetch detailed NatModule info by NatModule_code. */
-  fun fetchNatModuleDetail(moduleCode: String): NatModule {
+  @Throws(IOException::class)
+  fun fetchNatModuleDetail(moduleCode: String): NatModule? {
     val request = Request.Builder().url("$baseUrl/mhb/module/$moduleCode").build()
 
     val response = client.newCall(request).execute()
+
+    if (response.code == 404) return null
 
     if (!response.isSuccessful) throw IOException("Unexpected code $response")
 
@@ -53,27 +57,29 @@ class NatModuleApiClient(
   }
 
   /** Combined function: Fetch overview and then full details per NatModule. */
+  @Throws(IOException::class)
   fun fetchAllNatModulesWithDetails(orgId: Int): List<NatModule> {
     val overviewNatModules = fetchAllNatModules(orgId)
     println("Get Module Details")
 
     return overviewNatModules.mapNotNullIndexed { index, natModule ->
-      natModule.moduleCode?.let {
+      natModule.code.let {
         println("Fetching detail for module ${index + 1} of ${overviewNatModules.size}: $it")
         fetchNatModuleDetail(it)
       }
     }
   }
-}
 
-inline fun <T, R : Any> Iterable<T>.mapNotNullIndexed(transform: (index: Int, T) -> R?): List<R> {
-  val destination = ArrayList<R>()
-  var index = 0
-  for (item in this) {
-    val result = transform(index++, item)
-    if (result != null) {
-      destination.add(result)
+  private inline fun <T, R : Any> Iterable<T>.mapNotNullIndexed(
+      transform: (index: Int, T) -> R?
+  ): List<R> {
+    val destination = ArrayList<R>()
+    for ((index, item) in this.withIndex()) {
+      val result = transform(index, item)
+      if (result != null) {
+        destination.add(result)
+      }
     }
+    return destination
   }
-  return destination
 }

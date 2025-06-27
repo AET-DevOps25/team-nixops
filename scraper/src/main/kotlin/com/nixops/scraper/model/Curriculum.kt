@@ -1,13 +1,15 @@
 package com.nixops.scraper.model
 
-import jakarta.persistence.*
+import org.jetbrains.exposed.dao.*
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.IntIdTable
 
-@Entity
-@Table(name = "curriculums")
-data class Curriculum(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "curriculum_id")
-    var id: Int = 0,
-    @Column(name = "curriculum_name") var name: String = ""
-)
+object Curriculums : IntIdTable("curriculums") {
+  val name = varchar("curriculum_name", 255)
+}
+
+class Curriculum(id: EntityID<Int>) : IntEntity(id) {
+  companion object : IntEntityClass<Curriculum>(Curriculums)
+
+  var name by Curriculums.name
+}

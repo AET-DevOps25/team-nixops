@@ -14,7 +14,12 @@ class NatProgramApiClient(
 ) {
   private val mapper = jacksonObjectMapper()
 
+  fun getPrograms(): List<NatProgram> {
+    return searchPrograms("")
+  }
+
   /** Search programs by query string, returns all paged results combined. */
+  @Throws(IOException::class)
   fun searchPrograms(query: String): List<NatProgram> {
     val items = mutableListOf<NatProgram>()
     var offset: Int? = null

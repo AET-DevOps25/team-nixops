@@ -1,28 +1,29 @@
 package com.nixops.scraper.config
 
-import com.nixops.scraper.model.Users
+import Courses
+import com.nixops.scraper.model.*
+import javax.sql.DataSource
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.jdbc.datasource.DriverManagerDataSource
 
 @Configuration
 class DatabaseConfig {
 
   @Bean
-  fun exposedDatabase(): Database {
-    val dataSource =
-        DriverManagerDataSource().apply {
-          setDriverClassName("org.postgresql.Driver")
-          url = "jdbc:postgresql://localhost:5433/your_db"
-          username = "your_user"
-          password = "your_password"
-        }
+  fun exposedDatabase(dataSource: DataSource): Database {
     val db = Database.connect(dataSource)
     transaction(db) {
-      SchemaUtils.create(Users) // this creates the table if missing
+      SchemaUtils.create(LastUpdated)
+      SchemaUtils.create(Semesters)
+      SchemaUtils.create(Curriculums)
+      SchemaUtils.create(Modules)
+      SchemaUtils.create(StudyPrograms)
+      SchemaUtils.create(Courses)
+      SchemaUtils.create(ModuleCourses)
+      SchemaUtils.create(CurriculumCourses)
     }
     println(">>> Exposed connected and tables created!")
     return db
