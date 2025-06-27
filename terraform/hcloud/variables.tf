@@ -30,6 +30,15 @@ variable "nixos_flake_attr" {
   description = "NixOS configuration flake attribute"
 }
 
+variable "network_id" {
+  type = string
+}
+
+variable "public_ip" {
+  type    = bool
+  default = false
+}
+
 variable "domain" {
   type        = string
   description = "Domain name"

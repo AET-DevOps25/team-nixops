@@ -16,9 +16,22 @@ resource "hcloud_server" "this" {
 
   lifecycle {
     # Don't destroy server instance if ssh keys changes.
-    ignore_changes  = [ssh_keys]
-    prevent_destroy = true
+    ignore_changes = [ssh_keys]
+    # prevent_destroy = true
   }
+
+  public_net {
+    ipv4_enabled = var.public_ip
+    ipv6_enabled = var.public_ip
+  }
+
+  network {
+    network_id = var.network_id
+  }
+
+  # depends_on = [
+  #   hcloud_network_subnet.network-subnet
+  # ]
 }
 
 module "deploy" {
