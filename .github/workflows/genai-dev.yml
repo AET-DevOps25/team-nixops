@@ -3,7 +3,7 @@ on:
   push:
     branches-ignore:
       - main
-      - genai-basic-streaming
+      - 'feature/genai-basic-streaming'
     paths:
       - genai/**
   pull_request:
