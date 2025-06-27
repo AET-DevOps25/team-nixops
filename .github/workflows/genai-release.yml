@@ -1,9 +1,8 @@
-name: "Build GenAI Docker Image"
+name: "Build and Release GenAI Docker Image"
 on:
-  pull_request:
-    paths:
-      - genai/**
   push:
+    branches:
+      - main
     paths:
       - genai/**
 jobs:
