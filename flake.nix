@@ -66,7 +66,7 @@
         imports = [
           ./nix/targets/flake-module.nix
           ./nix/modules/flake-module.nix
-          ./nix/devShell.nix
+          ./nix/devShell
           ./nix/treefmt.nix
         ];
         systems = [

@@ -392,5 +392,8 @@ sketch
 terraform.tfstate.backup
 .terraform.tfstate.lock.info
 
+###Generated files
+.sops.yaml
+
 ##PRIVATE!!!!!
 /.envrc.private
