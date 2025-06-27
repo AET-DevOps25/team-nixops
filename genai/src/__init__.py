@@ -24,6 +24,7 @@ from langgraph.graph import StateGraph, START
 from langgraph.graph.message import add_messages
 from langchain_openai import ChatOpenAI
 from langchain_ollama.chat_models import ChatOllama
+from langchain_ollama import OllamaEmbeddings
 from langgraph.checkpoint.memory import InMemorySaver
 from langchain_core.documents import Document
 from fastapi.middleware.cors import CORSMiddleware
@@ -60,16 +61,24 @@ graph_builder = StateGraph(State)
 
 llm_api_key = os.getenv("LLM_API_KEY")
 
-llm = ChatOpenAI(
-    model_name="llama3.3:latest",
-    temperature=0.5,
-    openai_api_key=llm_api_key,
-    openai_api_base="https://gpu.aet.cit.tum.de/api",
-)
-embeddings = OpenAIEmbeddings(
+llm = ChatOllama(
     model="llama3.3:latest",
-    openai_api_key=llm_api_key,
-    openai_api_base="https://gpu.aet.cit.tum.de/api",
+    temperature=0.5,
+    base_url="https://gpu.aet.cit.tum.de/ollama",
+    client_kwargs={
+        "headers": {
+            "Authorization": f"Bearer {llm_api_key}"
+        }
+    }
+)
+embeddings = OllamaEmbeddings(
+    model="llama3.3:latest",
+    base_url="https://gpu.aet.cit.tum.de/ollama",
+    client_kwargs={
+        "headers": {
+            "Authorization": f"Bearer {llm_api_key}"
+        }
+    }
 )
 
 def chatbot(state: State):
