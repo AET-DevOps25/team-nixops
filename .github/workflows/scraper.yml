@@ -1,9 +1,15 @@
 name: "Build Scraper Docker Image"
 on:
   pull_request:
+    branches:
+      - '**'
+      - '!main'
     paths:
       - scraper/**
   push:
+    branches:
+      - '**'
+      - '!main'
     paths:
       - scraper/**
 jobs:
