@@ -102,7 +102,7 @@ def custom_openapi():
         return yaml.safe_load(openapi)
 
 
-# app.openapi = custom_openapi
+app.openapi = custom_openapi
 
 if __name__ == "__main__":
     uvicorn.run(app, log_level="trace")
