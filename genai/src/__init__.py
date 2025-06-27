@@ -5,9 +5,7 @@ Description:
     This module demonstrates a minimal FastAPI setup and endpoint implementation.
 """
 
-import uuid
 from fastapi import FastAPI
-from fastapi.params import Cookie
 from fastapi.responses import StreamingResponse
 import yaml
 from decouple import config
@@ -24,7 +22,6 @@ from langgraph.graph.message import add_messages
 from langchain_ollama.chat_models import ChatOllama
 from langchain_ollama import OllamaEmbeddings
 from langgraph.checkpoint.memory import InMemorySaver
-from langchain_core.documents import Document
 from fastapi.middleware.cors import CORSMiddleware
 
 logger = logging.getLogger("uvicorn.error")
