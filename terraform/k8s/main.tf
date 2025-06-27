@@ -32,11 +32,16 @@ module "k8s" {
 
   name             = each.key
   domain           = "${each.key}.${var.domain_suffix}"
-  nixos_flake_attr = each.value.role
-  nixos_vars_file  = "${path.module}/nixos-vars-${each.key}.json"
-  sops_file        = abspath("${path.module}/secrets/secrets-${each.key}.yaml")
+  nixos_flake_attr = "${var.cluster_name}-${each.value.role}"
+  nixos_vars_file  = "${path.root}/nixos-vars/${each.key}.json"
+  sops_file        = abspath("${path.root}/secrets/secrets-${each.key}.yaml")
   tags             = merge(var.common_tags, { Role = each.value.role })
   network_id       = hcloud_network.cluster_net.id
+  nixos_special_args = {
+    terraform = {
+      name = each.key
+    }
+  }
 }
 
 

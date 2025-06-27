@@ -20,6 +20,13 @@
           pull = ["pre-commit-hooks" "nix-community"];
           push = "team-nixops";
         };
+        git-hooks.hooks.treefmt = {
+          enable = true;
+          packageOverrides.treefmt = config.treefmt.build.wrapper;
+        };
+      };
+      ops = {
+        imports = [default];
         scripts.generate-sops = {
           exec =
             #python
@@ -34,8 +41,8 @@
                   raise EnvironmentError("DEVENV_ROOT environment variable is not set")
 
               # Construct paths
-              keys_yaml_path = os.path.join(dev_env_root, "nix", "devShell", "keys.yaml")
-              template_path = os.path.join(dev_env_root, "nix", "devShell")
+              keys_yaml_path = os.path.join(dev_env_root, "devShell", "keys.yaml")
+              template_path = os.path.join(dev_env_root, "devShell")
               output_path = os.path.join(dev_env_root, ".sops.yaml")
 
               # Load keys.yaml
@@ -64,16 +71,9 @@
             exec = "generate-sops";
             before = ["devenv:enterShell"];
           };
-        };
-        git-hooks.hooks.treefmt = {
-          enable = true;
-          packageOverrides.treefmt = config.treefmt.build.wrapper;
-        };
-      };
-      ops = {
-        imports = [default];
-        languages = {
-          opentofu.enable = true;
+          languages = {
+            opentofu.enable = true;
+          };
         };
       };
       kotlin-dev = {

@@ -5,13 +5,19 @@ resource "local_file" "nixos_vars" {
 
   provisioner "local-exec" {
     interpreter = ["bash", "-c"]
-    command     = "git add -f '${var.nixos_vars_file}'"
-  }
-  # also pro-actively add hosts and flake-module.nix to git so nix can find it.
-  provisioner "local-exec" {
-    interpreter = ["bash", "-c"]
     command     = <<EOT
-git add "$(dirname '${var.nixos_vars_file}')"/{hosts,flake-module.nix}
+git_root=$(git rev-parse --show-toplevel)
+lock_file="$git_root/.git/terraform-git-add.lock"
+
+(
+  flock 200
+
+  echo "Acquired lock, running git add..."
+
+  git add -f "${var.nixos_vars_file}"
+  git add "$(dirname "${var.nixos_vars_file}")"/{hosts,flake-module.nix}
+
+) 200>"$lock_file"
 EOT
     on_failure  = continue
   }

@@ -22,7 +22,8 @@ resource "hcloud_server" "this" {
 
   public_net {
     ipv4_enabled = var.public_ip
-    ipv6_enabled = var.public_ip
+    #it's free anyways
+    ipv6_enabled = true
   }
 
   network {
@@ -39,19 +40,22 @@ module "deploy" {
   source                 = "github.com/numtide/nixos-anywhere//terraform/all-in-one"
   nixos_system_attr      = ".#nixosConfigurations.${var.nixos_flake_attr}.config.system.build.toplevel"
   nixos_partitioner_attr = ".#nixosConfigurations.${var.nixos_flake_attr}.config.system.build.diskoScriptNoDeps"
-  target_host            = hcloud_server.this.ipv4_address
+  target_host            = hcloud_server.this.ipv6_address
   instance_id            = hcloud_server.this.id
   extra_files_script     = "${path.module}/decrypt-age-keys.sh"
   extra_environment = {
     SOPS_FILE = var.sops_file
   }
   debug_logging = true
+
+  special_args = var.nixos_special_args
 }
 
 locals {
   nixos_vars = {
     ipv6_address = hcloud_server.this.ipv6_address
     ipv4_address = hcloud_server.this.ipv4_address
+    network      = hcloud_server.this.network
     ssh_keys     = data.hcloud_ssh_keys.this.ssh_keys.*.public_key
   }
 }
