@@ -29,9 +29,11 @@ jobs:
     - name: Load and push Docker image
       run: |
         version=$(nix eval --raw .#genai.version)
-        IMAGE_NAME="ghcr.io/aet-devops25/genai:${version}"
-        LATEST_IMAGE="ghcr.io/aet-devops25/nixops-genai:latest"
+        LOCAL_IMAGE="nixops-genai:${version}"
+        REMOTE_VERSIONED_IMAGE="ghcr.io/aet-devops25/nixops-genai:${version}"
+        REMOTE_LATEST_IMAGE="ghcr.io/aet-devops25/nixops-genai:latest"
         docker load < result
-        # docker push $IMAGE_NAME
-        docker tag $IMAGE_NAME $LATEST_IMAGE
-        docker push $LATEST_IMAGE
+        docker tag $LOCAL_IMAGE $REMOTE_VERSIONED_IMAGE
+        docker push $REMOTE_VERSIONED_IMAGE
+        docker tag $LOCAL_IMAGE $REMOTE_LATEST_IMAGE
+        docker push $REMOTE_LATEST_IMAGE

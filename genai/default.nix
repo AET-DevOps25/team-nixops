@@ -38,7 +38,7 @@ let
   dockerImage =
     pkgs.dockerTools.buildLayeredImage
       {
-        name = "ghcr.io/aet-devops25/genai";
+        name = "nixops-genai";
         tag = "${pythonSet.genai.version}";
         config = {
           Cmd = [
