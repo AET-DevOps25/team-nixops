@@ -7,7 +7,7 @@
   jdk21,
 }: let
   self = stdenv.mkDerivation rec {
-    pname = "donna";
+    pname = "schedulingEngine";
     version = "0.0.1-SNAPSHOT";
 
     src = ./.;
