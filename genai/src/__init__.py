@@ -10,27 +10,22 @@ from fastapi import FastAPI
 from fastapi.params import Cookie
 from fastapi.responses import StreamingResponse
 import yaml
+from decouple import config
 
 import uvicorn
 import logging
 from typing import Annotated
-from dotenv import load_dotenv
 from asyncio import sleep
-import os
 
 from typing_extensions import TypedDict
 
 from langgraph.graph import StateGraph, START
 from langgraph.graph.message import add_messages
-from langchain_openai import ChatOpenAI
 from langchain_ollama.chat_models import ChatOllama
 from langchain_ollama import OllamaEmbeddings
 from langgraph.checkpoint.memory import InMemorySaver
 from langchain_core.documents import Document
 from fastapi.middleware.cors import CORSMiddleware
-
-
-from langchain_openai import OpenAIEmbeddings
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -50,8 +45,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-load_dotenv()
-
 
 class State(TypedDict):
     messages: Annotated[list, add_messages]
@@ -59,27 +52,24 @@ class State(TypedDict):
 
 graph_builder = StateGraph(State)
 
-llm_api_key = os.getenv("LLM_API_KEY")
+llm_api_url = config("LLM_API_URL", default="https://gpu.aet.cit.tum.de/ollama")
+llm_api_key = config("LLM_API_KEY")
+llm_chat_model = config("LLM_CHAT_MODEL", default="llama3.3:latest")
+llm_embedding_model = config("LLM_EMBEDDING_MODEL", default="llama3.3:latest")
+llm_chat_temp = config("LLM_CHAT_TEMP", default=0.5, cast=float)
 
 llm = ChatOllama(
-    model="llama3.3:latest",
-    temperature=0.5,
-    base_url="https://gpu.aet.cit.tum.de/ollama",
-    client_kwargs={
-        "headers": {
-            "Authorization": f"Bearer {llm_api_key}"
-        }
-    }
+    model=llm_chat_model,
+    temperature=llm_chat_temp,
+    base_url=llm_api_url,
+    client_kwargs={"headers": {"Authorization": f"Bearer {llm_api_key}"}},
 )
 embeddings = OllamaEmbeddings(
-    model="llama3.3:latest",
-    base_url="https://gpu.aet.cit.tum.de/ollama",
-    client_kwargs={
-        "headers": {
-            "Authorization": f"Bearer {llm_api_key}"
-        }
-    }
+    model=llm_embedding_model,
+    base_url=llm_api_url,
+    client_kwargs={"headers": {"Authorization": f"Bearer {llm_api_key}"}},
 )
+
 
 def chatbot(state: State):
     return {"messages": [llm.invoke(state["messages"])]}
