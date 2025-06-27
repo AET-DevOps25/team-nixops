@@ -1,0 +1,272 @@
+openapi: 3.0.3
+info:
+  title: Scraper API
+  version: 1.0.0
+  description: API to query TUM courses
+
+paths:
+  /semesters:
+    get:
+      operationId: getSemesters
+      summary: Get all semesters
+      responses:
+        '200':
+          description: List of semesters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Semester'
+
+  /semesters/current:
+    get:
+      operationId: getCurrentSemester
+      summary: Get the current semester
+      responses:
+        '200':
+          description: The current semester
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Semester'
+
+  /study-programs:
+    get:
+      operationId: getStudyPrograms
+      summary: Get all study programs
+      responses:
+        '200':
+          description: List of study programs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudyProgram'
+
+  /modules:
+    get:
+      operationId: getModules
+      summary: Get modules by program and semester
+      parameters:
+        - in: query
+          name: study_id
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: ID of the study program
+        - in: query
+          name: semesterKey
+          schema:
+            type: string
+          required: true
+          description: Key of the semester
+      responses:
+        '200':
+          description: List of modules for the specified program and semester
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Module'
+
+  /modules/{module_code}:
+    get:
+      operationId: getModuleByCode
+      summary: Get a module by its module code
+      parameters:
+        - in: path
+          name: module_code
+          required: true
+          schema:
+            type: string
+          description: Code of the module to retrieve
+      responses:
+        '200':
+          description: The requested module
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Module'
+        '404':
+          description: Module not found
+
+  /modules/{module_code}/courses:
+    get:
+      operationId: getCoursesByModuleCode
+      summary: Get courses for a module in a specific semester
+      parameters:
+        - in: path
+          name: module_code
+          required: true
+          schema:
+            type: string
+          description: Code of the module
+        - in: query
+          name: semesterKey
+          required: true
+          schema:
+            type: string
+          description: Key of the semester
+      responses:
+        '200':
+          description: List of courses for the specified module and semester
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+        '404':
+          description: Module or courses not found
+
+components:
+  schemas:
+    Semester:
+      type: object
+      properties:
+        semesterKey:
+          type: string
+          example: "2023FS"
+        semesterTitle:
+          type: string
+          example: "Spring Semester 2023"
+        semesterTag:
+          type: string
+          example: "spring"
+
+    StudyProgram:
+      type: object
+      properties:
+        study_id:
+          type: string
+          example: "CS101"
+        program_name:
+          type: string
+          example: "Computer Science"
+        degree_program_name:
+          type: string
+          example: "Bachelor of Science in Computer Science"
+        degree_type_name:
+          type: string
+          example: "Bachelor"
+
+    Language:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Deutsch"
+        nameEn:
+          type: string
+          example: "German"
+        short:
+          type: string
+          example: "DE"
+        shortEn:
+          type: string
+          example: "DE"
+
+    Course:
+      type: object
+      properties:
+        courseId:
+          type: integer
+          example: 12345
+          description: "Unique identifier of the course"
+        courseType:
+          type: string
+          example: "exercise"
+          description: "Type of the course"
+        courseName:
+          type: string
+          example: "Advanced Algorithms"
+          description: "Course name (native language)"
+        courseNameEn:
+          type: string
+          nullable: true
+          example: "Advanced Algorithms (EN)"
+          description: "Course name (English)"
+        courseNameList:
+          type: string
+          nullable: true
+          example: "Algorithms, Data Structures"
+          description: "List of course names or keywords (native language)"
+        courseNameListEn:
+          type: string
+          nullable: true
+          example: "Algorithms, Data Structures (EN)"
+          description: "List of course names or keywords (English)"
+        description:
+          type: string
+          nullable: true
+          example: "Detailed course description"
+          description: "Course description (native language)"
+        descriptionEn:
+          type: string
+          nullable: true
+          example: "Detailed course description (EN)"
+          description: "Course description (English)"
+        teachingMethod:
+          type: string
+          nullable: true
+          example: "Lecture"
+          description: "Teaching method or course type (native language)"
+        teachingMethodEn:
+          type: string
+          nullable: true
+          example: "Lecture (EN)"
+          description: "Teaching method or course type (English)"
+        note:
+          type: string
+          nullable: true
+          example: "Additional notes"
+          description: "Additional notes about the course (native language)"
+        noteEn:
+          type: string
+          nullable: true
+          example: "Additional notes (EN)"
+          description: "Additional notes about the course (English)"
+
+    Module:
+      type: object
+      properties:
+        module_id:
+          type: string
+          example: "CS123"
+        module_code:
+          type: string
+          example: "CS123"
+        module_title:
+          type: string
+          example: "Introduction to Programming"
+        module_title_en:
+          type: string
+          example: "Introduction to Programming (EN)"
+        module_content:
+          type: string
+          example: "Covers basics such as loops, variables, conditionals..."
+        module_content_en:
+          type: string
+          example: "Covers basics such as loops, variables, conditionals... (EN)"
+        module_outcome:
+          type: string
+          example: "Students can write basic code."
+        module_outcome_en:
+          type: string
+          example: "Students can write basic code. (EN)"
+        module_methods:
+          type: string
+          example: "Lecture, Exercises"
+        module_methods_en:
+          type: string
+          example: "Lecture, Exercises (EN)"
+        module_exam:
+          type: string
+          example: "Written exam"
+        module_exam_en:
+          type: string
+          example: "Written exam (EN)"

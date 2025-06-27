@@ -9,6 +9,7 @@ from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 import yaml
 from decouple import config
+import uvicorn
 
 import uvicorn
 import logging
@@ -101,5 +102,5 @@ def custom_openapi():
 
 app.openapi = custom_openapi
 
-if __name__ == "__main__":
-    uvicorn.run(app, log_level="trace")
+def run():
+    uvicorn.run(app, host="0.0.0.0", log_level="info")

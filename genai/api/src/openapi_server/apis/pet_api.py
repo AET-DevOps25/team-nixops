@@ -49,7 +49,14 @@ for _, name, _ in pkgutil.iter_modules(ns_pkg.__path__, ns_pkg.__name__ + "."):
     response_model_by_alias=True,
 )
 async def find_pets_by_status(
-    status: Annotated[Optional[StrictStr], Field(description="Status values that need to be considered for filter")] = Query(available, description="Status values that need to be considered for filter", alias="status"),
+    status: Annotated[
+        Optional[StrictStr],
+        Field(description="Status values that need to be considered for filter"),
+    ] = Query(
+        available,
+        description="Status values that need to be considered for filter",
+        alias="status",
+    ),
 ) -> List[Pet]:
     """Multiple status values can be provided with comma separated strings."""
     if not BasePetApi.subclasses:

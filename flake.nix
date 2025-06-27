@@ -4,17 +4,29 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    pyproject-nix = {
-      url = "github:pyproject-nix/pyproject.nix";
+    disko = {
+      url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    uv2nix = {
-      url = "github:pyproject-nix/uv2nix";
-      inputs.pyproject-nix.follows = "pyproject-nix";
+    devenv = {
+      url = "github:cachix/devenv";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+    gradle2nix = {
+      url = "github:tadfisher/gradle2nix/v2";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
+    nix2container = {
+      url = "github:nlewo/nix2container";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
     pyproject-build-systems = {
       url = "github:pyproject-nix/build-system-pkgs";
       inputs = {
@@ -23,24 +35,22 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
-    flake-parts = {
-      url = "github:hercules-ci/flake-parts";
-      inputs.nixpkgs-lib.follows = "nixpkgs";
-    };
-    devenv = {
-      url = "github:cachix/devenv";
+    pyproject-nix = {
+      url = "github:pyproject-nix/pyproject.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    disko = {
-      url = "github:nix-community/disko";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     srvos = {
       url = "github:nix-community/srvos";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    sops-nix = {
-      url = "github:Mic92/sops-nix";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
+    uv2nix = {
+      url = "github:pyproject-nix/uv2nix";
+      inputs.pyproject-nix.follows = "pyproject-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -54,19 +64,25 @@
       }: {
         debug = true;
         imports = [
-          inputs.devenv.flakeModule
           ./nix/targets/flake-module.nix
           ./nix/modules/flake-module.nix
+          ./nix/devShell.nix
+          ./nix/treefmt.nix
         ];
-        systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
+        systems = [
+          "x86_64-linux"
+          "aarch64-linux"
+          "aarch64-darwin"
+          "x86_64-darwin"
+        ];
         perSystem = {
           pkgs,
           system,
           self',
           ...
         }: let
-          genai = pkgs.callPackage ./genai {
-            inherit (inputs) pyproject-nix uv2nix pyproject-build-systems;
+          scraper = pkgs.callPackage ./scraper {
+            inherit (inputs) gradle2nix;
           };
         in {
           checks = let
@@ -80,28 +96,10 @@
 
           packages = {
             donna = pkgs.callPackage server/donna {};
-            genai = genai.package;
-          };
-
-          devShells.genai = genai.devShell;
-          devenv.shells.default = {
-            packages = with pkgs; [
-              jq
-              age
-              sops
-            ];
-            languages = {
-              kotlin.enable = true;
-              java = {
-                enable = true;
-                gradle.enable = true;
-                maven.enable = true;
-              };
-              python = {
-                uv.enable = true;
-              };
-              opentofu.enable = true;
+            genai = pkgs.callPackage ./genai {
+              inherit (inputs) pyproject-nix uv2nix pyproject-build-systems;
             };
+            scraper = scraper.packages.scraper;
           };
         };
       }

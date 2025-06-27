@@ -16,9 +16,22 @@ dependencies = [
     "openapi_server",
     "pymilvus>=2.5.10",
     "python-decouple>=3.8",
+    "setuptools>=80.9.0",
 ]
-# dependencies = ["api"]
-requires-python = "==3.12.*"
+
+[project.scripts]
+genai = "genai.app:run"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+dependencies = [
+    "fastapi>=0.115.12",
+    "openapi_server",
+    "setuptools>=80.9.0",
+]
+requires-python = "==3.13.*"
 readme = "README.md"
 license = {text = "MIT"}
 
