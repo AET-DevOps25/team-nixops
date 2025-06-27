@@ -28,10 +28,10 @@
               inherit nodejs;
             };
 
-            shellHook = ''
-              echo "NextJS development environment is ready."
-              echo -e "\e[1;32mTo start the dev server, execute: npm run dev\e[0m"
-            '';
+            # shellHook = ''
+            #   echo "NextJS development environment is ready."
+            #   echo -e "\e[1;32mTo start the dev server, execute: npm run dev\e[0m"
+            # '';
           };
         };
 

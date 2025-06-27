@@ -17,10 +17,7 @@ function useChat(api: string) {
   useEffect(() => {
     if (currentQuestion !== "") {
       const source = new SSE(
-        "http://localhost:8000/stream?prompt=" +
-          currentQuestion +
-          "&id=" +
-          conversationId,
+        api + "/stream?prompt=" + currentQuestion + "&id=" + conversationId,
       );
 
       source.addEventListener("message", (e: any) => {

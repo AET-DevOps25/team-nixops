@@ -10,14 +10,14 @@ import {
 } from "@/components/ui/chat/chat-bubble";
 import { ChatInput } from "@/components/ui/chat/chat-input";
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
-import { Copy, CornerDownLeft, Mic, Paperclip, RefreshCcw } from "lucide-react";
-import { useState } from "react";
-import useChat from "./lib/chat";
+import { Copy, CornerDownLeft } from "lucide-react";
+import useChat from "./lib";
 import { useForm } from "react-hook-form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Chat() {
-  const { messages, sendMessage, isGenerating } = useChat("");
+  let api = process.env.NEXT_PUBLIC_SERVER_API_URL || "http://localhost:8000";
+  const { messages, sendMessage, isGenerating } = useChat(api);
   const { register, handleSubmit, reset, getValues } = useForm();
 
   const submit = (data: string) => {

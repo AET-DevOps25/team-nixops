@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/theme-toggle";
 import "./globals.css";
-import Chat from "./chat";
+import Chat from "@/components/chat/component";
 import { MenuButton } from "@/components/menu";
 import { TabBar } from "@/components/tab-bar";
 

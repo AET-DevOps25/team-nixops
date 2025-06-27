@@ -2,6 +2,13 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+Adding new packages with nix:
+1) Add package to package.json
+2) Execute
+```sh
+npm i --package-lock-only
+```
+
 First, run the development server:
 
 ```bash
