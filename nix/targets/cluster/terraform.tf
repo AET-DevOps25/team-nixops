@@ -22,6 +22,7 @@ module "cluster" {
 
   node_source   = "../hcloud"
   domain_suffix = "nixops.aet.cit.tum.de"
+  cluster_name  = "cluster"
   cluster_nodes = {
     worker  = { count = 2 }
     control = { count = 3 }

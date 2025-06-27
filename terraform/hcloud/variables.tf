@@ -30,6 +30,11 @@ variable "nixos_flake_attr" {
   description = "NixOS configuration flake attribute"
 }
 
+variable "nixos_special_args" {
+  type        = any
+  description = "Extra argumets to pass to NixOS configuration"
+}
+
 variable "network_id" {
   type = string
 }

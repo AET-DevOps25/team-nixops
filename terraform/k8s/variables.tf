@@ -3,6 +3,11 @@ variable "node_source" {
   type        = string
 }
 
+variable "cluster_name" {
+  description = "Name of the cluster"
+  type        = string
+}
+
 variable "cluster_nodes" {
   description = <<EOT
 Cluster node specification.
