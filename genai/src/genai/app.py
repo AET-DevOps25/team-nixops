@@ -89,7 +89,6 @@ async def stream_response(prompt: str, id: str):
             stream_mode="messages",
         ):
             yield f"data: {message_chunk.content}\n\n"
-            await sleep(0.04)  # simply for chat output smoothing
 
     res = StreamingResponse(generate(prompt, id), media_type="text/event-stream")
     return res
@@ -103,4 +102,4 @@ def custom_openapi():
 app.openapi = custom_openapi
 
 def run():
-    uvicorn.run(app, host="0.0.0.0", log_level="info")
+    uvicorn.run(app, host="0.0.0.0", log_level="trace")
