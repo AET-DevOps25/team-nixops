@@ -5,14 +5,18 @@
 let
   npmDeps = pkgs.importNpmLock.buildNodeModules {
     npmRoot = ./.;
-    nodejs = pkgs.nodejs;
+    inherit (pkgs) nodejs;
   };
 
-  pname = "client";
+  package = lib.importJSON ./package.json;
+  pname = package.name;
+  inherit (package) version;
+
   drv = pkgs.buildNpmPackage {
     inherit pname;
-    version = "0.0.1";
-    meta.mainProgram = pname;
+    inherit version;
+
+    meta.mainProgram = package.name;
     src = ./.;
 
     npmDeps = pkgs.importNpmLock {
@@ -32,14 +36,14 @@ let
           ${pkgs.nodePackages_latest.pnpm}/bin/pnpm run start" > $exe
     '';
 
-    npmConfigHook = pkgs.importNpmLock.npmConfigHook;
+    inherit (pkgs.importNpmLock) npmConfigHook;
   };
 
   dockerImage =
     pkgs.dockerTools.buildLayeredImage
       {
         name = "client";
-        tag = "latest";
+        tag = version;
         config = {
           Cmd = [
             "${lib.getExe pkgs.bash}"
