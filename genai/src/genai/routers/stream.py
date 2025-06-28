@@ -8,7 +8,6 @@ from fastapi import APIRouter
 from langgraph.graph import StateGraph, START
 from langgraph.graph.message import add_messages
 from langchain_ollama.chat_models import ChatOllama
-from langchain_ollama import OllamaEmbeddings
 from langgraph.checkpoint.memory import InMemorySaver
 
 router = APIRouter()
@@ -22,7 +21,6 @@ graph_builder = StateGraph(State)
 llm_api_url = config("LLM_API_URL", default="https://gpu.aet.cit.tum.de/ollama")
 llm_api_key = config("LLM_API_KEY")
 llm_chat_model = config("LLM_CHAT_MODEL", default="llama3.3:latest")
-llm_embedding_model = config("LLM_EMBEDDING_MODEL", default="llama3.3:latest")
 llm_chat_temp = config("LLM_CHAT_TEMP", default=0.5, cast=float)
 
 llm = ChatOllama(
@@ -31,12 +29,6 @@ llm = ChatOllama(
     base_url=llm_api_url,
     client_kwargs={"headers": {"Authorization": f"Bearer {llm_api_key}"}},
 )
-embeddings = OllamaEmbeddings(
-    model=llm_embedding_model,
-    base_url=llm_api_url,
-    client_kwargs={"headers": {"Authorization": f"Bearer {llm_api_key}"}},
-)
-
 
 def chatbot(state: State):
     return {"messages": [llm.invoke(state["messages"])]}
