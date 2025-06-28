@@ -48,12 +48,14 @@
 
       packages = [
         pkgs.nodejs
-		  npmDeps
         pkgs.importNpmLock.hooks.linkNodeModulesHook
       ];
+		env = {
+		   inherit npmDeps;
+		};
 		enterShell = ''
 			# normally executed automatically, but not if other shell hook already exists
-			bash ${pkgs.importNpmLock.linkNodeModulesHook}/nix-support/setup-hook
+			linkNodeModulesHook
 		'';
 		};
       genai-dev = let
