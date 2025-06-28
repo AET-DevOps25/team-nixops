@@ -33,7 +33,7 @@ let
       echo "
           #!/usr/bin/env bash
           cd $lib/..
-          ${pkgs.nodePackages_latest.pnpm}/bin/pnpm run start" > $exe
+          ${pkgs.nodejs}/bin/npm run start" > $exe
     '';
 
     inherit (pkgs.importNpmLock) npmConfigHook;
