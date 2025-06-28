@@ -42,6 +42,20 @@
           };
         };
       };
+		client-dev = let
+		inherit (self'.packages.client) npmDeps;
+		in{
+
+      packages = [
+        pkgs.nodejs
+		  npmDeps
+        pkgs.importNpmLock.hooks.linkNodeModulesHook
+      ];
+		enterShell = ''
+			# normally executed automatically, but not if other shell hook already exists
+			bash ${pkgs.importNpmLock.linkNodeModulesHook}/nix-support/setup-hook
+		'';
+		};
       genai-dev = let
         inherit (self'.packages.genai) venv;
       in {
