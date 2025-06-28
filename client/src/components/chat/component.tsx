@@ -38,7 +38,7 @@ export default function Chat() {
 
   return (
     <div className="flex flex-col h-screen">
-      <ScrollArea className="h-17/20">
+      <div className="h-17/20">
         <ChatMessageList>
           {messages.map((message) => (
             <ChatBubble
@@ -69,7 +69,7 @@ export default function Chat() {
             </ChatBubble>
           ))}
         </ChatMessageList>
-      </ScrollArea>
+      </div>
       <div className="flex-grow" />
       <form
         className="relative rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring p-1 m-5"
