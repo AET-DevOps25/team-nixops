@@ -1,4 +1,4 @@
-name: "Build and Release client Docker Image"
+name: "Build and Release Client Docker Image"
 on:
   push:
     branches:

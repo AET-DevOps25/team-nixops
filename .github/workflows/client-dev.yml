@@ -1,4 +1,4 @@
-name: "Build and Test client"
+name: "Build and Test Client"
 on:
   push:
     branches-ignore:
