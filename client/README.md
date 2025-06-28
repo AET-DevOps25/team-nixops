@@ -15,6 +15,8 @@ First, run the development server:
 npm run dev
 ```
 
+Note: In case node\_modules in your Direnv DevShell hasn't been properly linked from the Nix-Store delete (if existing) the current node\_modules and .direnv and enter the shell again.
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
