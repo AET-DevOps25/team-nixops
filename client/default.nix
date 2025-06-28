@@ -42,7 +42,7 @@ let
   dockerImage =
     pkgs.dockerTools.buildLayeredImage
       {
-        name = "client";
+        name = "nixops-${pname}";
         tag = version;
         config = {
           Cmd = [
