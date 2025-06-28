@@ -19,7 +19,9 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { version } from '../../package.json';
+import pkg from '../../package.json';
+
+const version = pkg.version;
 
 export function MenuButton() {
   const { setTheme } = useTheme();
