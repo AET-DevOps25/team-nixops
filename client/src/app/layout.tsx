@@ -27,7 +27,6 @@ export default function RootLayout({
         >
           <Chat />
           <MenuButton />
-          <TabBar />
         </ThemeProvider>
       </body>
     </html>
