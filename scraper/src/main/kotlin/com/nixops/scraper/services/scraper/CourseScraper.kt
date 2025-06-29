@@ -1,9 +1,7 @@
 package com.nixops.scraper.services.scraper
 
 import Course
-import com.nixops.scraper.model.Curriculum
-import com.nixops.scraper.model.CurriculumCourses
-import com.nixops.scraper.model.Semester
+import com.nixops.scraper.model.*
 import com.nixops.scraper.services.SemesterService
 import com.nixops.scraper.tum_api.campus.api.CampusCourseApiClient
 import com.nixops.scraper.tum_api.nat.api.NatCourseApiClient
@@ -37,38 +35,71 @@ class CourseScraper(
       } */
 
       val existing = Course.findById(natCourse.courseId)
-      if (existing != null) {
-        existing.courseName = natCourse.courseName
-        existing.courseNameEn = natCourse.courseNameEn
-        existing.courseNameList = natCourse.courseNameList
-        existing.courseNameListEn = natCourse.courseNameListEn
-        existing.description = natCourse.description
-        existing.descriptionEn = natCourse.descriptionEn
-        existing.teachingMethod = natCourse.teachingMethod
-        existing.teachingMethodEn = natCourse.teachingMethodEn
-        existing.note = natCourse.note
-        existing.noteEn = natCourse.noteEn
-        existing.activityId = natCourse.activity?.activityId
-        existing.activityName = natCourse.activity?.activityName
-        existing.activityNameEn = natCourse.activity?.activityNameEn
-        existing
-      } else {
-        Course.new(natCourse.courseId) {
-          courseName = natCourse.courseName
-          courseNameEn = natCourse.courseNameEn
-          courseNameList = natCourse.courseNameList
-          courseNameListEn = natCourse.courseNameListEn
-          description = natCourse.description
-          descriptionEn = natCourse.descriptionEn
-          teachingMethod = natCourse.teachingMethod
-          teachingMethodEn = natCourse.teachingMethodEn
-          note = natCourse.note
-          noteEn = natCourse.noteEn
-          activityId = natCourse.activity?.activityId
-          activityName = natCourse.activity?.activityName
-          activityNameEn = natCourse.activity?.activityNameEn
+      val course =
+          if (existing != null) {
+            existing.courseName = natCourse.courseName
+            existing.courseNameEn = natCourse.courseNameEn
+            existing.courseNameList = natCourse.courseNameList
+            existing.courseNameListEn = natCourse.courseNameListEn
+            existing.description = natCourse.description
+            existing.descriptionEn = natCourse.descriptionEn
+            existing.teachingMethod = natCourse.teachingMethod
+            existing.teachingMethodEn = natCourse.teachingMethodEn
+            existing.note = natCourse.note
+            existing.noteEn = natCourse.noteEn
+            existing.activityId = natCourse.activity?.activityId
+            existing.activityName = natCourse.activity?.activityName
+            existing.activityNameEn = natCourse.activity?.activityNameEn
+            existing
+          } else {
+            Course.new(natCourse.courseId) {
+              courseName = natCourse.courseName
+              courseNameEn = natCourse.courseNameEn
+              courseNameList = natCourse.courseNameList
+              courseNameListEn = natCourse.courseNameListEn
+              description = natCourse.description
+              descriptionEn = natCourse.descriptionEn
+              teachingMethod = natCourse.teachingMethod
+              teachingMethodEn = natCourse.teachingMethodEn
+              note = natCourse.note
+              noteEn = natCourse.noteEn
+              activityId = natCourse.activity?.activityId
+              activityName = natCourse.activity?.activityName
+              activityNameEn = natCourse.activity?.activityNameEn
+            }
+          }
+
+      for (natGroup in natCourse.groups) {
+        val existingGroup = Group.findById(natGroup.groupId)
+        val group =
+            if (existingGroup != null) {
+              existingGroup.name = natGroup.groupName
+              existingGroup
+            } else {
+              Group.new(natGroup.groupId) {
+                name = natGroup.groupName
+                this.course = course
+              }
+            }
+
+        for (natEvent in natGroup.events) {
+          val existingEvent = Event.findById(natEvent.eventId)
+          if (existingEvent != null) {
+            existingEvent.start = natEvent.start
+            existingEvent.end = natEvent.end
+            existingEvent.type = natEvent.type.eventTypeId
+          } else {
+            Event.new(natEvent.eventId) {
+              start = natEvent.start
+              end = natEvent.end
+              type = natEvent.type.eventTypeId
+              this.group = group
+            }
+          }
         }
       }
+
+      course
     }
   }
 
