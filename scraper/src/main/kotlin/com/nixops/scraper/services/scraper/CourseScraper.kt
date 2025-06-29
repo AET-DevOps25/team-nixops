@@ -20,6 +20,8 @@ class CourseScraper(
   fun scrapeCourse(id: Int): Course? {
     return transaction {
       val natCourse = natCourseApiClient.getCourseById(id) ?: return@transaction null
+      val campusCourseGroups = campusCourseApiClient.getCourseGroups(id)
+
       println("Saving course with id: $id")
 
       /* natCourse.modules.let {
@@ -69,31 +71,47 @@ class CourseScraper(
             }
           }
 
-      for (natGroup in natCourse.groups) {
-        val existingGroup = Group.findById(natGroup.groupId)
-        val group =
-            if (existingGroup != null) {
-              existingGroup.name = natGroup.groupName
-              existingGroup
-            } else {
-              Group.new(natGroup.groupId) {
-                name = natGroup.groupName
-                this.course = course
+      if (campusCourseGroups != null) {
+        for (campusGroup in campusCourseGroups) {
+          val existingGroup = Group.findById(campusGroup.id)
+          val group =
+              if (existingGroup != null) {
+                existingGroup.name = campusGroup.name
+                existingGroup
+              } else {
+                Group.new(campusGroup.id) {
+                  name = campusGroup.name
+                  this.course = course
+                }
               }
-            }
 
-        for (natEvent in natGroup.events) {
-          val existingEvent = Event.findById(natEvent.eventId)
-          if (existingEvent != null) {
-            existingEvent.start = natEvent.start
-            existingEvent.end = natEvent.end
-            existingEvent.type = natEvent.type.eventTypeId
-          } else {
-            Event.new(natEvent.eventId) {
-              start = natEvent.start
-              end = natEvent.end
-              type = natEvent.type.eventTypeId
-              this.group = group
+          for (campusAppointment in campusGroup.appointments) {
+            val existingAppointment = Appointment.findById(campusAppointment.id)
+            val appointment =
+                if (existingAppointment != null) {
+                  existingAppointment.seriesBeginDate = campusAppointment.seriesBeginDate.value
+                  existingAppointment.seriesEndDate = campusAppointment.seriesEndDate.value
+                  existingAppointment.beginTime = campusAppointment.beginTime
+                  existingAppointment.endTime = campusAppointment.endTime
+                  existingAppointment
+                } else {
+                  Appointment.new(campusAppointment.id) {
+                    seriesBeginDate = campusAppointment.seriesBeginDate.value
+                    seriesEndDate = campusAppointment.seriesEndDate.value
+                    beginTime = campusAppointment.beginTime
+                    endTime = campusAppointment.endTime
+                    this.group = group
+                  }
+                }
+
+            Weekday.find { AppointmentWeekdays.appointment eq appointment.id }
+                .forEach { it.delete() }
+
+            for (weekday in campusAppointment.weekdays) {
+              Weekday.new {
+                this.appointment = appointment
+                this.name = weekday.key.lowercase().trimEnd('.')
+              }
             }
           }
         }
@@ -110,7 +128,9 @@ class CourseScraper(
   }
 
   fun scrapeCourses(semester: Semester) {
-    val curriculumIds = transaction { Curriculum.all().map { curriculum -> curriculum.id.value } }
+    val curriculumIds = transaction {
+      Curriculum.all().map { curriculum -> curriculum.id.value }.sorted()
+    }
 
     curriculumIds.forEach { curriculumId ->
       println("fetch courses for $curriculumId ${semester.semesterIdTumOnline}")

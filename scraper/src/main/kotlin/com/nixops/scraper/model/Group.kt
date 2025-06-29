@@ -18,6 +18,6 @@ class Group(id: EntityID<Int>) : Entity<Int>(id) {
   companion object : EntityClass<Int, Group>(Groups)
 
   var name by Groups.name
-  val events by Event referrersOn Events.groupId
+  val appointments by Appointment referrersOn Appointments.groupId
   var course by Course referencedOn Groups.courseId
 }

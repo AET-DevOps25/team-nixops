@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.nixops.scraper.tum_api.campus.model.CampusCourse
+import com.nixops.scraper.tum_api.campus.model.CampusGroup
+import java.io.IOException
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -32,7 +34,7 @@ class CampusCourseApiClient(
   fun getCourses(curriculumVersionId: Int, termId: Int): List<CampusCourse> {
     val allCourses = mutableListOf<CampusCourse>()
     var skip = 0
-    val top = 20
+    val top = 50
     var totalCount: Int
 
     do {
@@ -70,5 +72,28 @@ class CampusCourseApiClient(
     } while (allCourses.size < totalCount)
 
     return allCourses
+  }
+
+  fun getCourseGroups(courseId: Int): List<CampusGroup>? {
+    val url = "$baseUrl/courseGroups/firstGroups/$courseId"
+
+    val request = Request.Builder().url(url).addHeader("Accept", "application/json").build()
+
+    val response = client.newCall(request).execute()
+
+    if (response.code == 404) return null
+
+    if (!response.isSuccessful) {
+      throw IOException("Unexpected response: $response")
+    }
+
+    val body =
+        response.body?.string()
+            ?: throw IOException("Empty response body for groups for courseId: $courseId")
+
+    val node = mapper.readTree(body)
+    val courseGroups = node["courseGroupDtos"] ?: throw Exception("Missing 'courseGroupDtos' node")
+
+    return mapper.readValue(courseGroups.toString())
   }
 }

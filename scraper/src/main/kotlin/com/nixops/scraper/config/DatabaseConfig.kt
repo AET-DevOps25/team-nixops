@@ -25,7 +25,8 @@ class DatabaseConfig {
       SchemaUtils.create(ModuleCourses)
       SchemaUtils.create(CurriculumCourses)
       SchemaUtils.create(Groups)
-      SchemaUtils.create(Events)
+      SchemaUtils.create(Appointments)
+      SchemaUtils.create(AppointmentWeekdays)
     }
     println(">>> Exposed connected and tables created!")
     return db
