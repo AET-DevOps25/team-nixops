@@ -73,13 +73,28 @@ class DebugController(
                 mapOf(
                     "id" to course.id.value,
                     "name" to course.courseName,
+                    "type" to course.activityName,
                     "groups" to
                         course.groups
                             .map { group ->
                               mapOf(
                                   "id" to group.id.value,
                                   "name" to group.name,
-                              )
+                                  "appointments" to
+                                      group.appointments
+                                          .map { appointment ->
+                                            mapOf(
+                                                "id" to appointment.id.value,
+                                                "seriesStartDate" to appointment.seriesBeginDate,
+                                                "seriesEndDate" to appointment.seriesEndDate,
+                                                "startTime" to appointment.beginTime,
+                                                "endTime" to appointment.endTime,
+                                                "weekdays" to
+                                                    appointment.weekdays
+                                                        .map { weekday -> weekday.name }
+                                                        .toList())
+                                          }
+                                          .toList())
                             }
                             .toList())
               }
