@@ -36,17 +36,26 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-    put:
+  /embed/{id}:
+    post:
       summary: Add new modules to a study program
       description: Add new modules to a study program.
       operationId: updateStudyProgram
       tags:
         - embedding
+      parameters:
+        - name: id
+          in: path
+          description: ID of the study program
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/StudyProgram'
+              $ref: '#/components/schemas/Modules'
         required: true
       responses:
         '200':
@@ -68,7 +77,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: Id of the to-be-deleted study program
+          description: ID of the study program that should be deleted
           required: true
           schema:
             type: integer
@@ -126,13 +135,15 @@ components:
           type: integer
           format: int64
         modules:
-          type: array
-          items:
-            type: integer
-            format: int64
+          $ref: '#/components/schemas/Modules'
       required:
         - id
         - modules
+    Modules:
+        type: array
+        items:
+          type: integer
+          format: int64
     Error:
       type: object
       properties:
