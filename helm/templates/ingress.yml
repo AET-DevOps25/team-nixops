@@ -1,0 +1,43 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: "nixops-ingress"
+  # namespace: "{{ .Values.tumid }}-devops25"
+  {{- $annotations := .Values.ingress.annotations | default dict }}
+  {{- if $annotations }}
+  annotations:
+    {{- toYaml $annotations | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.tls }}
+  tls:
+    - hosts:
+        - "nixops-devops25.student.k8s.aet.cit.tum.de"
+      secretName: "nixops-devops25-tls"
+    - hosts:
+        - "api.nixops-devops25.student.k8s.aet.cit.tum.de"
+      secretName: "nixops-devops25-api-tls"
+  {{- end }}
+  rules:
+    - host: "nixops-devops25.student.k8s.aet.cit.tum.de"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: client-service
+                port:
+                  number: {{ .Values.client.service.port }}
+    - host: "api.nixops-devops25.student.k8s.aet.cit.tum.de"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: genai-service
+                port:
+                  number: {{ .Values.genai.service.port }}
+{{- end }}

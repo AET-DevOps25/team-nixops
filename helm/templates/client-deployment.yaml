@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client
+  # namespace: ""
+spec:
+  replicas: {{ .Values.client.replicaCount }}
+  selector:
+    matchLabels:
+      app: client-selector
+  template:
+    metadata:
+      labels:
+        app: client-selector
+    spec:
+      containers:
+        - name: client
+          image: "{{ .Values.client.image.repository }}:{{ .Values.client.image.tag }}"
+          imagePullPolicy: {{ .Values.client.image.pullPolicy }}
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+          env:
+            - name: NEXT_PUBLIC_client_API_URL
+              value: "https://api.nixops-devops25.student.k8s.aet.cit.tum.de"
+          ports:
+            - containerPort: {{ .Values.client.service.targetPort }}
+              name: client-webui
