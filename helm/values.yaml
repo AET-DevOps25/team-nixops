@@ -25,7 +25,7 @@ client:
     # repository: ghcr.io/aet-devops25/nixops-client
     repository: ghoscht/nixops
     # tag: latest
-    tag: client
+    tag: client-dynurl
     pullPolicy: Always
   service:
     type: ClusterIP
