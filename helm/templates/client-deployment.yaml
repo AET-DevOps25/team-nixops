@@ -25,7 +25,7 @@ spec:
               cpu: "200m"
               memory: "256Mi"
           env:
-            - name: NEXT_PUBLIC_client_API_URL
+            - name: API_URL
               value: "https://api.nixops-devops25.student.k8s.aet.cit.tum.de"
           ports:
             - containerPort: {{ .Values.client.service.targetPort }}
