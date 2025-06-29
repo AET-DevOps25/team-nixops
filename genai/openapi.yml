@@ -7,9 +7,9 @@ servers:
   - url: http://localhost:8000
 tags:
   - name: embedding
-    description: Everything concerning the vector db
+    description: Direct interaction with the vector DB
   - name: generation
-    description: Everything concerning llm interaction
+    description: Direct interaction with the LLM
 
 paths:
   /embed:
