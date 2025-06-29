@@ -1,10 +1,10 @@
-name: "Build and Release GenAI Docker Image"
+name: "Build and Release Client Docker Image"
 on:
   push:
     branches:
       - main
     paths:
-      - genai/**
+      - client/**
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -18,7 +18,7 @@ jobs:
         name: team-nixops
         # If you chose API tokens for write access OR if you have a private cache
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-    - run: nix build .#genai.dockerImage
+    - run: nix build .#client.dockerImage
     - name: Log in to GitHub Container Registry
       uses: docker/login-action@v3
       with:
@@ -27,8 +27,8 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Load and push Docker image
       run: |
-        version=$(nix eval --raw .#genai.version)
-        name=$(nix eval --raw .#genai.pname)
+        version=$(nix eval --raw .#client.version)
+        name=$(nix eval --raw .#client.pname)
         LOCAL_IMAGE="nixops-${name}:${version}"
         REMOTE_VERSIONED_IMAGE="ghcr.io/aet-devops25/nixops-${name}:${version}"
         REMOTE_LATEST_IMAGE="ghcr.io/aet-devops25/nixops-${name}:latest"
