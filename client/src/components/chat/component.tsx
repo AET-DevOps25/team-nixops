@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Chat() {
-  let api = process.env.NEXT_PUBLIC_SERVER_API_URL || "http://localhost:8000";
+  let api = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
   const { messages, sendMessage, isGenerating } = useChat(api);
   const { register, handleSubmit, reset, getValues } = useForm();
 
