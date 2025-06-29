@@ -16,6 +16,7 @@ npm run dev
 ```
 
 Note: In case node\_modules in your Direnv DevShell hasn't been properly linked from the Nix-Store delete (if existing) the current node\_modules and .direnv and enter the shell again.
+Note: You can use https://tweakcn.com to generate new themes for the client UI
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
