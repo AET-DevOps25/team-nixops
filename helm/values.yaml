@@ -8,23 +8,23 @@ tumid:
 namespace:
   create: false
 
-server:
+genai:
   image:
-    repository: ghcr.io/aet-devops25/w05-template/server
+    repository: ghcr.io/aet-devops25/nixops-genai
     tag: latest
     pullPolicy: Always
   service:
     type: ClusterIP
-    port: 8080
-    targetPort: 8080
+    port: 8000
+    targetPort: 8000
   replicaCount: 1
-  env:
-    - name: SPRING_PROFILES_ACTIVE
-      value: docker
+  # env:
+  #   - name: SPRING_PROFILES_ACTIVE
+  #     value: docker
 
 client:
   image:
-    repository: ghcr.io/aet-devops25/w05-template/client
+    repository: ghcr.io/aet-devops25/nixops-client
     tag: latest
     pullPolicy: Always
   service:
@@ -39,3 +39,4 @@ ingress:
   tls: true
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # cert-manager.io/cluster-issuer: "letsencrypt-staging"
