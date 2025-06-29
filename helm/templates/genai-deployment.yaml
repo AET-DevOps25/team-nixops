@@ -4,7 +4,7 @@ metadata:
   name: genai
   # namespace: ""
 spec:
-  replicas: {{ .Values.server.replicaCount }}
+  replicas: {{ .Values.genai.replicaCount }}
   selector:
     matchLabels:
       app: genai-selector
@@ -18,7 +18,7 @@ spec:
           image: "quay.io/coreos/etcd:v3.5.18"
           command: ["etcd"]
           args: ["-advertise-client-urls=http://localhost:2379",  "-listen-client-urls", "http://0.0.0.0:2379",  "--data-dir", "/etcd"]
-          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.genai.image.pullPolicy }}
           resources:
             limits:
               cpu: "500m"
@@ -48,7 +48,7 @@ spec:
           image: "minio/minio:RELEASE.2023-03-20T20-16-18Z"
           command: ["minio"]
           args: ["server", "/minio_data", "--console-address", ":9001"]
-          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.genai.image.pullPolicy }}
           resources:
             limits:
               cpu: "500m"
@@ -85,7 +85,7 @@ spec:
           image: "milvusdb/milvus:v2.5.12"
           command: ["milvus"]
           args: [ "run", "standalone" ]
-          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.genai.image.pullPolicy }}
           resources:
             limits:
               cpu: "500m"
@@ -115,6 +115,32 @@ spec:
           volumeMounts:
             - name: milvus-data
               mountPath: /var/lib/milvus
+        - name: genai
+          image: "{{ .Values.genai.image.repository }}:{{ .Values.genai.image.tag }}"
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+          env:
+            - name: LLM_API_URL
+              value: "https://gpu.aet.cit.tum.de/ollama"
+            - name: LLM_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: genai
+                  key: llm_api_key
+            - name: LLM_CHAT_MODEL
+              value: "llama3.3:latest"
+            - name: LLM_EMBEDDING_MODEL
+              value: "deepseek-r1:70b"
+            - name: LLM_CHAT_TEMP
+              value: "0.5"
+          ports:
+            - containerPort: {{ .Values.genai.service.targetPort }}
+              name: genai-api
       volumes:
       - name: milvus-data
         persistentVolumeClaim:
