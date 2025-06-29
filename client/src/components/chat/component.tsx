@@ -13,10 +13,30 @@ import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 import { Copy, CornerDownLeft } from "lucide-react";
 import useChat from "./lib";
 import { useForm } from "react-hook-form";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { useEffect, useState } from "react";
 
 export default function Chat() {
-  let api = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  const [apiUrl, setApiUrl] = useState(null);
+  const [loadingApiUrl, setLoadingApiUrl] = useState(true);
+
+  // fetch api url dynamically via api route since NEXT_PUBLIC is statically baked in during build-time
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/api");
+        const result = await response.json();
+        setApiUrl(result.url);
+      } catch (error) {
+        console.error("Error fetching api url:", error);
+      } finally {
+        setLoadingApiUrl(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  let api = (!loadingApiUrl && apiUrl) || "http://localhost:8000";
   const { messages, sendMessage, isGenerating } = useChat(api);
   const { register, handleSubmit, reset, getValues } = useForm();
 
