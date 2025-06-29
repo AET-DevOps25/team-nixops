@@ -23,11 +23,13 @@ class DebugController(
     private val objectMapper: ObjectMapper
 ) {
 
+  /*
   @GetMapping("/check")
   fun check(): String {
     scraperScheduler.check()
     return "done"
   }
+  */
 
   @GetMapping("/study_programs/search", produces = [MediaType.APPLICATION_JSON_VALUE])
   fun studyProgramSearch(

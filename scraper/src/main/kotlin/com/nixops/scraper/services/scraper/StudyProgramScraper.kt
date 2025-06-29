@@ -31,6 +31,8 @@ class StudyProgramScraper(
               existing.programName = it.programName
               existing.degreeProgramName = it.degreeProgramName
               existing.degreeTypeName = it.degree.degreeTypeName
+              existing.fullName =
+                  "${it.programName} [${it.spoVersion}], ${it.degree.degreeTypeName}"
             } else {
               StudyProgram.new {
                 studyId = it.studyId
@@ -39,6 +41,7 @@ class StudyProgramScraper(
                 programName = it.programName
                 degreeProgramName = it.degreeProgramName
                 degreeTypeName = it.degree.degreeTypeName
+                fullName = "${it.programName} [${it.spoVersion}], ${it.degree.degreeTypeName}"
               }
             }
           }

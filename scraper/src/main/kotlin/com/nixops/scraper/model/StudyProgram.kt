@@ -11,6 +11,7 @@ object StudyPrograms : IntIdTable("study_programs") {
   val programName = varchar("program_name", 255)
   val degreeProgramName = varchar("degree_program_name", 255)
   val degreeTypeName = varchar("degree_type_name", 255)
+  val fullName = varchar("full_name", 255)
 
   init {
     uniqueIndex("uq_study_id_spo_version", studyId, spoVersion)
@@ -26,8 +27,5 @@ class StudyProgram(id: EntityID<Int>) : Entity<Int>(id) {
   var programName by StudyPrograms.programName
   var degreeProgramName by StudyPrograms.degreeProgramName
   var degreeTypeName by StudyPrograms.degreeTypeName
-
-  fun fullName(): String {
-    return "${this.programName} [${this.spoVersion}], ${this.degreeTypeName}"
-  }
+  var fullName by StudyPrograms.fullName
 }
