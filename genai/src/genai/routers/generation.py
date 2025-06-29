@@ -49,7 +49,7 @@ graph_builder.add_edge(START, "chatbot")
 graph = graph_builder.compile(checkpointer=checkpointer)
 
 
-@router.get("/stream")
+@router.get("/chat")
 async def stream_response(prompt: str, id: str):
     async def generate(user_input: str, user_id: str):
         config = {"configurable": {"thread_id": user_id}}
