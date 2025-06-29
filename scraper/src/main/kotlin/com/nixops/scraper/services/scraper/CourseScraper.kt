@@ -7,6 +7,8 @@ import com.nixops.scraper.model.Semester
 import com.nixops.scraper.services.SemesterService
 import com.nixops.scraper.tum_api.campus.api.CampusCourseApiClient
 import com.nixops.scraper.tum_api.nat.api.NatCourseApiClient
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insertIgnore
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
@@ -81,6 +83,20 @@ class CourseScraper(
 
     curriculumIds.forEach { curriculumId ->
       println("fetch courses for $curriculumId ${semester.semesterIdTumOnline}")
+
+      val existing = transaction {
+        CurriculumCourses.select(CurriculumCourses.course)
+            .where(
+                (CurriculumCourses.curriculum eq curriculumId) and
+                    (CurriculumCourses.semester eq semester.semesterIdTumOnline))
+            .withDistinct()
+            .toList()
+      }
+
+      if (existing.isNotEmpty()) {
+        println("courses up-to-date")
+        return@forEach
+      }
 
       val campusCourses =
           campusCourseApiClient.getCourses(curriculumId, semester.semesterIdTumOnline)
