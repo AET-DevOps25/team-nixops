@@ -22,8 +22,10 @@ genai:
 
 client:
   image:
-    repository: ghcr.io/aet-devops25/nixops-client
-    tag: latest
+    # repository: ghcr.io/aet-devops25/nixops-client
+    repository: ghoscht/nixops
+    # tag: latest
+    tag: client
     pullPolicy: Always
   service:
     type: ClusterIP
