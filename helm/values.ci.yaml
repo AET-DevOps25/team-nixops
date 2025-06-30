@@ -17,9 +17,6 @@ genai:
     port: 8000
     targetPort: 8000
   replicaCount: 1
-  # env:
-  #   - name: SPRING_PROFILES_ACTIVE
-  #     value: docker
 
 client:
   image:
