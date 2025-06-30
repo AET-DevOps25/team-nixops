@@ -3,6 +3,8 @@ package com.nixops.scraper.controller.openapi
 import com.nixops.openapi.api.ModulesApi
 import com.nixops.openapi.model.Course
 import com.nixops.openapi.model.Module
+import com.nixops.scraper.mapper.CourseMapper
+import com.nixops.scraper.mapper.ModuleMapper
 import com.nixops.scraper.services.CourseService
 import com.nixops.scraper.services.ModuleService
 import com.nixops.scraper.services.SemesterService
@@ -14,30 +16,15 @@ class ModuleApiController(
     private val moduleService: ModuleService,
     private val courseService: CourseService,
     private val semesterService: SemesterService,
+    //
+    private val moduleMapper: ModuleMapper,
+    private val courseMapper: CourseMapper
 ) : ModulesApi {
-  fun moduleToApiModule(module: com.nixops.scraper.model.Module): Module {
-    return Module(
-        id = module.id.value.toString(),
-        code = module.moduleCode,
-        title = module.moduleTitle,
-        titleEn = module.moduleTitleEn,
-        content = module.moduleContent,
-        contentEn = module.moduleContentEn,
-        outcome = module.moduleOutcome,
-        outcomeEn = module.moduleOutcomeEn,
-        methods = module.moduleMethods,
-        methodsEn = module.moduleMethodsEn,
-        exam = module.moduleExam,
-        examEn = module.moduleExamEn,
-        credits = module.moduleCredits,
-    )
-  }
-
   override fun getModules(studyId: Long, semesterKey: String): ResponseEntity<List<Module>> {
     val modules =
         moduleService.getModules(studyId, semesterKey) ?: return ResponseEntity.notFound().build()
 
-    val apiModules = modules.map(::moduleToApiModule)
+    val apiModules = modules.map { module -> moduleMapper.moduleToApiModule(module) }
 
     return ResponseEntity.ok(apiModules)
   }
@@ -46,7 +33,7 @@ class ModuleApiController(
     val module = moduleService.getModule(moduleCode)
 
     return if (module != null) {
-      val apiModule = moduleToApiModule(module)
+      val apiModule = moduleMapper.moduleToApiModule(module)
       ResponseEntity.ok(apiModule)
     } else {
       ResponseEntity.notFound().build()
@@ -63,14 +50,7 @@ class ModuleApiController(
 
     val courses =
         courseService.getCourses(module, semester).map { course ->
-          Course(
-              courseId = course.id.value,
-              courseType = course.activityName,
-              courseName = course.courseName,
-              courseNameEn = course.courseNameEn,
-              courseNameList = course.courseNameList,
-              courseNameListEn = course.courseNameListEn,
-          )
+          courseMapper.courseToApiCourse(course)
         }
 
     return ResponseEntity.ok(courses)

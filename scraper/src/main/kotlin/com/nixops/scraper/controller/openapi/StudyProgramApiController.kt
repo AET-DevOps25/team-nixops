@@ -2,12 +2,11 @@ package com.nixops.scraper.controller.openapi
 
 import com.nixops.openapi.api.StudyProgramsApi
 import com.nixops.openapi.model.*
-import com.nixops.scraper.mapper.ModuleMapper
+import com.nixops.scraper.mapper.StudyProgramMapper
 import com.nixops.scraper.services.CourseService
 import com.nixops.scraper.services.ModuleService
 import com.nixops.scraper.services.SemesterService
 import com.nixops.scraper.services.StudyProgramService
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 
@@ -18,18 +17,14 @@ class StudyProgramsApiController(
     private val moduleService: ModuleService,
     private val courseService: CourseService,
     //
-    private val moduleMapper: ModuleMapper
+    private val studyProgramMapper: StudyProgramMapper,
 ) : StudyProgramsApi {
   override fun getStudyPrograms(): ResponseEntity<List<StudyProgram>> {
     val studyPrograms =
         studyProgramService.getStudyPrograms().map { studyProgram ->
-          StudyProgram(
-              studyId = studyProgram.studyId,
-              programName = studyProgram.programName,
-              degreeProgramName = studyProgram.degreeProgramName,
-              degreeTypeName = studyProgram.degreeTypeName,
-          )
+          studyProgramMapper.studyProgramToApiStudyProgram(studyProgram)
         }
+
     return ResponseEntity.ok(studyPrograms)
   }
 
@@ -43,21 +38,16 @@ class StudyProgramsApiController(
     val modules =
         moduleService.getModules(studyId, semester) ?: return ResponseEntity.notFound().build()
 
-    val apiModules = transaction {
-      modules.map { module ->
-        val courses = courseService.getCourses(module, semester)
-
-        moduleMapper.moduleToApiModule(module, courses)
-      }
-    }
+    val semesterModules =
+        mapOf(
+            semesterKey to
+                modules.map { module ->
+                  val courses = courseService.getCourses(module, semester)
+                  Pair(module, courses)
+                })
 
     val apiStudyProgram =
-        StudyProgram(
-            studyId = studyProgram.studyId,
-            programName = studyProgram.programName,
-            degreeProgramName = studyProgram.degreeProgramName,
-            degreeTypeName = studyProgram.degreeTypeName,
-            semesters = mapOf(semester.id.value to apiModules))
+        studyProgramMapper.studyProgramToApiStudyProgram(studyProgram, semesterModules)
 
     return ResponseEntity.ok(apiStudyProgram)
   }
