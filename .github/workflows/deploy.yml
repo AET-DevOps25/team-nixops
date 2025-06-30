@@ -35,8 +35,11 @@ jobs:
         CHART_NAME="./helm"
         NAMESPACE="nixops-default"
         FLAGS="--values ./helm/values.ci.yaml --set genai.image.version=$(nix eval --raw .#genai.version)"
+
+        TEMP_KUBECONFIG=$(mktemp)
+        echo '${{ secrets.KUBECONFIG }}' > "$TEMP_KUBECONFIG" 
         
-        helm upgrade "$RELEASE_NAME" "$CHART_NAME" -n "$NAMESPACE" --install $FLAGS
+        helm upgrade --kubeconfig "$TEMP_KUBECONFIG"  "$RELEASE_NAME" "$CHART_NAME" -n "$NAMESPACE" --install $FLAGS
     # - name: 'Deploy'
     #   uses: 'deliverybot/helm@v1'
     #   with:
