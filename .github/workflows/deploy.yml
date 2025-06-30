@@ -42,10 +42,6 @@ jobs:
           genai:
             image:
               version: ${{ steps.det_versions.outputs.genai }}
-        value-files: >-
-        [
-          "./helm/values.production.yaml"
-        ]       
-          
+        value-files: "./helm/values.production.yaml" 
       env:
         KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
