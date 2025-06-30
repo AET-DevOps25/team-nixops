@@ -15,3 +15,13 @@ Re-generate api types in case of changes to openapi.yml with the following:
 rm -rf api # clean up
 openapi-generator-cli generate -g python-fastapi -i ../openapi.yml
 ```
+
+## New version release
+after increasing the version in pyproject.toml also call
+```sh
+uv lock
+```
+verify with
+```sh
+nix eval --raw .#genai.version
+```
