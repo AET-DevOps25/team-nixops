@@ -270,3 +270,7 @@ components:
         module_exam_en:
           type: string
           example: "Written exam (EN)"
+        module_credits:
+          type: number
+          format: float
+          example: 5

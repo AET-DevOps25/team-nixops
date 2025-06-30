@@ -33,7 +33,9 @@ class ModuleApiController(
               moduleMethods = module.moduleMethods,
               moduleMethodsEn = module.moduleMethodsEn,
               moduleExam = module.moduleExam,
-              moduleExamEn = module.moduleExamEn)
+              moduleExamEn = module.moduleExamEn,
+              moduleCredits = module.moduleCredits,
+          )
         }
 
     return ResponseEntity.ok(apiModules)
@@ -56,7 +58,9 @@ class ModuleApiController(
               moduleMethods = module.moduleMethods,
               moduleMethodsEn = module.moduleMethodsEn,
               moduleExam = module.moduleExam,
-              moduleExamEn = module.moduleExamEn)
+              moduleExamEn = module.moduleExamEn,
+              moduleCredits = module.moduleCredits,
+          )
       ResponseEntity.ok(apiModule)
     } else {
       ResponseEntity.notFound().build()

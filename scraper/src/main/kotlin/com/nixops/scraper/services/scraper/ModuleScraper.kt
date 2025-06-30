@@ -39,6 +39,7 @@ class ModuleScraper(
         existing.moduleMethodsEn = natModule.methodsEn
         existing.moduleExam = natModule.exam
         existing.moduleExamEn = natModule.examEn
+        existing.moduleCredits = natModule.credits
         existing
       } else {
         Module.new(natModule.id) {
@@ -53,6 +54,7 @@ class ModuleScraper(
           moduleMethodsEn = natModule.methodsEn
           moduleExam = natModule.exam
           moduleExamEn = natModule.examEn
+          moduleCredits = natModule.credits
         }
       }
     }
