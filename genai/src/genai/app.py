@@ -7,6 +7,7 @@ Description:
 
 import uvicorn
 import logging
+from decouple import config
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware

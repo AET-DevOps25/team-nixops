@@ -138,6 +138,8 @@ spec:
               value: "deepseek-r1:70b"
             - name: LLM_CHAT_TEMP
               value: "0.5"
+            - name: CORS_ORIGIN
+              value: "https://api.nixops-devops25.student.k8s.aet.cit.tum.de"
           ports:
             - containerPort: {{ .Values.genai.service.targetPort }}
               name: genai-api

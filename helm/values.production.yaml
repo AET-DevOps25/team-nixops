@@ -1,0 +1,39 @@
+# This file contains the default values for the Canteen App Helm chart.
+
+# Add your tumid here
+tumid:
+
+##################################################################################################################
+# No changes needed below this line
+namespace:
+  create: false
+
+genai:
+  image:
+    repository: ghcr.io/aet-devops25/nixops-genai
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 8000
+    targetPort: 8000
+  replicaCount: 1
+  # env:
+  #   - name: SPRING_PROFILES_ACTIVE
+  #     value: docker
+
+client:
+  image:
+    repository: ghcr.io/aet-devops25/nixops-client
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 3000
+    targetPort: 3000
+  replicaCount: 1
+
+ingress:
+  enabled: true
+  className: "nginx"
+  tls: true
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
