@@ -1,7 +1,5 @@
 package com.nixops.scraper.model
 
-import Course
-import Courses
 import org.jetbrains.exposed.dao.*
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable

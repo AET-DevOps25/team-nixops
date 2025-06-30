@@ -1,5 +1,5 @@
-import com.nixops.scraper.model.Group
-import com.nixops.scraper.model.Groups
+package com.nixops.scraper.model
+
 import org.jetbrains.exposed.dao.*
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable

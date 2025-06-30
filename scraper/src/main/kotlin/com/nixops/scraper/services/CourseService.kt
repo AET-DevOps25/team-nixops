@@ -1,6 +1,5 @@
 package com.nixops.scraper.services
 
-import Course
 import com.nixops.scraper.model.*
 import com.nixops.scraper.services.scraper.CourseScraper
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq

@@ -1,6 +1,5 @@
 package com.nixops.scraper.services.scraper
 
-import Course
 import com.nixops.scraper.model.*
 import com.nixops.scraper.services.SemesterService
 import com.nixops.scraper.tum_api.campus.api.CampusCourseApiClient

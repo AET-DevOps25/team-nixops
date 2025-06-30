@@ -1,6 +1,5 @@
 package com.nixops.scraper.config
 
-import Courses
 import com.nixops.scraper.model.*
 import javax.sql.DataSource
 import org.jetbrains.exposed.sql.Database
