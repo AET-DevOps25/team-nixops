@@ -196,8 +196,6 @@ components:
         code:
           type: string
           example: "CS123"
-        type:
-          type: string
         title:
           type: string
           example: "Introduction to Programming"

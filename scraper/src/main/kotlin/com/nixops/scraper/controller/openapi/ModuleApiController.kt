@@ -30,7 +30,7 @@ class ModuleApiController(
         exam = module.moduleExam,
         examEn = module.moduleExamEn,
         credits = module.moduleCredits,
-        type = "lecture")
+    )
   }
 
   override fun getModules(studyId: Long, semesterKey: String): ResponseEntity<List<Module>> {
