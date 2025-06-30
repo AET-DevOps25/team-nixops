@@ -99,6 +99,7 @@
             genai = pkgs.callPackage ./genai {
               inherit (inputs) pyproject-nix uv2nix pyproject-build-systems;
             };
+				client = pkgs.callPackage ./client {};
             scraper = scraper.packages.scraper;
           };
         };

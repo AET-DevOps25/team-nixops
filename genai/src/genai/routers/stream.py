@@ -1,3 +1,4 @@
+from asyncio import sleep
 from typing import Annotated
 from decouple import config
 from typing_extensions import TypedDict
@@ -58,6 +59,7 @@ async def stream_response(prompt: str, id: str):
             stream_mode="messages",
         ):
             yield f"data: {message_chunk.content}\n\n"
+            await sleep(0.04)  # simply for chat output smoothing
 
     res = StreamingResponse(generate(prompt, id), media_type="text/event-stream")
     return res

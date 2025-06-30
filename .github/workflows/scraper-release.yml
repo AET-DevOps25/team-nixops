@@ -28,9 +28,10 @@ jobs:
     - name: Load and push Docker image
       run: |
         version=$(nix eval --raw .#scraper.version)
-        LOCAL_IMAGE="nixops-scraper:${version}"
-        REMOTE_VERSIONED_IMAGE="ghcr.io/aet-devops25/nixops-scraper:${version}"
-        REMOTE_LATEST_IMAGE="ghcr.io/aet-devops25/nixops-scraper:latest"
+        name=$(nix eval --raw .#scraper.pname)
+        LOCAL_IMAGE="nixops-${name}:${version}"
+        REMOTE_VERSIONED_IMAGE="ghcr.io/aet-devops25/nixops-${name}:${version}"
+        REMOTE_LATEST_IMAGE="ghcr.io/aet-devops25/nixops-${name}:latest"
         docker load < result
         docker tag $LOCAL_IMAGE $REMOTE_VERSIONED_IMAGE
         docker push $REMOTE_VERSIONED_IMAGE
