@@ -40,6 +40,7 @@ module "k8s" {
   nixos_special_args = {
     terraform = {
       name = each.key
+      role = each.value.role
     }
   }
 }

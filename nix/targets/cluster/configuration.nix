@@ -8,6 +8,7 @@
 in {
   imports = [
     self.nixosModules.hcloud
+    self.nixosModules.k8s
   ];
   users.users.root.openssh.authorizedKeys.keys = nixosVars.ssh_keys;
   system.stateVersion = "25.05";
@@ -18,16 +19,24 @@ in {
     domain = "nixops.aet.cit.tum.de";
   };
 
+  infra = {
+    role = terraform.role;
+    clusterConfigDir = ./nixos-vars;
+    apiAdress = "10.0.0.254";
+  };
+
   services.cloud-init.enable = lib.mkForce false;
 
   systemd.network.networks."10-wan" = {
     # match the interface by name
     # matchConfig.MACAddress = "00:00:00:00:00:00";
     matchConfig.Name = "enp1s0";
-    address = [
-      # configure addresses including subnet mask
-      "${nixosVars.ipv6_address}/64"
-    ];
+    address =
+      [
+        "${nixosVars.network.ip}/24"
+        "${nixosVars.ipv6_address}/64"
+      ]
+      ++ (lib.optional (nixosVars ? ipv4_address) ["${nixosVars.ipv4_address}/32"]);
     routes = [
       # create default routes for both IPv6 and IPv4
       {Gateway = "fe80::1";}

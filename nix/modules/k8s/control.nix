@@ -1,0 +1,126 @@
+{
+  lib,
+  config,
+  inputs,
+  ...
+}: let
+  cfg = config.infra;
+in {
+  imports = [
+    inputs.sops-nix.nixosModules.sops
+    ./base.nix
+  ];
+
+  config = let
+    corednsPolicies = [
+      {
+        apiVersion = "rbac.authorization.k8s.io/v1";
+        kind = "ClusterRole";
+        metadata.name = "coredns-reader";
+        rules.apiGroups =
+          map (r: {
+            apiGroups = [""];
+            resources = r;
+            verbs = ["get" "list" "watch"];
+          }) [
+            "endpoints"
+            "services"
+          ];
+      }
+      {
+        apiVersion = "rbac.authorization.k8s.io/v1";
+        kind = "ClusterRoleBinding";
+        metadata.name = "coredns-reader-binding";
+        subjects = [
+          {
+            kind = "ServiceAccount";
+            name = "coredns";
+            namespace = "kube-system";
+          }
+        ];
+        roleRef = {
+          kind = "ClusterRole";
+          name = "coredns-reader";
+          apiGroup = "rbac.authorization.k8s.io";
+        };
+      }
+    ];
+
+    etcds = lib.attrsets.filterAttrs (name: _: null != (builtins.match "etcd-.*" name)) cfg.nodesConfig;
+  in
+    lib.mkIf (cfg.role == "control") {
+      networking.firewall = {
+        allowedTCPPorts = [6443];
+      };
+      systemd.services.etcd = {
+        wants = ["network-online.target"];
+        after = ["network-online.target"];
+      };
+
+      sops.secrets = {
+        controller-manager = {};
+        controller-manager-key = {};
+        controller-account-key = {};
+        scheduler = {};
+        scheduler-key = {};
+        etcd-ca = {};
+        etcd-client = {};
+        etcd-client-key = {};
+        kubelet-client = {};
+        kubelet-client-key = {};
+        apiserver-account-key = {};
+        apiserver-account-signing-key = {};
+        apiserver = {};
+        apiserver-key = {};
+      };
+
+      services.kubernetes = {
+        controllerManager = {
+          enable = true;
+          kubeconfig = {
+            certFile = config.sops.secrets.controller-manager.path;
+            keyFile = config.sops.secrets.controller-manager-key.path;
+            server = "https://${cfg.apiAdress}";
+          };
+
+          serviceAccountKeyFile = config.sops.secrets.controller-account-key.path;
+        };
+        scheduler = {
+          enable = true;
+          kubeconfig = {
+            certFile = config.sops.secrets.scheduler.path;
+            keyFile = config.sops.secrets.scheduler-key.path;
+            server = "https://${cfg.apiAdress}";
+          };
+        };
+        #TODO: add audit policies
+        apiserver = {
+          enable = true;
+          advertiseAddress = "https://${cfg.apiAdress}";
+          serviceClusterIpRange = "10.96.0.0/12";
+
+          authorizationMode = ["RBAC" "Node"];
+          authorizationPolicy = corednsPolicies;
+
+          etcd = {
+            servers =
+              lib.attrsets.mapAttrsToList
+              (name: value: "https://${value.network.ip}:2379")
+              etcds;
+            caFile = config.sops.secrets.etcd-ca.path;
+            certFile = config.sops.secrets.etcd-client.path;
+            keyFile = config.sops.secrets.etcd-client-key.path;
+          };
+
+          kubeletClientCertFile = config.sops.secrets.kubelet-client.path;
+          kubeletClientKeyFile = config.sops.secrets.kubelet-client-key.path;
+
+          serviceAccountKeyFile = config.sops.secrets.apiserver-account-key.path;
+          serviceAccountSigningKeyFile = config.sops.secrets.apiserver-account-signing-key.path;
+
+          tlsCertFile = config.sops.secrets.apiserver.path;
+          tlsKeyFile = config.sops.secrets.apiserver-key.path;
+        };
+      };
+    };
+}
