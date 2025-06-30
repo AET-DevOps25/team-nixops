@@ -8,6 +8,7 @@ Description:
 import yaml
 import uvicorn
 import logging
+from decouple import config
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -22,10 +23,12 @@ app = FastAPI()
 app.include_router(generation.router)
 app.include_router(embedding.router)
 
+cors_env = config("CORS_ORIGIN")
 origins = [
     "http://localhost",
     "http://localhost:8000",
     "http://localhost:3000",
+    cors_env
 ]
 
 app.add_middleware(
@@ -35,19 +38,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# db init on startup
-main_app_lifespan = app.router.lifespan_context
-
-
-@asynccontextmanager
-async def lifespan_wrapper(app):
-    create_db_and_tables()
-    async with main_app_lifespan(app) as maybe_state:
-        yield maybe_state
-
-
-app.router.lifespan_context = lifespan_wrapper
 
 
 def custom_openapi():
