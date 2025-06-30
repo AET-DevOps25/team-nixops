@@ -24,7 +24,7 @@ app.include_router(generation.router)
 app.include_router(embedding.router)
 
 cors_env = config(
-    "CORS_DOMAINS",
+    "CORS_ORIGINS",
     default="http://localhost, http://localhost:8000, http://localhost:3000",
 )
 origins = cors_env.split(", ")
