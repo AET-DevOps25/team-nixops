@@ -8,6 +8,7 @@ Description:
 import yaml
 import uvicorn
 import logging
+from decouple import config
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,10 +22,12 @@ app = FastAPI()
 app.include_router(stream.router)
 app.include_router(embed.router)
 
+cors_env = config("CORS_ORIGIN")
 origins = [
     "http://localhost",
     "http://localhost:8000",
     "http://localhost:3000",
+    cors_env
 ]
 
 app.add_middleware(
@@ -35,12 +38,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 def custom_openapi():
     with open("openapi.yml", "r") as openapi:
         return yaml.safe_load(openapi)
 
 
 app.openapi = custom_openapi
+
 
 def run():
     uvicorn.run(app, host="0.0.0.0", log_level="trace")
