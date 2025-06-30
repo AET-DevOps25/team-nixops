@@ -28,8 +28,7 @@ jobs:
       run: |
         RELEASE_NAME="nixops"
         CHART_NAME="./helm"
-        # NAMESPACE="nixops-default"
-        NAMESPACE="nixops-ge47vaq"
+        NAMESPACE="nixops-default"
         GENAI_VERSION="$(nix eval --raw .#genai.version)"
         CLIENT_VERSION="$(nix eval --raw .#client.version)"
         FLAGS="--values ./helm/values.ci.yaml --set genai.image.tag=$GENAI_VERSION --set client.image.tag=$CLIENT_VERSION"
