@@ -1,9 +1,10 @@
 name: "Deploy"
 on:
-  workflow_run:
-    workflows: ["Build and Test GenAI"]
-    types: 
-      - completed
+  push:
+  # workflow_run:
+  #   workflows: ["Build and Test GenAI"]
+  #   types: 
+  #     - completed
   # workflow_run:
   #   workflows: ["Build and Release GenAI Docker Image", "Build and Release Scraper Docker Image"]
   #   branches: [main]
