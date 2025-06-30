@@ -28,12 +28,6 @@ spec:
             requests:
               cpu: "200m"
               memory: "256Mi"
-          livenessProbe:
-            exec:
-              command: ["CMD", "etcdctl", "endpoint", "health"]
-            periodSeconds: 30
-            timeoutSeconds: 20
-            failureThreshold: 3
           env:
             - name: ETCD_AUTO_COMPACTION_MODE
               value: "revision"
@@ -58,12 +52,6 @@ spec:
             requests:
               cpu: "200m"
               memory: "256Mi"
-          livenessProbe:
-            exec:
-              command: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-            periodSeconds: 30
-            timeoutSeconds: 20
-            failureThreshold: 3
           env:
             - name: MINIO_ROOT_USER
               valueFrom:
@@ -95,13 +83,6 @@ spec:
             requests:
               cpu: "200m"
               memory: "256Mi"
-          livenessProbe:
-            exec:
-              command: ["curl", "-f", "http://localhost:9091/healthz"]
-            initialDelaySeconds: 90
-            periodSeconds: 30
-            timeoutSeconds: 20
-            failureThreshold: 3
           env:
             - name: MINIO_REGION
               value: "us-east-1"
