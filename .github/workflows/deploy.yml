@@ -31,7 +31,6 @@ jobs:
       uses: 'deliverybot/helm@v1'
       with:
         release: 'nixops'
-        track: canary
         namespace: 'nixops-default'
         chart: './helm/Chart.yml'
         token: '${{ github.token }}'
