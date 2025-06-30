@@ -9,7 +9,7 @@ namespace:
 genai:
   image:
     repository: ghcr.io/aet-devops25/nixops-genai
-    tag: latest
+    tag: 0.1.0
     pullPolicy: Always
   service:
     type: ClusterIP
@@ -22,10 +22,8 @@ genai:
 
 client:
   image:
-    # repository: ghcr.io/aet-devops25/nixops-client
-    repository: ghoscht/nixops
-    # tag: latest
-    tag: client-dynurl
+    repository: ghcr.io/aet-devops25/nixops-client
+    tag: 0.1.0
     pullPolicy: Always
   service:
     type: ClusterIP
