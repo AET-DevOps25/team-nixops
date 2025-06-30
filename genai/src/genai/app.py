@@ -8,12 +8,12 @@ Description:
 import yaml
 import uvicorn
 import logging
-from decouple import config
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .routers import embed, stream
+from .config import cors_origins
 
 
 logger = logging.getLogger("uvicorn.error")
@@ -22,11 +22,7 @@ app = FastAPI()
 app.include_router(stream.router)
 app.include_router(embed.router)
 
-cors_env = config(
-    "CORS_ORIGINS",
-    default="http://localhost, http://localhost:8000, http://localhost:3000",
-)
-origins = cors_env.split(", ")
+origins = cors_origins.split(", ")
 
 app.add_middleware(
     CORSMiddleware,

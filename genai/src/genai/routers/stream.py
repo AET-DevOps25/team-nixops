@@ -1,6 +1,5 @@
 from asyncio import sleep
 from typing import Annotated
-from decouple import config
 from typing_extensions import TypedDict
 
 from fastapi.responses import StreamingResponse
@@ -12,6 +11,8 @@ from langchain_ollama.chat_models import ChatOllama
 from langchain_ollama import OllamaEmbeddings
 from langgraph.checkpoint.memory import InMemorySaver
 
+from ..config import llm_api_url, llm_api_key, llm_chat_temp, llm_chat_model, llm_embedding_model
+
 router = APIRouter()
 
 class State(TypedDict):
@@ -19,12 +20,6 @@ class State(TypedDict):
 
 
 graph_builder = StateGraph(State)
-
-llm_api_url = config("LLM_API_URL", default="https://gpu.aet.cit.tum.de/ollama")
-llm_api_key = config("LLM_API_KEY")
-llm_chat_model = config("LLM_CHAT_MODEL", default="llama3.3:latest")
-llm_embedding_model = config("LLM_EMBEDDING_MODEL", default="llama3.3:latest")
-llm_chat_temp = config("LLM_CHAT_TEMP", default=0.5, cast=float)
 
 llm = ChatOllama(
     model=llm_chat_model,
