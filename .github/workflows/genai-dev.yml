@@ -24,21 +24,3 @@ jobs:
         # If you chose API tokens for write access OR if you have a private cache
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
     - run: nix build .#genai.dockerImage
-    # WARNING: remove again
-    - name: Log in to GitHub Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Load and push Docker image
-      run: |
-        version=$(nix eval --raw .#genai.version)
-        LOCAL_IMAGE="nixops-genai:${version}"
-        REMOTE_VERSIONED_IMAGE="ghcr.io/aet-devops25/nixops-genai:${version}"
-        REMOTE_LATEST_IMAGE="ghcr.io/aet-devops25/nixops-genai:latest"
-        docker load < result
-        docker tag $LOCAL_IMAGE $REMOTE_VERSIONED_IMAGE
-        docker push $REMOTE_VERSIONED_IMAGE
-        docker tag $LOCAL_IMAGE $REMOTE_LATEST_IMAGE
-        docker push $REMOTE_LATEST_IMAGE
