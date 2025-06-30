@@ -33,7 +33,8 @@ jobs:
       run: |
         RELEASE_NAME="nixops"
         CHART_NAME="./helm"
-        NAMESPACE="nixops-default"
+        # NAMESPACE="nixops-default"
+        NAMESPACE="nixops-ge47vaq"
         FLAGS="--values ./helm/values.ci.yaml --set genai.image.version=$(nix eval --raw .#genai.version)"
 
         TEMP_KUBECONFIG=$(mktemp)
