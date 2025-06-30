@@ -28,20 +28,29 @@ jobs:
       run: |
         echo "genai=:$(nix eval --raw .#genai.version)\n" >> $GITHUB_OUTPUT
         # echo "client=$(nix eval --raw .#client.version)\n" >> $GITHUB_OUTPUT
-    - name: 'Deploy'
-      uses: 'deliverybot/helm@v1'
-      with:
-        release: 'nixops'
-        namespace: 'nixops-default'
-        chart: './helm/Chart.yml'
-        token: '${{ github.token }}'
-        values: |
-          # client:
-          #   image:
-          #     version: ${{ steps.det_versions.outputs.client }}
-          genai:
-            image:
-              version: ${{ steps.det_versions.outputs.genai }}
-        value-files: "./helm/values.production.yaml" 
-      env:
-        KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
+    - uses: azure/setup-helm@v4.3.0
+    - name: Deploy
+      run: |
+        RELEASE_NAME="nixops"
+        CHART_NAME="./helm"
+        NAMESPACE="nixops-default"
+        FLAGS="--values ./helm/values.ci.yaml --set genai.image.version=$(nix eval --raw .#genai.version)"
+        
+        helm upgrade "$RELEASE_NAME" "$CHART_NAME" -n "$NAMESPACE" --install $FLAGS
+    # - name: 'Deploy'
+    #   uses: 'deliverybot/helm@v1'
+    #   with:
+    #     release: 'nixops'
+    #     namespace: 'nixops-default'
+    #     chart: './helm/Chart.yml'
+    #     token: '${{ github.token }}'
+    #     values: |
+    #       # client:
+    #       #   image:
+    #       #     version: ${{ steps.det_versions.outputs.client }}
+    #       genai:
+    #         image:
+    #           version: ${{ steps.det_versions.outputs.genai }}
+    #     value-files: "./helm/values.production.yaml" 
+    #   env:
+    #     KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
