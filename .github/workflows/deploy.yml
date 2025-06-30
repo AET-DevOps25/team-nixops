@@ -29,13 +29,14 @@ jobs:
         RELEASE_NAME="nixops"
         CHART_NAME="./helm"
         NAMESPACE="nixops-default"
+
         GENAI_VERSION="$(nix eval --raw .#genai.version)"
         CLIENT_VERSION="$(nix eval --raw .#client.version)"
-        FLAGS="--values ./helm/values.ci.yaml --set genai.image.tag=$GENAI_VERSION --set client.image.tag=$CLIENT_VERSION"
+        VAR_FLAGS="--values ./helm/values.ci.yaml --set genai.image.tag=$GENAI_VERSION --set client.image.tag=$CLIENT_VERSION"
+        echo "Using GenAI version: $GENAI_VERSION"
+        echo "Using Client version: $CLIENT_VERSION"
 
         TEMP_KUBECONFIG=$(mktemp)
         echo '${{ secrets.KUBECONFIG }}' > "$TEMP_KUBECONFIG" 
-
-        echo "Using GenAI version: $GENAI_VERSION"
-        
-        helm upgrade --kubeconfig "$TEMP_KUBECONFIG"  "$RELEASE_NAME" "$CHART_NAME" -n "$NAMESPACE" --install $FLAGS
+ 
+        helm upgrade --kubeconfig "$TEMP_KUBECONFIG"  "$RELEASE_NAME" "$CHART_NAME" -n "$NAMESPACE" --install $VAR_FLAGS
