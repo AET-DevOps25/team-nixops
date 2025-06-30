@@ -1,12 +1,10 @@
 name: "Deploy"
 on:
-  # WARNING: remove push
-  push:
-  # workflow_run:
-  #   workflows: ["Build and Release GenAI Docker Image", "Build and Release Scraper Docker Image"]
-  #   branches: [main]
-  #   types: 
-  #     - completed
+  workflow_run:
+    workflows: ["Build and Release GenAI Docker Image", "Build and Release Scraper Docker Image"]
+    branches: [main]
+    types: 
+      - completed
 jobs:
   docker:
     runs-on: ubuntu-latest
