@@ -16,5 +16,12 @@ rm -rf api # clean up
 openapi-generator-cli generate -g python-fastapi -i ../openapi.yml
 ```
 
-## Milvus
-web dashboard at http://localhost:9091/webui/
+## New version release
+after increasing the version in pyproject.toml also call
+```sh
+uv lock
+```
+verify with
+```sh
+nix eval --raw .#genai.version
+```
