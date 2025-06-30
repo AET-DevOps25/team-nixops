@@ -50,5 +50,5 @@ in {
     linkConfig.RequiredForOnline = "routable";
   };
 
-  sops.defaultSopsFile = ./secrets/secrets-${terraform.name}.yaml;
+  sops.defaultSopsFile = ./secrets/${terraform.name}.yaml;
 }

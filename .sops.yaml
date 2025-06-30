@@ -91,7 +91,7 @@ creation_rules:
         pgp:
           - E12CB38E6FC75F203B973FE8C1FD5ADC93DB2220
   
-  - path_regex: ^nix/targets/.*\.ya?ml$
+  - path_regex: ^.*$
     key_groups: 
       - age:
           - age1rytcf06at443cfuc0q463ljkszh63qhxs3vgaqq7ht9zl0y57cmqy7cdxe

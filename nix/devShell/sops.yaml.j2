@@ -32,6 +32,6 @@ creation_rules:
   - path_regex: ^nix/targets/dev/secrets/.*\.ya?ml$
     key_groups: {{ render_key_groups([keys.dev] + team_age_keys) | indent(6) }}
   {# Fallback rule #}
-  - path_regex: ^nix/targets/.*\.ya?ml$
+  - path_regex: ^.*$
     key_groups: {{ render_key_groups(team_age_keys) | indent(6) }}
 

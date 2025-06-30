@@ -27,53 +27,26 @@
       };
       ops = {
         imports = [default];
-        scripts.generate-sops = {
-          exec =
-            #python
-            ''
-              import os
-              import yaml
-              from jinja2 import Environment, FileSystemLoader
-
-              # Read DEVENV_ROOT environment variable
-              dev_env_root = os.getenv("DEVENV_ROOT")
-              if not dev_env_root:
-                  raise EnvironmentError("DEVENV_ROOT environment variable is not set")
-
-              # Construct paths
-              keys_yaml_path = os.path.join(dev_env_root, "devShell", "keys.yaml")
-              template_path = os.path.join(dev_env_root, "devShell")
-              output_path = os.path.join(dev_env_root, ".sops.yaml")
-
-              # Load keys.yaml
-              with open(keys_yaml_path) as f:
-                  keys = yaml.safe_load(f)["keys"]
-
-              # Setup Jinja2 environment and load template
-              env = Environment(loader=FileSystemLoader(template_path))
-              template = env.get_template("sops.yaml.j2")
-
-              # Render
-              output = template.render(keys=keys)
-
-              # Write output file
-              with open(output_path, "w") as f:
-                  f.write(output)
-
-              print(f"Generated {output_path}")
-
-            '';
-          package = pkgs.python3.withPackages (p: with p; [jinja2 pyyaml]);
-          description = "Generate .sops.yaml";
+        scripts = {
+          generate-sops = {
+            exec = builtins.readFile ./scripts/generate-sops.py;
+            package = pkgs.python3.withPackages (p: with p; [jinja2 pyyaml]);
+            description = "Generate .sops.yaml";
+          };
+          provision-certificates = {
+            exec = builtins.readFile ./scripts/provision-certificates.py;
+            package = pkgs.python3.withPackages (p: with p; [cryptography ruamel-yaml]);
+            description = "Generate .sops.yaml";
+          };
         };
         tasks = {
           "setup:sops" = {
             exec = "generate-sops";
             before = ["devenv:enterShell"];
           };
-          languages = {
-            opentofu.enable = true;
-          };
+        };
+        languages = {
+          opentofu.enable = true;
         };
       };
       kotlin-dev = {

@@ -60,7 +60,6 @@ in {
       sops.secrets = {
         controller-manager = {};
         controller-manager-key = {};
-        controller-account-key = {};
         scheduler = {};
         scheduler-key = {};
         etcd-ca = {};
@@ -68,8 +67,8 @@ in {
         etcd-client-key = {};
         kubelet-client = {};
         kubelet-client-key = {};
-        apiserver-account-key = {};
-        apiserver-account-signing-key = {};
+        service-account-verify = {};
+        service-account-key = {};
         apiserver = {};
         apiserver-key = {};
       };
@@ -82,8 +81,6 @@ in {
             keyFile = config.sops.secrets.controller-manager-key.path;
             server = "https://${cfg.apiAdress}";
           };
-
-          serviceAccountKeyFile = config.sops.secrets.controller-account-key.path;
         };
         scheduler = {
           enable = true;
@@ -115,8 +112,8 @@ in {
           kubeletClientCertFile = config.sops.secrets.kubelet-client.path;
           kubeletClientKeyFile = config.sops.secrets.kubelet-client-key.path;
 
-          serviceAccountKeyFile = config.sops.secrets.apiserver-account-key.path;
-          serviceAccountSigningKeyFile = config.sops.secrets.apiserver-account-signing-key.path;
+          serviceAccountKeyFile = config.sops.secrets.service-account-verify.path;
+          serviceAccountSigningKeyFile = config.sops.secrets.service-account-key.path;
 
           tlsCertFile = config.sops.secrets.apiserver.path;
           tlsKeyFile = config.sops.secrets.apiserver-key.path;
