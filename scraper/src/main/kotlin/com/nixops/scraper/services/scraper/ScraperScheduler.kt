@@ -2,7 +2,6 @@ package com.nixops.scraper.services.scraper
 
 import com.nixops.scraper.model.*
 import java.time.Duration
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
 @Component
@@ -22,7 +21,7 @@ class ScraperScheduler(
     }
   }
 
-  @Scheduled(fixedRate = 2 * 1000)
+  // @Scheduled(fixedRate = 2 * 1000)
   fun check() {
     check("semesters", semesterScraper::scrapeSemesters)
     check("study_programs", studyProgramScraper::scrapeStudyPrograms)

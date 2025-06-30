@@ -44,6 +44,32 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/StudyProgram'
+                  
+  /study-programs/{study_id}/full:
+    get:
+      operationId: getStudyProgram
+      summary: Get study program with id
+      parameters:
+        - name: study_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: semesterKey
+          in: query
+          required: true
+          description: Semester key, e.g. "2024s"
+          schema:
+            type: string
+            pattern: '^\d{4}[sSwW]$'
+      responses:
+        '200':
+          description: study program
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudyProgram'
 
   /modules:
     get:
@@ -142,8 +168,9 @@ components:
       type: object
       properties:
         study_id:
-          type: string
-          example: "CS101"
+          type: integer
+          format: int64
+          example: "171017263"
         program_name:
           type: string
           example: "Computer Science"
@@ -153,124 +180,126 @@ components:
         degree_type_name:
           type: string
           example: "Bachelor"
+        semesters:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/Module'
 
-    Language:
+    Module:
       type: object
       properties:
-        name:
+        id:
           type: string
-          example: "Deutsch"
-        nameEn:
+          example: "CS123"
+        code:
           type: string
-          example: "German"
-        short:
+          example: "CS123"
+        type:
           type: string
-          example: "DE"
-        shortEn:
+        title:
           type: string
-          example: "DE"
+          example: "Introduction to Programming"
+        title_en:
+          type: string
+          example: "Introduction to Programming (EN)"
+        content:
+          type: string
+          example: "Covers basics such as loops, variables, conditionals..."
+        content_en:
+          type: string
+          example: "Covers basics such as loops, variables, conditionals... (EN)"
+        outcome:
+          type: string
+          example: "Students can write basic code."
+        outcome_en:
+          type: string
+          example: "Students can write basic code. (EN)"
+        methods:
+          type: string
+          example: "Lecture, Exercises"
+        methods_en:
+          type: string
+          example: "Lecture, Exercises (EN)"
+        exam:
+          type: string
+          example: "Written exam"
+        exam_en:
+          type: string
+          example: "Written exam (EN)"
+        credits:
+          type: number
+          format: float
+          example: 5.0
+        courses:
+          $ref: '#/components/schemas/ModuleCourses'
 
+    ModuleCourses:
+      type: object
+      properties:
+        lectures:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
+        tutorials:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
+        other:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
+            
     Course:
       type: object
       properties:
         courseId:
           type: integer
           example: 12345
-          description: "Unique identifier of the course"
         courseType:
           type: string
           example: "exercise"
-          description: "Type of the course"
         courseName:
           type: string
           example: "Advanced Algorithms"
-          description: "Course name (native language)"
         courseNameEn:
           type: string
-          nullable: true
           example: "Advanced Algorithms (EN)"
-          description: "Course name (English)"
         courseNameList:
           type: string
-          nullable: true
           example: "Algorithms, Data Structures"
-          description: "List of course names or keywords (native language)"
         courseNameListEn:
           type: string
-          nullable: true
           example: "Algorithms, Data Structures (EN)"
-          description: "List of course names or keywords (English)"
-        description:
-          type: string
-          nullable: true
-          example: "Detailed course description"
-          description: "Course description (native language)"
-        descriptionEn:
-          type: string
-          nullable: true
-          example: "Detailed course description (EN)"
-          description: "Course description (English)"
-        teachingMethod:
-          type: string
-          nullable: true
-          example: "Lecture"
-          description: "Teaching method or course type (native language)"
-        teachingMethodEn:
-          type: string
-          nullable: true
-          example: "Lecture (EN)"
-          description: "Teaching method or course type (English)"
-        note:
-          type: string
-          nullable: true
-          example: "Additional notes"
-          description: "Additional notes about the course (native language)"
-        noteEn:
-          type: string
-          nullable: true
-          example: "Additional notes (EN)"
-          description: "Additional notes about the course (English)"
+        appointments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Appointment'
 
-    Module:
+    Appointment:
       type: object
       properties:
-        module_id:
+        appointment_id:
+          type: integer
+          example: 1
+        seriesBeginDate:
           type: string
-          example: "CS123"
-        module_code:
+          format: date
+          example: "2024-03-01"
+        seriesEndDate:
           type: string
-          example: "CS123"
-        module_title:
+          format: date
+          example: "2024-07-01"
+        beginTime:
           type: string
-          example: "Introduction to Programming"
-        module_title_en:
+          example: "08:00"
+        endTime:
           type: string
-          example: "Introduction to Programming (EN)"
-        module_content:
-          type: string
-          example: "Covers basics such as loops, variables, conditionals..."
-        module_content_en:
-          type: string
-          example: "Covers basics such as loops, variables, conditionals... (EN)"
-        module_outcome:
-          type: string
-          example: "Students can write basic code."
-        module_outcome_en:
-          type: string
-          example: "Students can write basic code. (EN)"
-        module_methods:
-          type: string
-          example: "Lecture, Exercises"
-        module_methods_en:
-          type: string
-          example: "Lecture, Exercises (EN)"
-        module_exam:
-          type: string
-          example: "Written exam"
-        module_exam_en:
-          type: string
-          example: "Written exam (EN)"
-        module_credits:
-          type: number
-          format: float
-          example: 5
+          example: "10:00"
+        weekdays:
+          type: array
+          items:
+            type: string
+            enum: [mo, di, mi, do, fr, sa, so]
+          example: ["mo", "di"]

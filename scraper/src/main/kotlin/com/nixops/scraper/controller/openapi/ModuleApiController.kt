@@ -15,28 +15,29 @@ class ModuleApiController(
     private val courseService: CourseService,
     private val semesterService: SemesterService,
 ) : ModulesApi {
+  fun moduleToApiModule(module: com.nixops.scraper.model.Module): Module {
+    return Module(
+        id = module.id.value.toString(),
+        code = module.moduleCode,
+        title = module.moduleTitle,
+        titleEn = module.moduleTitleEn,
+        content = module.moduleContent,
+        contentEn = module.moduleContentEn,
+        outcome = module.moduleOutcome,
+        outcomeEn = module.moduleOutcomeEn,
+        methods = module.moduleMethods,
+        methodsEn = module.moduleMethodsEn,
+        exam = module.moduleExam,
+        examEn = module.moduleExamEn,
+        credits = module.moduleCredits,
+        type = "lecture")
+  }
+
   override fun getModules(studyId: Long, semesterKey: String): ResponseEntity<List<Module>> {
     val modules =
         moduleService.getModules(studyId, semesterKey) ?: return ResponseEntity.notFound().build()
 
-    val apiModules =
-        modules.map { module ->
-          Module(
-              moduleId = module.id.value.toString(),
-              moduleCode = module.moduleCode,
-              moduleTitle = module.moduleTitle,
-              moduleTitleEn = module.moduleTitleEn,
-              moduleContent = module.moduleContent,
-              moduleContentEn = module.moduleContentEn,
-              moduleOutcome = module.moduleOutcome,
-              moduleOutcomeEn = module.moduleOutcomeEn,
-              moduleMethods = module.moduleMethods,
-              moduleMethodsEn = module.moduleMethodsEn,
-              moduleExam = module.moduleExam,
-              moduleExamEn = module.moduleExamEn,
-              moduleCredits = module.moduleCredits,
-          )
-        }
+    val apiModules = modules.map(::moduleToApiModule)
 
     return ResponseEntity.ok(apiModules)
   }
@@ -45,22 +46,7 @@ class ModuleApiController(
     val module = moduleService.getModule(moduleCode)
 
     return if (module != null) {
-      val apiModule =
-          Module(
-              moduleId = module.id.value.toString(),
-              moduleCode = module.moduleCode,
-              moduleTitle = module.moduleTitle,
-              moduleTitleEn = module.moduleTitleEn,
-              moduleContent = module.moduleContent,
-              moduleContentEn = module.moduleContentEn,
-              moduleOutcome = module.moduleOutcome,
-              moduleOutcomeEn = module.moduleOutcomeEn,
-              moduleMethods = module.moduleMethods,
-              moduleMethodsEn = module.moduleMethodsEn,
-              moduleExam = module.moduleExam,
-              moduleExamEn = module.moduleExamEn,
-              moduleCredits = module.moduleCredits,
-          )
+      val apiModule = moduleToApiModule(module)
       ResponseEntity.ok(apiModule)
     } else {
       ResponseEntity.notFound().build()
@@ -84,12 +70,6 @@ class ModuleApiController(
               courseNameEn = course.courseNameEn,
               courseNameList = course.courseNameList,
               courseNameListEn = course.courseNameListEn,
-              description = course.description,
-              descriptionEn = course.descriptionEn,
-              teachingMethod = course.teachingMethod,
-              teachingMethodEn = course.teachingMethodEn,
-              note = course.note,
-              noteEn = course.noteEn,
           )
         }
 
