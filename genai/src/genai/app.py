@@ -22,13 +22,11 @@ app = FastAPI()
 app.include_router(stream.router)
 app.include_router(embed.router)
 
-cors_env = config("CORS_ORIGIN")
-origins = [
-    "http://localhost",
-    "http://localhost:8000",
-    "http://localhost:3000",
-    cors_env
-]
+cors_env = config(
+    "CORS_DOMAINS",
+    default="http://localhost, http://localhost:8000, http://localhost:3000",
+)
+origins = cors_env.split(", ")
 
 app.add_middleware(
     CORSMiddleware,
