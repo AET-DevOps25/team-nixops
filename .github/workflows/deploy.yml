@@ -31,7 +31,7 @@ jobs:
         # NAMESPACE="nixops-default"
         NAMESPACE="nixops-ge47vaq"
         GENAI_VERSION="$(nix eval --raw .#genai.version)"
-        FLAGS="--values ./helm/values.ci.yaml --set genai.image.version=$GENAI_VERSION"
+        FLAGS="--values ./helm/values.ci.yaml --set genai.image.tag=$GENAI_VERSION"
 
         TEMP_KUBECONFIG=$(mktemp)
         echo '${{ secrets.KUBECONFIG }}' > "$TEMP_KUBECONFIG" 
