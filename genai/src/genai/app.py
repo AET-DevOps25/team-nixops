@@ -11,8 +11,10 @@ import logging
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 
 from .routers import embed, stream
+from .db import create_db_and_tables
 
 
 logger = logging.getLogger("uvicorn.error")
@@ -35,12 +37,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# db init on startup
+main_app_lifespan = app.router.lifespan_context
+
+
+@asynccontextmanager
+async def lifespan_wrapper(app):
+    create_db_and_tables()
+    async with main_app_lifespan(app) as maybe_state:
+        yield maybe_state
+
+
+app.router.lifespan_context = lifespan_wrapper
+
+
 def custom_openapi():
     with open("openapi.yml", "r") as openapi:
         return yaml.safe_load(openapi)
 
 
 app.openapi = custom_openapi
+
 
 def run():
     uvicorn.run(app, host="0.0.0.0", log_level="trace")

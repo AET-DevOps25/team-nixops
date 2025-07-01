@@ -58,6 +58,24 @@ services:
     depends_on:
       - "etcd"
       - "minio"
+  postgres:
+    container_name: postgres
+    image: postgres:15.13-bullseye
+    environment:
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: pgpass
+      PGDATA: /data/postgres
+      POSTGRES_DB: nixops
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d postgres" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
   mcp:
     container_name: milvus-mcp
     build:
@@ -82,6 +100,7 @@ volumes:
   minio:
   milvus:
   etcd:
+  postgres:
 networks:
   default:
     name: milvus
