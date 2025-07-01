@@ -18,6 +18,9 @@
     psycopg2 = prev.psycopg2.overrideAttrs (old: {
       buildInputs = (old.buildInputs or []) ++ [pkgs.libpq] ++ final.resolveBuildSystem {setuptools = [];};
     });
+    bson = prev.bson.overrideAttrs (old: {
+      buildInputs = (old.buildInputs or []) ++ final.resolveBuildSystem {setuptools = [];};
+    });
   };
 
   pythonSet = (pkgs.callPackage pyproject-nix.build.packages {inherit python;}).overrideScope (

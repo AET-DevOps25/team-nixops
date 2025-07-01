@@ -38,10 +38,11 @@ def embedding_len():
 
 schema = MilvusClient.create_schema(
     auto_id=False,
-    enable_dynamic_field=True,
 )
 # each row is a module
-schema.add_field(field_name="id", datatype=DataType.INT64, is_primary=True)
+schema.add_field(
+    field_name="id", datatype=DataType.VARCHAR, max_length=16, is_primary=True
+)
 schema.add_field(field_name="name", datatype=DataType.VARCHAR, max_length=128)
 schema.add_field(field_name="description", datatype=DataType.VARCHAR, max_length=2048)
 schema.add_field(

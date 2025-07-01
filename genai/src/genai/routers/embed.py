@@ -84,11 +84,4 @@ res = milvus_client.insert(collection_name=collection_name, data=data)
 milvus_client.flush(collection_name=collection_name)
 print(res)
 
-search_res = milvus_client.search(
-    collection_name=collection_name,
-    data=[embed_text("i want 20 credits")],
-    anns_field="description_vec",  # only one anns field can exist
-    limit=3,
-    output_fields=["name", "timeslots"],
-)
-print(search_res)
+# print(search_res)
