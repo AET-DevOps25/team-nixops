@@ -9,7 +9,7 @@ namespace:
 genai:
   image:
     repository: ghcr.io/aet-devops25/nixops-genai
-    tag: 0.1.0
+    tag: latest
     pullPolicy: Always
   service:
     type: ClusterIP
@@ -23,7 +23,7 @@ genai:
 client:
   image:
     repository: ghcr.io/aet-devops25/nixops-client
-    tag: 0.1.0
+    tag: latest
     pullPolicy: Always
   service:
     type: ClusterIP
