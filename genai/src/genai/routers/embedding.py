@@ -2,23 +2,20 @@ from openapi_server.apis.embedding_api_base import BaseEmbeddingApi
 from openapi_server.apis.embedding_api import router as embedding_api_router
 from openapi_server.models.study_program import StudyProgram
 
-# from openapi_server.models.pet import Pet
-from typing import ClassVar, Dict, List, Tuple  # noqa: F401
-from pydantic import Field, StrictInt, StrictStr, field_validator
-from typing import Any, List, Optional
+from pydantic import Field, StrictInt
 from typing_extensions import Annotated
 from sqlalchemy.orm import Session
 from ..data.db import engine, StudyProgram as SqlStudyProgram, Semester as SqlSemester
 from ..data.vector_db import create_collection, embed_text, milvus_client
-import json
-
 from datetime import datetime, date
 import json
 
+# NOTE: https://milvus.io/docs/use-async-milvus-client-with-asyncio.md#Create-index
 
+
+# fixes "datetime.datetime not JSON serializable"
 class datetime_encoder(json.JSONEncoder):
     def default(self, obj):
-
         if isinstance(obj, (datetime, date)):
             return str(obj)
         return json.JSONEncoder.default(self, obj)
@@ -67,17 +64,16 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
                         + str(mod.credits)
                     )
                     courses = json.dumps(mod.courses.to_dict(), cls=datetime_encoder)
-                    data = [
-                        {
-                            "id": mod.id,
-                            "name": mod.title,
-                            "description": desc,
-                            "description_vec": embed_text(desc),
-                            "timeslots": courses,
-                        }
-                    ]
+                    data = {
+                        "id": mod.id,
+                        "name": mod.title,
+                        "description": desc,
+                        "description_vec": embed_text(desc),
+                        "courses": courses,
+                    }
+
                     res = milvus_client.insert(
-                        collection_name=collection_name, data=data
+                        collection_name=collection_name, data=[data]
                     )
                     milvus_client.flush(collection_name=collection_name)
                     print(res)
@@ -95,7 +91,7 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
             data=[embed_text("i like programming")],
             anns_field="description_vec",  # only one anns field can exist
             limit=3,
-            output_fields=["name", "timeslots"],
+            output_fields=["name", "courses"],
         )
         print(search_res)
 

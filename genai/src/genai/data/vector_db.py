@@ -48,7 +48,7 @@ schema.add_field(field_name="description", datatype=DataType.VARCHAR, max_length
 schema.add_field(
     field_name="description_vec", datatype=DataType.FLOAT_VECTOR, dim=embedding_len()
 )
-schema.add_field(field_name="timeslots", datatype=DataType.JSON)
+schema.add_field(field_name="courses", datatype=DataType.JSON)
 
 
 def create_collection(collection_name):
