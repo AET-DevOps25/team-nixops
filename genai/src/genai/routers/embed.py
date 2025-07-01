@@ -10,11 +10,11 @@ from pymilvus import IndexType, MilvusClient, DataType
 
 router = APIRouter()
 
-collection_name = "informatics"
+collection_name = "_163016030_2025s"
 
 if milvus_client.has_collection(collection_name):
     milvus_client.drop_collection(collection_name)
-    create_collection(collection_name)
+create_collection(collection_name)
 
 milvus_client.load_collection(collection_name=collection_name)
 res = milvus_client.get_load_state(collection_name=collection_name)
@@ -30,9 +30,9 @@ Besonderer Schwerpunkt ist die mathematische Beschreibung von
 Starrkörperbewegungen zur Darstellung der Kamerabewegung und von
 perspektivischer Projektion in der Abbildung der drei-dimensionalen Welt.
 Zur Schätzung von Kamerabewegung und 3D Geometrie werden sowohl spektrale
-Methoden als auch Methoden nichtlinearer Optimierung vorgestellt."""
+Methoden als auch Methoden nichtlinearer Optimierung vorgestellt. Credits: 20"""
 itsec_name = "IT Sicherheit 2 (CIT3330002)"
-itsec_desc = """In dem Modul werden vertiefende sowie spezielle Themen der IT-Sicherheit behandelt. Aktuelle Konzepte und Lösungen im Bereich der Digitalen Identität, wie Smartcards, Physically Unclonable Functions (PUF), SSI und Token-basierte Authentisierung  in verteilten Systemen werden vertiefend behandelt.  Im Bereich der Anwendungssicherheit werden ausgewählte Fragestellungen, wie die Sicherheit von Instant Messenger-Diensten diskutiert. Im Bereich der Systemsicherheit widmet sich das Modul fortgeschrittenen Konzepten wie dem Trusted Computing, den Trusted Execution Environments und dem Confidential Computing und den dafür vorhandenen Hardware-seitigen Sicherheitskonzepten.  Das Modul behandelt den aktuellen und in Entwicklung befindlichen Stand der Sicherheit drahtloser und mobiler Kommunikationsarchitekturen (u.a. 5G) und mit Konzepten zur ad-hoc Sicherheit bei vernetzten IoT Geräten (z.B. BluetoothLE). Das Modul wird zudem einen Einblick in die methodische Entwicklung und Bewertung von sicheren Systemen (Security Engineering) geben."""
+itsec_desc = """In dem Modul werden vertiefende sowie spezielle Themen der IT-Sicherheit behandelt. Aktuelle Konzepte und Lösungen im Bereich der Digitalen Identität, wie Smartcards, Physically Unclonable Functions (PUF), SSI und Token-basierte Authentisierung  in verteilten Systemen werden vertiefend behandelt.  Im Bereich der Anwendungssicherheit werden ausgewählte Fragestellungen, wie die Sicherheit von Instant Messenger-Diensten diskutiert. Im Bereich der Systemsicherheit widmet sich das Modul fortgeschrittenen Konzepten wie dem Trusted Computing, den Trusted Execution Environments und dem Confidential Computing und den dafür vorhandenen Hardware-seitigen Sicherheitskonzepten.  Das Modul behandelt den aktuellen und in Entwicklung befindlichen Stand der Sicherheit drahtloser und mobiler Kommunikationsarchitekturen (u.a. 5G) und mit Konzepten zur ad-hoc Sicherheit bei vernetzten IoT Geräten (z.B. BluetoothLE). Das Modul wird zudem einen Einblick in die methodische Entwicklung und Bewertung von sicheren Systemen (Security Engineering) geben. Credits: 6"""
 devops_name = "DevOps: Engineering for Deployment and Operations (CIT423001)"
 devops_desc = """DevOps is an integrative approach to software engineering, blending development (Dev) and operations (Ops) to optimize the software development lifecycle, enhance collaboration, and streamline workflows. It emphasizes the use of automated processes, continuous integration, and deployment strategies to improve the efficiency and quality of software systems. It has become a widely adopted practice in the software industry, since it leads to shorter release cycles of software while achieving high quality. Key topics in DevOps include, among others:
 - Introduction and Overview of DevOps
@@ -44,7 +44,7 @@ devops_desc = """DevOps is an integrative approach to software engineering, blen
 - Security, Risk Management, and Compliance
 - Microservices and Scalable Architectures
 - Post-Production Management
-- Advanced Topics and Emerging Trends"""
+- Advanced Topics and Emerging Trends Credits: 5"""
 
 timeslots = {
     "ue": [
@@ -86,7 +86,7 @@ print(res)
 
 search_res = milvus_client.search(
     collection_name=collection_name,
-    data=[embed_text("i love planning and managing")],
+    data=[embed_text("i want 20 credits")],
     anns_field="description_vec",  # only one anns field can exist
     limit=3,
     output_fields=["name", "timeslots"],
