@@ -44,7 +44,7 @@
   dockerImage =
     pkgs.dockerTools.buildLayeredImage
     {
-      name = "nixops-genai";
+      name = "nixops-${pythonSet.genai.pname}";
       tag = "${pythonSet.genai.version}";
       config = {
         Cmd = [

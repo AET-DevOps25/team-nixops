@@ -1,72 +1,28 @@
 openapi: 3.0.4
 info:
-  contact:
-    email: apiteam@swagger.io
-  description: |-
-    This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about
-    Swagger at [https://swagger.io](https://swagger.io). In the third iteration of the pet store, we've switched to the design first approach!
-    You can now help us improve the API whether it's by making changes to the definition itself or to the code.
-    That way, with time, we can improve the API in general, and expose some of the new features in OAS3.
-
-    Some useful links:
-    - [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)
-    - [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)
-  license:
-    name: Apache 2.0
-    url: https://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: https://swagger.io/terms/
-  title: Swagger Petstore - OpenAPI 3.0
-  version: 1.0.12
-externalDocs:
-  description: Find out more about Swagger
-  url: https://swagger.io
+  title: GenAI MicroService - OpenAPI 3.0
+  version: 0.0.1
 servers:
-- url: https://petstore3.swagger.io/api/v3
+- url: http://127.0.0.1:8000
+- url: http://localhost:8000
 tags:
-- description: Everything about your Pets
-  externalDocs:
-    description: Find out more
-    url: https://swagger.io
-  name: pet
-- description: Access to Petstore orders
-  externalDocs:
-    description: Find out more about our store
-    url: https://swagger.io
-  name: store
-- description: Operations about user
-  name: user
+- description: Direct interaction with the vector DB
+  name: embedding
+- description: Direct interaction with the LLM
+  name: generation
 paths:
-  /pet/findByStatus:
-    get:
-      description: Multiple status values can be provided with comma separated strings.
-      operationId: findPetsByStatus
-      parameters:
-      - description: Status values that need to be considered for filter
-        explode: true
-        in: query
-        name: status
-        required: false
-        schema:
-          default: available
-          enum:
-          - available
-          - pending
-          - sold
-          type: string
-        style: form
+  /embed:
+    post:
+      description: Create a new study program and embed the modules.
+      operationId: createStudyProgram
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudyProgram'
+        required: true
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/Pet'
-                type: array
-            application/xml:
-              schema:
-                items:
-                  $ref: '#/components/schemas/Pet'
-                type: array
           description: successful operation
         "400":
           description: Invalid status value
@@ -76,196 +32,137 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Unexpected error
-      summary: Finds Pets by status.
+      summary: Create a new study program and embed the modules.
       tags:
-      - pet
+      - embedding
+  /embed/{id}:
+    delete:
+      description: Delete a study program
+      operationId: deleteStudyProgram
+      parameters:
+      - description: ID of the study program that should be deleted
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          description: Study program deleted
+        "400":
+          description: Invalid study program id value
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Delete a study program
+      tags:
+      - embedding
+    post:
+      description: Add new modules to a study program.
+      operationId: updateStudyProgram
+      parameters:
+      - description: ID of the study program
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Modules'
+        required: true
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: Invalid status value
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Add new modules to a study program
+      tags:
+      - embedding
+  /chat:
+    get:
+      description: Communicate with the ChatBot making use of streamed responses
+      operationId: streamChat
+      parameters:
+      - description: Chat Prompt
+        explode: true
+        in: query
+        name: prompt
+        required: true
+        schema:
+          default: Write a poem
+          type: string
+        style: form
+      - description: Conversation ID
+        explode: true
+        in: query
+        name: id
+        required: true
+        schema:
+          default: 420
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            text/event-stream:
+              schema:
+                example: |
+                  data: Hello
+
+                  data: World
+                type: string
+          description: A stream of message tokens
+      summary: Communicate with the ChatBot
+      tags:
+      - generation
 components:
-  requestBodies:
-    Pet:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Pet'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/Pet'
-      description: Pet object that needs to be added to the store
-    UserArray:
-      content:
-        application/json:
-          schema:
-            items:
-              $ref: '#/components/schemas/User'
-            type: array
-      description: List of user object
   schemas:
-    Order:
-      properties:
-        id:
-          example: 10
-          format: int64
-          type: integer
-        petId:
-          example: 198772
-          format: int64
-          type: integer
-        quantity:
-          example: 7
-          format: int32
-          type: integer
-        shipDate:
-          format: date-time
-          type: string
-        status:
-          description: Order Status
-          enum:
-          - placed
-          - approved
-          - delivered
-          example: approved
-          type: string
-        complete:
-          type: boolean
-      type: object
-      xml:
-        name: order
-    Category:
+    StudyProgram:
       example:
-        name: Dogs
-        id: 1
-      properties:
-        id:
-          example: 1
-          format: int64
-          title: id
-          type: integer
-        name:
-          example: Dogs
-          title: name
-          type: string
-      title: Category
-      type: object
-      xml:
-        name: category
-    User:
-      properties:
-        id:
-          example: 10
-          format: int64
-          type: integer
-        username:
-          example: theUser
-          type: string
-        firstName:
-          example: John
-          type: string
-        lastName:
-          example: James
-          type: string
-        email:
-          example: john@email.com
-          type: string
-        password:
-          example: "12345"
-          type: string
-        phone:
-          example: "12345"
-          type: string
-        userStatus:
-          description: User Status
-          example: 1
-          format: int32
-          type: integer
-      type: object
-      xml:
-        name: user
-    Tag:
-      example:
-        name: name
         id: 0
+        modules:
+        - 6
+        - 6
       properties:
         id:
           format: int64
           title: id
           type: integer
-        name:
-          title: name
-          type: string
-      title: Tag
-      type: object
-      xml:
-        name: tag
-    Pet:
-      example:
-        photoUrls:
-        - photoUrls
-        - photoUrls
-        name: doggie
-        id: 10
-        category:
-          name: Dogs
-          id: 1
-        tags:
-        - name: name
-          id: 0
-        - name: name
-          id: 0
-        status: available
-      properties:
-        id:
-          example: 10
-          format: int64
-          title: id
-          type: integer
-        name:
-          example: doggie
-          title: name
-          type: string
-        category:
-          $ref: '#/components/schemas/Category'
-        photoUrls:
+        modules:
           items:
-            type: string
-            xml:
-              name: photoUrl
-          title: photoUrls
+            format: int64
+            type: integer
+          title: modules
           type: array
-          xml:
-            wrapped: true
-        tags:
-          items:
-            $ref: '#/components/schemas/Tag'
-          title: tags
-          type: array
-          xml:
-            wrapped: true
-        status:
-          description: pet status in the store
-          enum:
-          - available
-          - pending
-          - sold
-          title: status
-          type: string
       required:
-      - name
-      - photoUrls
-      title: Pet
+      - id
+      - modules
+      title: StudyProgram
       type: object
-      xml:
-        name: pet
-    ApiResponse:
-      properties:
-        code:
-          format: int32
-          type: integer
-        type:
-          type: string
-        message:
-          type: string
-      type: object
-      xml:
-        name: '##default'
+    Modules:
+      items:
+        format: int64
+        type: integer
+      title: modules
+      type: array
     Error:
       example:
         code: code
@@ -282,16 +179,3 @@ components:
       - message
       title: Error
       type: object
-  securitySchemes:
-    petstore_auth:
-      flows:
-        implicit:
-          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
-          scopes:
-            write:pets: modify pets in your account
-            read:pets: read your pets
-      type: oauth2
-    api_key:
-      in: header
-      name: api_key
-      type: apiKey

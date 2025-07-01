@@ -13,15 +13,14 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from .routers import embed, stream
 from .data.db import create_db_and_tables
-
+from .routers import embedding, generation
 
 logger = logging.getLogger("uvicorn.error")
 
 app = FastAPI()
-app.include_router(stream.router)
-app.include_router(embed.router)
+app.include_router(generation.router)
+app.include_router(embedding.router)
 
 origins = [
     "http://localhost",
