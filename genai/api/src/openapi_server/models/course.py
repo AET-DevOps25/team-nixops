@@ -18,9 +18,9 @@ import re  # noqa: F401
 import json
 
 
-from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
-from openapi_server.models.module import Module
+from openapi_server.models.appointment import Appointment
 
 try:
     from typing import Self
@@ -28,22 +28,28 @@ except ImportError:
     from typing_extensions import Self
 
 
-class StudyProgram(BaseModel):
+class Course(BaseModel):
     """
-    StudyProgram
+    Course
     """  # noqa: E501
 
-    study_id: Optional[StrictInt] = None
-    program_name: Optional[StrictStr] = None
-    degree_program_name: Optional[StrictStr] = None
-    degree_type_name: Optional[StrictStr] = None
-    semesters: Optional[Dict[str, List[Module]]] = None
+    course_id: Optional[StrictInt] = Field(default=None, alias="courseId")
+    course_type: Optional[StrictStr] = Field(default=None, alias="courseType")
+    course_name: Optional[StrictStr] = Field(default=None, alias="courseName")
+    course_name_en: Optional[StrictStr] = Field(default=None, alias="courseNameEn")
+    course_name_list: Optional[StrictStr] = Field(default=None, alias="courseNameList")
+    course_name_list_en: Optional[StrictStr] = Field(
+        default=None, alias="courseNameListEn"
+    )
+    appointments: Optional[List[Appointment]] = None
     __properties: ClassVar[List[str]] = [
-        "study_id",
-        "program_name",
-        "degree_program_name",
-        "degree_type_name",
-        "semesters",
+        "courseId",
+        "courseType",
+        "courseName",
+        "courseNameEn",
+        "courseNameList",
+        "courseNameListEn",
+        "appointments",
     ]
 
     model_config = {
@@ -63,7 +69,7 @@ class StudyProgram(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:
-        """Create an instance of StudyProgram from a JSON string"""
+        """Create an instance of Course from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -81,20 +87,18 @@ class StudyProgram(BaseModel):
             exclude={},
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of each value in semesters (dict of array)
-        _field_dict_of_array = {}
-        if self.semesters:
-            for _key in self.semesters:
-                if self.semesters[_key] is not None:
-                    _field_dict_of_array[_key] = [
-                        _item.to_dict() for _item in self.semesters[_key]
-                    ]
-            _dict["semesters"] = _field_dict_of_array
+        # override the default output from pydantic by calling `to_dict()` of each item in appointments (list)
+        _items = []
+        if self.appointments:
+            for _item in self.appointments:
+                if _item:
+                    _items.append(_item.to_dict())
+            _dict["appointments"] = _items
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Dict) -> Self:
-        """Create an instance of StudyProgram from a dict"""
+        """Create an instance of Course from a dict"""
         if obj is None:
             return None
 
@@ -103,20 +107,16 @@ class StudyProgram(BaseModel):
 
         _obj = cls.model_validate(
             {
-                "study_id": obj.get("study_id"),
-                "program_name": obj.get("program_name"),
-                "degree_program_name": obj.get("degree_program_name"),
-                "degree_type_name": obj.get("degree_type_name"),
-                "semesters": dict(
-                    (
-                        _k,
-                        (
-                            [Module.from_dict(_item) for _item in _v]
-                            if _v is not None
-                            else None
-                        ),
-                    )
-                    for _k, _v in obj.get("semesters").items()
+                "courseId": obj.get("courseId"),
+                "courseType": obj.get("courseType"),
+                "courseName": obj.get("courseName"),
+                "courseNameEn": obj.get("courseNameEn"),
+                "courseNameList": obj.get("courseNameList"),
+                "courseNameListEn": obj.get("courseNameListEn"),
+                "appointments": (
+                    [Appointment.from_dict(_item) for _item in obj.get("appointments")]
+                    if obj.get("appointments") is not None
+                    else None
                 ),
             }
         )
