@@ -20,5 +20,3 @@ src/openapi_server/models/extra_models.py
 src/openapi_server/models/study_program.py
 src/openapi_server/security_api.py
 tests/conftest.py
-tests/test_embedding_api.py
-tests/test_generation_api.py

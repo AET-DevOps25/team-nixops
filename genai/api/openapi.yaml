@@ -6,9 +6,9 @@ servers:
 - url: http://127.0.0.1:8000
 - url: http://localhost:8000
 tags:
-- description: Everything concerning the vector db
+- description: Direct interaction with the vector DB
   name: embedding
-- description: Everything concerning llm interaction
+- description: Direct interaction with the LLM
   name: generation
 paths:
   /embed:
@@ -126,6 +126,7 @@ paths:
               schema:
                 example: |
                   data: Hello
+
                   data: World
                 type: string
           description: A stream of message tokens

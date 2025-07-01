@@ -14,7 +14,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .routers import embedding, generation
 
-
 logger = logging.getLogger("uvicorn.error")
 
 app = FastAPI()
