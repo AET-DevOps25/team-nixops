@@ -33,7 +33,7 @@ spec:
     - host: "api.nixops-devops25.student.k8s.aet.cit.tum.de"
       http:
         paths:
-          - path: /
+          - path: /stream # only expose chatting endpoint to the public
             pathType: Prefix
             backend:
               service:
