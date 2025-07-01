@@ -7,20 +7,19 @@
   cfg = config.infra;
 in {
   imports = [
-    inputs.sops-nix.nixosModules.sops
     ./base.nix
   ];
 
   config = lib.mkIf (cfg.role == "worker") {
-    networking.firewall = {
-      allowedTCPPorts = [config.services.kubernetes.kubelet.port];
-    };
-
     sops.secrets = {
       kubelet = {};
       kubelet-key = {};
       proxy = {};
       proxy-key = {};
+    };
+
+    networking.firewall = {
+      allowedTCPPorts = [config.services.kubernetes.kubelet.port];
     };
 
     services.kubernetes = {

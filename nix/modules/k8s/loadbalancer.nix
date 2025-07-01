@@ -8,10 +8,12 @@
 }: let
   cfg = config.infra;
 in {
-  import = [./base.nix];
+  imports = [./base.nix];
 
   config = let
     controls = lib.attrsets.filterAttrs (name: _: null != (builtins.match "control-.*" name)) cfg.nodesConfig;
+
+    getIP = vars: (builtins.head vars.network).ip;
   in
     lib.mkIf (cfg.role == "loadbalancer") {
       boot.kernel.sysctl."net.ipv4.ip_nonlocal_bind" = true;
@@ -27,7 +29,7 @@ in {
         config = let
           backends =
             lib.attrsets.mapAttrsToList
-            (name: value: "server ${name} ${value.network.ip}:6443")
+            (name: value: "server ${name} ${getIP value}:6443")
             controls;
         in ''
           defaults

@@ -1,12 +1,7 @@
-{
-  config,
-  inputs,
-  ...
-}: let
+{config, ...}: let
   cfg = config.infra;
 in {
   imports = [
-    inputs.sops-nix.nixosModules.sops
     ./loadbalancer.nix
     ./control.nix
     ./etcd.nix
@@ -24,8 +19,9 @@ in {
     sops.secrets.ca = {};
 
     services.kubernetes = {
-      clustercidr = "10.244.0.0/16";
-      cafile = config.sops.secrets.ca.path;
+      clusterCidr = "10.244.0.0/16";
+      masterAddress = cfg.apiAdress;
+      caFile = config.sops.secrets.ca.path;
     };
   };
 }

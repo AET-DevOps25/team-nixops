@@ -1,56 +1,53 @@
 {
   lib,
   config,
-  inputs,
-  terraform,
   ...
 }: let
   cfg = config.infra;
 in {
   imports = [
-    inputs.sops-nix.nixosModules.sops
     ./base.nix
   ];
 
   config = let
-    etcds = lib.attrsets.filterAttrs (name: _: null != (builtins.match "etcd-.*" name)) cfg.nodesConfig;
+    getIP = vars: (builtins.head vars.network).ip;
 
-    thisNode = cfg.nodesConfig.${terraform.name};
+    etcds = lib.attrsets.filterAttrs (name: _: null != (builtins.match "etcd-.*" name)) cfg.nodeConfigs;
+
+    thisNode = cfg.nodeConfigs.${config.networking.hostName};
   in
     lib.mkIf (cfg.role == "etcd") {
-      networking.firewall = {
-        allowedTCPPorts = [2379 2380];
-      };
-
       sops.secrets = {
         server = {};
         server-key = {};
         peer = {};
         peer-key = {};
+        etcd-ca = {};
       };
 
       services.etcd = {
         enable = true;
+        openFirewall = true;
 
-        initialcluster = lib.mkforce (
+        initialCluster = lib.mkForce (
           lib.attrsets.mapAttrsToList
-          (name: value: "${name}=${value.network.ip}")
+          (name: value: "${name}=${getIP value}")
           etcds
         );
-        listenClientUrls = ["https://${thisNode.network.ip}:2379" "https://127.0.0.1:2379"];
-        listenPeerUrls = ["https://${thisNode.network.ip}:2380" "https://127.0.0.1:2380"];
+        listenClientUrls = ["https://${getIP thisNode}:2379" "https://127.0.0.1:2379"];
+        listenPeerUrls = ["https://${getIP thisNode}:2380" "https://127.0.0.1:2380"];
 
-        clientcertauth = true;
-        peerclientcertauth = true;
+        clientCertAuth = true;
+        peerClientCertAuth = true;
 
-        certfile = config.sops.secrets.server.path;
-        keyfile = config.sops.secrets.server-key.path;
+        certFile = config.sops.secrets.server.path;
+        keyFile = config.sops.secrets.server-key.path;
 
-        peercertfile = config.sops.secrets.peer.path;
-        peerkeyfile = config.sops.secrets.peer-key.path;
+        peerCertFile = config.sops.secrets.peer.path;
+        peerKeyFile = config.sops.secrets.peer-key.path;
 
-        peertrustedcafile = config.sops.secrets.ca.path;
-        trustedcafile = config.sops.secrets.ca.path;
+        peerTrustedCaFile = config.sops.secrets.etcd-ca.path;
+        trustedCaFile = config.sops.secrets.etcd-ca.path;
       };
 
       systemd.services.etcd = {

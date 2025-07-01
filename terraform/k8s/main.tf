@@ -2,13 +2,13 @@ locals {
   cluster_instance_map = merge([
     for role, cfg in var.cluster_nodes : {
       for i in range(cfg.count) :
-      "${role}-${i + 1}" => merge(
+      "${role}-${i}" => merge(
         {
           role  = role
-          index = i + 1
+          index = i
         },
         cfg.defaults,
-        lookup(cfg.overrides, "${role}-${i + 1}", {})
+        lookup(cfg.overrides, "${role}-${i}", {})
       )
     }
   ]...)

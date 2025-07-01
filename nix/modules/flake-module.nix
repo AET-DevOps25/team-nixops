@@ -10,5 +10,12 @@
         sops.age.keyFile = "/var/lib/secrets/age";
       }
     ];
+    k8s.imports = [
+      inputs.sops-nix.nixosModules.sops
+      ./k8s
+      {
+        sops.age.keyFile = "/var/lib/secrets/age";
+      }
+    ];
   };
 }

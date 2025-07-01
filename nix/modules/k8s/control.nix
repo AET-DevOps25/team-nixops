@@ -1,17 +1,17 @@
 {
   lib,
   config,
-  inputs,
   ...
 }: let
   cfg = config.infra;
 in {
   imports = [
-    inputs.sops-nix.nixosModules.sops
     ./base.nix
   ];
 
   config = let
+    getIP = vars: (builtins.head vars.network).ip;
+
     corednsPolicies = [
       {
         apiVersion = "rbac.authorization.k8s.io/v1";
@@ -46,17 +46,9 @@ in {
       }
     ];
 
-    etcds = lib.attrsets.filterAttrs (name: _: null != (builtins.match "etcd-.*" name)) cfg.nodesConfig;
+    etcds = lib.attrsets.filterAttrs (name: _: null != (builtins.match "etcd-.*" name)) cfg.nodeConfigs;
   in
     lib.mkIf (cfg.role == "control") {
-      networking.firewall = {
-        allowedTCPPorts = [6443];
-      };
-      systemd.services.etcd = {
-        wants = ["network-online.target"];
-        after = ["network-online.target"];
-      };
-
       sops.secrets = {
         controller-manager = {};
         controller-manager-key = {};
@@ -71,6 +63,14 @@ in {
         service-account-key = {};
         apiserver = {};
         apiserver-key = {};
+      };
+
+      networking.firewall = {
+        allowedTCPPorts = [6443];
+      };
+      systemd.services.etcd = {
+        wants = ["network-online.target"];
+        after = ["network-online.target"];
       };
 
       services.kubernetes = {
@@ -102,7 +102,7 @@ in {
           etcd = {
             servers =
               lib.attrsets.mapAttrsToList
-              (name: value: "https://${value.network.ip}:2379")
+              (name: value: "https://${getIP value}:2379")
               etcds;
             caFile = config.sops.secrets.etcd-ca.path;
             certFile = config.sops.secrets.etcd-client.path;

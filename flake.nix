@@ -86,9 +86,7 @@
           };
         in {
           checks = let
-            nixosMachines = lib.mapAttrs' (
-              name: config: lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel
-            ) ((lib.filterAttrs (_: config: config.pkgs.system == system)) self.nixosConfigurations);
+            nixosMachines = import ./nix/checks {inherit pkgs self;};
             packages = lib.mapAttrs' (n: lib.nameValuePair "package-${n}") self'.packages;
             devShells = lib.mapAttrs' (n: lib.nameValuePair "devShell-${n}") self'.devShells;
           in

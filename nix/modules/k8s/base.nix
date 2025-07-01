@@ -1,16 +1,11 @@
 {
   lib,
   config,
-  inputs,
   ...
 }: {
-  imports = [
-    inputs.sops-nix.nixosModules.sops
-  ];
-
   options.infra = {
     role = lib.mkOption {
-      type = lib.types.string;
+      type = lib.types.str;
       description = ''
         Role of the node in the cluster. Supports:
         "worker" | "control" | "etcd" | "loadbalancer"
@@ -25,14 +20,14 @@
     };
 
     apiAdress = lib.mkOption {
-      type = lib.typse.string;
+      type = lib.types.str;
       description = ''
         IP address of the apiserver
       '';
     };
 
-    nodeCofigs = lib.mkOption {
-      type = lib.types.str;
+    nodeConfigs = lib.mkOption {
+      type = lib.types.attrs;
       default = let
         cfg = config.infra;
         nodes = lib.lists.flatten (
