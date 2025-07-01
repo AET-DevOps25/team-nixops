@@ -14,7 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from .routers import embed, stream
-from .db import create_db_and_tables
+from .data.db import create_db_and_tables
 
 
 logger = logging.getLogger("uvicorn.error")
