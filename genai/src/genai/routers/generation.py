@@ -131,8 +131,18 @@ def grade_documents(
     state: MessagesState,
 ) -> Literal["generate_answer", "rewrite_question"]:
     """Determine whether the retrieved documents are relevant to the question."""
-    question = state["messages"][0].content
-    context = state["messages"][-1].content
+    messages = state["messages"]
+    context = messages[-1].content
+    question = messages[0].content
+
+    for i in range(len(messages) - 2, -1, -1):
+        is_human_msg = not hasattr(messages[i], "tool_calls")
+        if is_human_msg:
+            question = messages[i].content
+            print("------------------------")
+            print(question)
+            print("------------------------")
+            break
 
     prompt = GRADE_PROMPT.format(question=question, context=context)
     response = llm.with_structured_output(  # TODO: use separate model with temp zero
