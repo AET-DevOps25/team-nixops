@@ -18,9 +18,9 @@ import re  # noqa: F401
 import json
 
 
-from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
+from pydantic import BaseModel, ConfigDict
 from typing import Any, ClassVar, Dict, List, Optional
-from openapi_server.models.module import Module
+from openapi_server.models.course import Course
 
 try:
     from typing import Self
@@ -28,23 +28,15 @@ except ImportError:
     from typing_extensions import Self
 
 
-class StudyProgram(BaseModel):
+class ModuleCourses(BaseModel):
     """
-    StudyProgram
+    ModuleCourses
     """  # noqa: E501
 
-    study_id: Optional[StrictInt] = None
-    program_name: Optional[StrictStr] = None
-    degree_program_name: Optional[StrictStr] = None
-    degree_type_name: Optional[StrictStr] = None
-    semesters: Optional[Dict[str, List[Module]]] = None
-    __properties: ClassVar[List[str]] = [
-        "study_id",
-        "program_name",
-        "degree_program_name",
-        "degree_type_name",
-        "semesters",
-    ]
+    lectures: Optional[List[Course]] = None
+    tutorials: Optional[List[Course]] = None
+    other: Optional[List[Course]] = None
+    __properties: ClassVar[List[str]] = ["lectures", "tutorials", "other"]
 
     model_config = {
         "populate_by_name": True,
@@ -63,7 +55,7 @@ class StudyProgram(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:
-        """Create an instance of StudyProgram from a JSON string"""
+        """Create an instance of ModuleCourses from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -81,20 +73,32 @@ class StudyProgram(BaseModel):
             exclude={},
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of each value in semesters (dict of array)
-        _field_dict_of_array = {}
-        if self.semesters:
-            for _key in self.semesters:
-                if self.semesters[_key] is not None:
-                    _field_dict_of_array[_key] = [
-                        _item.to_dict() for _item in self.semesters[_key]
-                    ]
-            _dict["semesters"] = _field_dict_of_array
+        # override the default output from pydantic by calling `to_dict()` of each item in lectures (list)
+        _items = []
+        if self.lectures:
+            for _item in self.lectures:
+                if _item:
+                    _items.append(_item.to_dict())
+            _dict["lectures"] = _items
+        # override the default output from pydantic by calling `to_dict()` of each item in tutorials (list)
+        _items = []
+        if self.tutorials:
+            for _item in self.tutorials:
+                if _item:
+                    _items.append(_item.to_dict())
+            _dict["tutorials"] = _items
+        # override the default output from pydantic by calling `to_dict()` of each item in other (list)
+        _items = []
+        if self.other:
+            for _item in self.other:
+                if _item:
+                    _items.append(_item.to_dict())
+            _dict["other"] = _items
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Dict) -> Self:
-        """Create an instance of StudyProgram from a dict"""
+        """Create an instance of ModuleCourses from a dict"""
         if obj is None:
             return None
 
@@ -103,20 +107,20 @@ class StudyProgram(BaseModel):
 
         _obj = cls.model_validate(
             {
-                "study_id": obj.get("study_id"),
-                "program_name": obj.get("program_name"),
-                "degree_program_name": obj.get("degree_program_name"),
-                "degree_type_name": obj.get("degree_type_name"),
-                "semesters": dict(
-                    (
-                        _k,
-                        (
-                            [Module.from_dict(_item) for _item in _v]
-                            if _v is not None
-                            else None
-                        ),
-                    )
-                    for _k, _v in obj.get("semesters").items()
+                "lectures": (
+                    [Course.from_dict(_item) for _item in obj.get("lectures")]
+                    if obj.get("lectures") is not None
+                    else None
+                ),
+                "tutorials": (
+                    [Course.from_dict(_item) for _item in obj.get("tutorials")]
+                    if obj.get("tutorials") is not None
+                    else None
+                ),
+                "other": (
+                    [Course.from_dict(_item) for _item in obj.get("other")]
+                    if obj.get("other") is not None
+                    else None
                 ),
             }
         )

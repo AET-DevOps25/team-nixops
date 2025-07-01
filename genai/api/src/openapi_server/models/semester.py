@@ -18,9 +18,8 @@ import re  # noqa: F401
 import json
 
 
-from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
-from openapi_server.models.module import Module
 
 try:
     from typing import Self
@@ -28,23 +27,15 @@ except ImportError:
     from typing_extensions import Self
 
 
-class StudyProgram(BaseModel):
+class Semester(BaseModel):
     """
-    StudyProgram
+    Semester
     """  # noqa: E501
 
-    study_id: Optional[StrictInt] = None
-    program_name: Optional[StrictStr] = None
-    degree_program_name: Optional[StrictStr] = None
-    degree_type_name: Optional[StrictStr] = None
-    semesters: Optional[Dict[str, List[Module]]] = None
-    __properties: ClassVar[List[str]] = [
-        "study_id",
-        "program_name",
-        "degree_program_name",
-        "degree_type_name",
-        "semesters",
-    ]
+    semester_key: Optional[StrictStr] = Field(default=None, alias="semesterKey")
+    semester_title: Optional[StrictStr] = Field(default=None, alias="semesterTitle")
+    semester_tag: Optional[StrictStr] = Field(default=None, alias="semesterTag")
+    __properties: ClassVar[List[str]] = ["semesterKey", "semesterTitle", "semesterTag"]
 
     model_config = {
         "populate_by_name": True,
@@ -63,7 +54,7 @@ class StudyProgram(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:
-        """Create an instance of StudyProgram from a JSON string"""
+        """Create an instance of Semester from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -81,20 +72,11 @@ class StudyProgram(BaseModel):
             exclude={},
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of each value in semesters (dict of array)
-        _field_dict_of_array = {}
-        if self.semesters:
-            for _key in self.semesters:
-                if self.semesters[_key] is not None:
-                    _field_dict_of_array[_key] = [
-                        _item.to_dict() for _item in self.semesters[_key]
-                    ]
-            _dict["semesters"] = _field_dict_of_array
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Dict) -> Self:
-        """Create an instance of StudyProgram from a dict"""
+        """Create an instance of Semester from a dict"""
         if obj is None:
             return None
 
@@ -103,21 +85,9 @@ class StudyProgram(BaseModel):
 
         _obj = cls.model_validate(
             {
-                "study_id": obj.get("study_id"),
-                "program_name": obj.get("program_name"),
-                "degree_program_name": obj.get("degree_program_name"),
-                "degree_type_name": obj.get("degree_type_name"),
-                "semesters": dict(
-                    (
-                        _k,
-                        (
-                            [Module.from_dict(_item) for _item in _v]
-                            if _v is not None
-                            else None
-                        ),
-                    )
-                    for _k, _v in obj.get("semesters").items()
-                ),
+                "semesterKey": obj.get("semesterKey"),
+                "semesterTitle": obj.get("semesterTitle"),
+                "semesterTag": obj.get("semesterTag"),
             }
         )
         return _obj

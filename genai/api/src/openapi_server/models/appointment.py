@@ -18,9 +18,9 @@ import re  # noqa: F401
 import json
 
 
-from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
+from datetime import date
+from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr, field_validator
 from typing import Any, ClassVar, Dict, List, Optional
-from openapi_server.models.module import Module
 
 try:
     from typing import Self
@@ -28,23 +28,46 @@ except ImportError:
     from typing_extensions import Self
 
 
-class StudyProgram(BaseModel):
+class Appointment(BaseModel):
     """
-    StudyProgram
+    Appointment
     """  # noqa: E501
 
-    study_id: Optional[StrictInt] = None
-    program_name: Optional[StrictStr] = None
-    degree_program_name: Optional[StrictStr] = None
-    degree_type_name: Optional[StrictStr] = None
-    semesters: Optional[Dict[str, List[Module]]] = None
+    appointment_id: Optional[StrictInt] = None
+    series_begin_date: Optional[date] = Field(default=None, alias="seriesBeginDate")
+    series_end_date: Optional[date] = Field(default=None, alias="seriesEndDate")
+    begin_time: Optional[StrictStr] = Field(default=None, alias="beginTime")
+    end_time: Optional[StrictStr] = Field(default=None, alias="endTime")
+    weekdays: Optional[List[StrictStr]] = None
     __properties: ClassVar[List[str]] = [
-        "study_id",
-        "program_name",
-        "degree_program_name",
-        "degree_type_name",
-        "semesters",
+        "appointment_id",
+        "seriesBeginDate",
+        "seriesEndDate",
+        "beginTime",
+        "endTime",
+        "weekdays",
     ]
+
+    @field_validator("weekdays")
+    def weekdays_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        for i in value:
+            if i not in (
+                "mo",
+                "di",
+                "mi",
+                "do",
+                "fr",
+                "sa",
+                "so",
+            ):
+                raise ValueError(
+                    "each list item must be one of ('mo', 'di', 'mi', 'do', 'fr', 'sa', 'so')"
+                )
+        return value
 
     model_config = {
         "populate_by_name": True,
@@ -63,7 +86,7 @@ class StudyProgram(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:
-        """Create an instance of StudyProgram from a JSON string"""
+        """Create an instance of Appointment from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -81,20 +104,11 @@ class StudyProgram(BaseModel):
             exclude={},
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of each value in semesters (dict of array)
-        _field_dict_of_array = {}
-        if self.semesters:
-            for _key in self.semesters:
-                if self.semesters[_key] is not None:
-                    _field_dict_of_array[_key] = [
-                        _item.to_dict() for _item in self.semesters[_key]
-                    ]
-            _dict["semesters"] = _field_dict_of_array
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Dict) -> Self:
-        """Create an instance of StudyProgram from a dict"""
+        """Create an instance of Appointment from a dict"""
         if obj is None:
             return None
 
@@ -103,21 +117,12 @@ class StudyProgram(BaseModel):
 
         _obj = cls.model_validate(
             {
-                "study_id": obj.get("study_id"),
-                "program_name": obj.get("program_name"),
-                "degree_program_name": obj.get("degree_program_name"),
-                "degree_type_name": obj.get("degree_type_name"),
-                "semesters": dict(
-                    (
-                        _k,
-                        (
-                            [Module.from_dict(_item) for _item in _v]
-                            if _v is not None
-                            else None
-                        ),
-                    )
-                    for _k, _v in obj.get("semesters").items()
-                ),
+                "appointment_id": obj.get("appointment_id"),
+                "seriesBeginDate": obj.get("seriesBeginDate"),
+                "seriesEndDate": obj.get("seriesEndDate"),
+                "beginTime": obj.get("beginTime"),
+                "endTime": obj.get("endTime"),
+                "weekdays": obj.get("weekdays"),
             }
         )
         return _obj

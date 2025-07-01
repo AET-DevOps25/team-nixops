@@ -24,7 +24,7 @@ from fastapi import (  # noqa: F401
 
 from openapi_server.models.extra_models import TokenModel  # noqa: F401
 from pydantic import Field, StrictInt
-from typing import Any, List
+from typing import Any
 from typing_extensions import Annotated
 from openapi_server.models.error import Error
 from openapi_server.models.study_program import StudyProgram
@@ -69,30 +69,11 @@ async def create_study_program(
     response_model_by_alias=True,
 )
 async def delete_study_program(
-    id: Annotated[StrictInt, Field(description="ID of the study program that should be deleted")] = Path(..., description="ID of the study program that should be deleted"),
+    id: Annotated[
+        StrictInt, Field(description="ID of the study program that should be deleted")
+    ] = Path(..., description="ID of the study program that should be deleted"),
 ) -> None:
     """Delete a study program"""
     if not BaseEmbeddingApi.subclasses:
         raise HTTPException(status_code=500, detail="Not implemented")
     return await BaseEmbeddingApi.subclasses[0]().delete_study_program(id)
-
-
-@router.post(
-    "/embed/{id}",
-    responses={
-        200: {"description": "successful operation"},
-        400: {"description": "Invalid status value"},
-        200: {"model": Error, "description": "Unexpected error"},
-    },
-    tags=["embedding"],
-    summary="Add new modules to a study program",
-    response_model_by_alias=True,
-)
-async def update_study_program(
-    id: Annotated[StrictInt, Field(description="ID of the study program")] = Path(..., description="ID of the study program"),
-    request_body: List[StrictInt] = Body(None, description=""),
-) -> None:
-    """Add new modules to a study program."""
-    if not BaseEmbeddingApi.subclasses:
-        raise HTTPException(status_code=500, detail="Not implemented")
-    return await BaseEmbeddingApi.subclasses[0]().update_study_program(id, request_body)

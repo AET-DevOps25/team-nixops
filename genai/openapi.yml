@@ -37,37 +37,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
   /embed/{id}:
-    post:
-      summary: Add new modules to a study program
-      description: Add new modules to a study program.
-      operationId: updateStudyProgram
-      tags:
-        - embedding
-      parameters:
-        - name: id
-          in: path
-          description: ID of the study program
-          required: true
-          schema:
-            type: integer
-            format: int64
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Modules'
-        required: true
-      responses:
-        '200':
-          description: successful operation
-        '400':
-          description: Invalid status value
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
     delete:
       tags:
         - embedding
@@ -129,22 +98,22 @@ paths:
                   data: World
 components:
   schemas:
+    Semester:
+      $ref: '../scraper/openapi.yaml#/components/schemas/Semester'
+
     StudyProgram:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        modules:
-          $ref: '#/components/schemas/Modules'
-      required:
-        - id
-        - modules
-    Modules:
-        type: array
-        items:
-          type: integer
-          format: int64
+      $ref: '../scraper/openapi.yaml#/components/schemas/StudyProgram'
+    Module:
+      $ref: '../scraper/openapi.yaml#/components/schemas/Module'
+
+    ModuleCourses:
+      $ref: '../scraper/openapi.yaml#/components/schemas/ModuleCourses'
+            
+    Course:
+      $ref: '../scraper/openapi.yaml#/components/schemas/Course'
+
+    Appointment:
+      $ref: '../scraper/openapi.yaml#/components/schemas/Appointment'
     Error:
       type: object
       properties:

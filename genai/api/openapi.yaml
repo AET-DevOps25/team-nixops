@@ -63,39 +63,6 @@ paths:
       summary: Delete a study program
       tags:
       - embedding
-    post:
-      description: Add new modules to a study program.
-      operationId: updateStudyProgram
-      parameters:
-      - description: ID of the study program
-        explode: false
-        in: path
-        name: id
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Modules'
-        required: true
-      responses:
-        "200":
-          description: successful operation
-        "400":
-          description: Invalid status value
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Unexpected error
-      summary: Add new modules to a study program
-      tags:
-      - embedding
   /chat:
     get:
       description: Communicate with the ChatBot making use of streamed responses
@@ -135,34 +102,847 @@ paths:
       - generation
 components:
   schemas:
+    Semester:
+      properties:
+        semesterKey:
+          example: 2023FS
+          type: string
+        semesterTitle:
+          example: Spring Semester 2023
+          type: string
+        semesterTag:
+          example: spring
+          type: string
+      type: object
     StudyProgram:
       example:
-        id: 0
-        modules:
-        - 6
-        - 6
+        degree_program_name: Bachelor of Science in Computer Science
+        program_name: Computer Science
+        degree_type_name: Bachelor
+        study_id: 171017263
+        semesters:
+          key:
+          - methods_en: "Lecture, Exercises (EN)"
+            courses:
+              other:
+              - courseType: exercise
+                courseName: Advanced Algorithms
+                courseNameList: "Algorithms, Data Structures"
+                appointments:
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                courseNameListEn: "Algorithms, Data Structures (EN)"
+                courseNameEn: Advanced Algorithms (EN)
+                courseId: 12345
+              - courseType: exercise
+                courseName: Advanced Algorithms
+                courseNameList: "Algorithms, Data Structures"
+                appointments:
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                courseNameListEn: "Algorithms, Data Structures (EN)"
+                courseNameEn: Advanced Algorithms (EN)
+                courseId: 12345
+              tutorials:
+              - courseType: exercise
+                courseName: Advanced Algorithms
+                courseNameList: "Algorithms, Data Structures"
+                appointments:
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                courseNameListEn: "Algorithms, Data Structures (EN)"
+                courseNameEn: Advanced Algorithms (EN)
+                courseId: 12345
+              - courseType: exercise
+                courseName: Advanced Algorithms
+                courseNameList: "Algorithms, Data Structures"
+                appointments:
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                courseNameListEn: "Algorithms, Data Structures (EN)"
+                courseNameEn: Advanced Algorithms (EN)
+                courseId: 12345
+              lectures:
+              - courseType: exercise
+                courseName: Advanced Algorithms
+                courseNameList: "Algorithms, Data Structures"
+                appointments:
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                courseNameListEn: "Algorithms, Data Structures (EN)"
+                courseNameEn: Advanced Algorithms (EN)
+                courseId: 12345
+              - courseType: exercise
+                courseName: Advanced Algorithms
+                courseNameList: "Algorithms, Data Structures"
+                appointments:
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                courseNameListEn: "Algorithms, Data Structures (EN)"
+                courseNameEn: Advanced Algorithms (EN)
+                courseId: 12345
+            code: CS123
+            methods: "Lecture, Exercises"
+            content_en: "Covers basics such as loops, variables, conditionals... (EN)"
+            title: Introduction to Programming
+            exam_en: Written exam (EN)
+            content: "Covers basics such as loops, variables, conditionals..."
+            exam: Written exam
+            credits: 5.0
+            title_en: Introduction to Programming (EN)
+            id: CS123
+            outcome: Students can write basic code.
+            outcome_en: Students can write basic code. (EN)
+          - methods_en: "Lecture, Exercises (EN)"
+            courses:
+              other:
+              - courseType: exercise
+                courseName: Advanced Algorithms
+                courseNameList: "Algorithms, Data Structures"
+                appointments:
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                courseNameListEn: "Algorithms, Data Structures (EN)"
+                courseNameEn: Advanced Algorithms (EN)
+                courseId: 12345
+              - courseType: exercise
+                courseName: Advanced Algorithms
+                courseNameList: "Algorithms, Data Structures"
+                appointments:
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                courseNameListEn: "Algorithms, Data Structures (EN)"
+                courseNameEn: Advanced Algorithms (EN)
+                courseId: 12345
+              tutorials:
+              - courseType: exercise
+                courseName: Advanced Algorithms
+                courseNameList: "Algorithms, Data Structures"
+                appointments:
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                courseNameListEn: "Algorithms, Data Structures (EN)"
+                courseNameEn: Advanced Algorithms (EN)
+                courseId: 12345
+              - courseType: exercise
+                courseName: Advanced Algorithms
+                courseNameList: "Algorithms, Data Structures"
+                appointments:
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                courseNameListEn: "Algorithms, Data Structures (EN)"
+                courseNameEn: Advanced Algorithms (EN)
+                courseId: 12345
+              lectures:
+              - courseType: exercise
+                courseName: Advanced Algorithms
+                courseNameList: "Algorithms, Data Structures"
+                appointments:
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                courseNameListEn: "Algorithms, Data Structures (EN)"
+                courseNameEn: Advanced Algorithms (EN)
+                courseId: 12345
+              - courseType: exercise
+                courseName: Advanced Algorithms
+                courseNameList: "Algorithms, Data Structures"
+                appointments:
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                - seriesEndDate: 2024-07-01
+                  weekdays:
+                  - mo
+                  - di
+                  seriesBeginDate: 2024-03-01
+                  appointment_id: 1
+                  beginTime: 08:00
+                  endTime: 10:00
+                courseNameListEn: "Algorithms, Data Structures (EN)"
+                courseNameEn: Advanced Algorithms (EN)
+                courseId: 12345
+            code: CS123
+            methods: "Lecture, Exercises"
+            content_en: "Covers basics such as loops, variables, conditionals... (EN)"
+            title: Introduction to Programming
+            exam_en: Written exam (EN)
+            content: "Covers basics such as loops, variables, conditionals..."
+            exam: Written exam
+            credits: 5.0
+            title_en: Introduction to Programming (EN)
+            id: CS123
+            outcome: Students can write basic code.
+            outcome_en: Students can write basic code. (EN)
       properties:
-        id:
+        study_id:
+          example: 171017263
           format: int64
-          title: id
+          title: study_id
           type: integer
-        modules:
-          items:
-            format: int64
-            type: integer
-          title: modules
-          type: array
-      required:
-      - id
-      - modules
+        program_name:
+          example: Computer Science
+          title: program_name
+          type: string
+        degree_program_name:
+          example: Bachelor of Science in Computer Science
+          title: degree_program_name
+          type: string
+        degree_type_name:
+          example: Bachelor
+          title: degree_type_name
+          type: string
+        semesters:
+          additionalProperties:
+            items:
+              $ref: '#/components/schemas/Module'
+            type: array
+          title: semesters
+          type: object
       title: StudyProgram
       type: object
-    Modules:
-      items:
-        format: int64
-        type: integer
-      title: modules
-      type: array
+    Module:
+      example:
+        methods_en: "Lecture, Exercises (EN)"
+        courses:
+          other:
+          - courseType: exercise
+            courseName: Advanced Algorithms
+            courseNameList: "Algorithms, Data Structures"
+            appointments:
+            - seriesEndDate: 2024-07-01
+              weekdays:
+              - mo
+              - di
+              seriesBeginDate: 2024-03-01
+              appointment_id: 1
+              beginTime: 08:00
+              endTime: 10:00
+            - seriesEndDate: 2024-07-01
+              weekdays:
+              - mo
+              - di
+              seriesBeginDate: 2024-03-01
+              appointment_id: 1
+              beginTime: 08:00
+              endTime: 10:00
+            courseNameListEn: "Algorithms, Data Structures (EN)"
+            courseNameEn: Advanced Algorithms (EN)
+            courseId: 12345
+          - courseType: exercise
+            courseName: Advanced Algorithms
+            courseNameList: "Algorithms, Data Structures"
+            appointments:
+            - seriesEndDate: 2024-07-01
+              weekdays:
+              - mo
+              - di
+              seriesBeginDate: 2024-03-01
+              appointment_id: 1
+              beginTime: 08:00
+              endTime: 10:00
+            - seriesEndDate: 2024-07-01
+              weekdays:
+              - mo
+              - di
+              seriesBeginDate: 2024-03-01
+              appointment_id: 1
+              beginTime: 08:00
+              endTime: 10:00
+            courseNameListEn: "Algorithms, Data Structures (EN)"
+            courseNameEn: Advanced Algorithms (EN)
+            courseId: 12345
+          tutorials:
+          - courseType: exercise
+            courseName: Advanced Algorithms
+            courseNameList: "Algorithms, Data Structures"
+            appointments:
+            - seriesEndDate: 2024-07-01
+              weekdays:
+              - mo
+              - di
+              seriesBeginDate: 2024-03-01
+              appointment_id: 1
+              beginTime: 08:00
+              endTime: 10:00
+            - seriesEndDate: 2024-07-01
+              weekdays:
+              - mo
+              - di
+              seriesBeginDate: 2024-03-01
+              appointment_id: 1
+              beginTime: 08:00
+              endTime: 10:00
+            courseNameListEn: "Algorithms, Data Structures (EN)"
+            courseNameEn: Advanced Algorithms (EN)
+            courseId: 12345
+          - courseType: exercise
+            courseName: Advanced Algorithms
+            courseNameList: "Algorithms, Data Structures"
+            appointments:
+            - seriesEndDate: 2024-07-01
+              weekdays:
+              - mo
+              - di
+              seriesBeginDate: 2024-03-01
+              appointment_id: 1
+              beginTime: 08:00
+              endTime: 10:00
+            - seriesEndDate: 2024-07-01
+              weekdays:
+              - mo
+              - di
+              seriesBeginDate: 2024-03-01
+              appointment_id: 1
+              beginTime: 08:00
+              endTime: 10:00
+            courseNameListEn: "Algorithms, Data Structures (EN)"
+            courseNameEn: Advanced Algorithms (EN)
+            courseId: 12345
+          lectures:
+          - courseType: exercise
+            courseName: Advanced Algorithms
+            courseNameList: "Algorithms, Data Structures"
+            appointments:
+            - seriesEndDate: 2024-07-01
+              weekdays:
+              - mo
+              - di
+              seriesBeginDate: 2024-03-01
+              appointment_id: 1
+              beginTime: 08:00
+              endTime: 10:00
+            - seriesEndDate: 2024-07-01
+              weekdays:
+              - mo
+              - di
+              seriesBeginDate: 2024-03-01
+              appointment_id: 1
+              beginTime: 08:00
+              endTime: 10:00
+            courseNameListEn: "Algorithms, Data Structures (EN)"
+            courseNameEn: Advanced Algorithms (EN)
+            courseId: 12345
+          - courseType: exercise
+            courseName: Advanced Algorithms
+            courseNameList: "Algorithms, Data Structures"
+            appointments:
+            - seriesEndDate: 2024-07-01
+              weekdays:
+              - mo
+              - di
+              seriesBeginDate: 2024-03-01
+              appointment_id: 1
+              beginTime: 08:00
+              endTime: 10:00
+            - seriesEndDate: 2024-07-01
+              weekdays:
+              - mo
+              - di
+              seriesBeginDate: 2024-03-01
+              appointment_id: 1
+              beginTime: 08:00
+              endTime: 10:00
+            courseNameListEn: "Algorithms, Data Structures (EN)"
+            courseNameEn: Advanced Algorithms (EN)
+            courseId: 12345
+        code: CS123
+        methods: "Lecture, Exercises"
+        content_en: "Covers basics such as loops, variables, conditionals... (EN)"
+        title: Introduction to Programming
+        exam_en: Written exam (EN)
+        content: "Covers basics such as loops, variables, conditionals..."
+        exam: Written exam
+        credits: 5.0
+        title_en: Introduction to Programming (EN)
+        id: CS123
+        outcome: Students can write basic code.
+        outcome_en: Students can write basic code. (EN)
+      properties:
+        id:
+          example: CS123
+          title: id
+          type: string
+        code:
+          example: CS123
+          title: code
+          type: string
+        title:
+          example: Introduction to Programming
+          title: title
+          type: string
+        title_en:
+          example: Introduction to Programming (EN)
+          title: title_en
+          type: string
+        content:
+          example: "Covers basics such as loops, variables, conditionals..."
+          title: content
+          type: string
+        content_en:
+          example: "Covers basics such as loops, variables, conditionals... (EN)"
+          title: content_en
+          type: string
+        outcome:
+          example: Students can write basic code.
+          title: outcome
+          type: string
+        outcome_en:
+          example: Students can write basic code. (EN)
+          title: outcome_en
+          type: string
+        methods:
+          example: "Lecture, Exercises"
+          title: methods
+          type: string
+        methods_en:
+          example: "Lecture, Exercises (EN)"
+          title: methods_en
+          type: string
+        exam:
+          example: Written exam
+          title: exam
+          type: string
+        exam_en:
+          example: Written exam (EN)
+          title: exam_en
+          type: string
+        credits:
+          example: 5.0
+          format: float
+          title: credits
+          type: number
+        courses:
+          $ref: '#/components/schemas/ModuleCourses'
+      title: Module
+      type: object
+    ModuleCourses:
+      example:
+        other:
+        - courseType: exercise
+          courseName: Advanced Algorithms
+          courseNameList: "Algorithms, Data Structures"
+          appointments:
+          - seriesEndDate: 2024-07-01
+            weekdays:
+            - mo
+            - di
+            seriesBeginDate: 2024-03-01
+            appointment_id: 1
+            beginTime: 08:00
+            endTime: 10:00
+          - seriesEndDate: 2024-07-01
+            weekdays:
+            - mo
+            - di
+            seriesBeginDate: 2024-03-01
+            appointment_id: 1
+            beginTime: 08:00
+            endTime: 10:00
+          courseNameListEn: "Algorithms, Data Structures (EN)"
+          courseNameEn: Advanced Algorithms (EN)
+          courseId: 12345
+        - courseType: exercise
+          courseName: Advanced Algorithms
+          courseNameList: "Algorithms, Data Structures"
+          appointments:
+          - seriesEndDate: 2024-07-01
+            weekdays:
+            - mo
+            - di
+            seriesBeginDate: 2024-03-01
+            appointment_id: 1
+            beginTime: 08:00
+            endTime: 10:00
+          - seriesEndDate: 2024-07-01
+            weekdays:
+            - mo
+            - di
+            seriesBeginDate: 2024-03-01
+            appointment_id: 1
+            beginTime: 08:00
+            endTime: 10:00
+          courseNameListEn: "Algorithms, Data Structures (EN)"
+          courseNameEn: Advanced Algorithms (EN)
+          courseId: 12345
+        tutorials:
+        - courseType: exercise
+          courseName: Advanced Algorithms
+          courseNameList: "Algorithms, Data Structures"
+          appointments:
+          - seriesEndDate: 2024-07-01
+            weekdays:
+            - mo
+            - di
+            seriesBeginDate: 2024-03-01
+            appointment_id: 1
+            beginTime: 08:00
+            endTime: 10:00
+          - seriesEndDate: 2024-07-01
+            weekdays:
+            - mo
+            - di
+            seriesBeginDate: 2024-03-01
+            appointment_id: 1
+            beginTime: 08:00
+            endTime: 10:00
+          courseNameListEn: "Algorithms, Data Structures (EN)"
+          courseNameEn: Advanced Algorithms (EN)
+          courseId: 12345
+        - courseType: exercise
+          courseName: Advanced Algorithms
+          courseNameList: "Algorithms, Data Structures"
+          appointments:
+          - seriesEndDate: 2024-07-01
+            weekdays:
+            - mo
+            - di
+            seriesBeginDate: 2024-03-01
+            appointment_id: 1
+            beginTime: 08:00
+            endTime: 10:00
+          - seriesEndDate: 2024-07-01
+            weekdays:
+            - mo
+            - di
+            seriesBeginDate: 2024-03-01
+            appointment_id: 1
+            beginTime: 08:00
+            endTime: 10:00
+          courseNameListEn: "Algorithms, Data Structures (EN)"
+          courseNameEn: Advanced Algorithms (EN)
+          courseId: 12345
+        lectures:
+        - courseType: exercise
+          courseName: Advanced Algorithms
+          courseNameList: "Algorithms, Data Structures"
+          appointments:
+          - seriesEndDate: 2024-07-01
+            weekdays:
+            - mo
+            - di
+            seriesBeginDate: 2024-03-01
+            appointment_id: 1
+            beginTime: 08:00
+            endTime: 10:00
+          - seriesEndDate: 2024-07-01
+            weekdays:
+            - mo
+            - di
+            seriesBeginDate: 2024-03-01
+            appointment_id: 1
+            beginTime: 08:00
+            endTime: 10:00
+          courseNameListEn: "Algorithms, Data Structures (EN)"
+          courseNameEn: Advanced Algorithms (EN)
+          courseId: 12345
+        - courseType: exercise
+          courseName: Advanced Algorithms
+          courseNameList: "Algorithms, Data Structures"
+          appointments:
+          - seriesEndDate: 2024-07-01
+            weekdays:
+            - mo
+            - di
+            seriesBeginDate: 2024-03-01
+            appointment_id: 1
+            beginTime: 08:00
+            endTime: 10:00
+          - seriesEndDate: 2024-07-01
+            weekdays:
+            - mo
+            - di
+            seriesBeginDate: 2024-03-01
+            appointment_id: 1
+            beginTime: 08:00
+            endTime: 10:00
+          courseNameListEn: "Algorithms, Data Structures (EN)"
+          courseNameEn: Advanced Algorithms (EN)
+          courseId: 12345
+      properties:
+        lectures:
+          items:
+            $ref: '#/components/schemas/Course'
+          title: lectures
+          type: array
+        tutorials:
+          items:
+            $ref: '#/components/schemas/Course'
+          title: tutorials
+          type: array
+        other:
+          items:
+            $ref: '#/components/schemas/Course'
+          title: other
+          type: array
+      title: ModuleCourses
+      type: object
+    Course:
+      example:
+        courseType: exercise
+        courseName: Advanced Algorithms
+        courseNameList: "Algorithms, Data Structures"
+        appointments:
+        - seriesEndDate: 2024-07-01
+          weekdays:
+          - mo
+          - di
+          seriesBeginDate: 2024-03-01
+          appointment_id: 1
+          beginTime: 08:00
+          endTime: 10:00
+        - seriesEndDate: 2024-07-01
+          weekdays:
+          - mo
+          - di
+          seriesBeginDate: 2024-03-01
+          appointment_id: 1
+          beginTime: 08:00
+          endTime: 10:00
+        courseNameListEn: "Algorithms, Data Structures (EN)"
+        courseNameEn: Advanced Algorithms (EN)
+        courseId: 12345
+      properties:
+        courseId:
+          example: 12345
+          title: courseId
+          type: integer
+        courseType:
+          example: exercise
+          title: courseType
+          type: string
+        courseName:
+          example: Advanced Algorithms
+          title: courseName
+          type: string
+        courseNameEn:
+          example: Advanced Algorithms (EN)
+          title: courseNameEn
+          type: string
+        courseNameList:
+          example: "Algorithms, Data Structures"
+          title: courseNameList
+          type: string
+        courseNameListEn:
+          example: "Algorithms, Data Structures (EN)"
+          title: courseNameListEn
+          type: string
+        appointments:
+          items:
+            $ref: '#/components/schemas/Appointment'
+          title: appointments
+          type: array
+      title: Course
+      type: object
+    Appointment:
+      example:
+        seriesEndDate: 2024-07-01
+        weekdays:
+        - mo
+        - di
+        seriesBeginDate: 2024-03-01
+        appointment_id: 1
+        beginTime: 08:00
+        endTime: 10:00
+      properties:
+        appointment_id:
+          example: 1
+          title: appointment_id
+          type: integer
+        seriesBeginDate:
+          example: 2024-03-01
+          format: date
+          title: seriesBeginDate
+          type: string
+        seriesEndDate:
+          example: 2024-07-01
+          format: date
+          title: seriesEndDate
+          type: string
+        beginTime:
+          example: 08:00
+          title: beginTime
+          type: string
+        endTime:
+          example: 10:00
+          title: endTime
+          type: string
+        weekdays:
+          example:
+          - mo
+          - di
+          items:
+            enum:
+            - mo
+            - di
+            - mi
+            - do
+            - fr
+            - sa
+            - so
+            type: string
+          title: weekdays
+          type: array
+      title: Appointment
+      type: object
     Error:
       example:
         code: code
