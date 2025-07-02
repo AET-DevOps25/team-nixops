@@ -5,6 +5,8 @@
   gradle,
   jre,
   jdk21,
+  dockerTools,
+  buildEnv,
 }: let
   self = stdenv.mkDerivation rec {
     pname = "schedulingEngine";
@@ -42,6 +44,26 @@
       makeWrapper ${lib.getExe jre} $out/bin/${pname} \
         --add-flags "-jar $out/share/${pname}/${pname}-${version}.jar"
     '';
+
+    passthru = {
+      dockerImage = dockerTools.buildImage {
+        name = "nixops-${pname}";
+        tag = version;
+
+        copyToRoot = buildEnv {
+          name = "image-root";
+          paths = [
+            self
+          ];
+          pathsToLink = ["/"];
+        };
+
+        config = {
+          Cmd = ["/bin/${pname}"];
+          WorkingDir = "/";
+        };
+      };
+    };
 
     meta.sourceProvenance = with lib.sourceTypes; [
       fromSource
