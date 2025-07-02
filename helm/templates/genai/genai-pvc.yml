@@ -2,8 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: milvus
-  # namespace: "jqvqzx3-team-nixops"
-  # namespace: genai-nixops
+  namespace: "{{ .Values.ServiceNamespace }}"
 spec:
   accessModes:
   - ReadWriteOnce
@@ -17,6 +16,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: minio
+  namespace: "{{ .Values.ServiceNamespace }}"
 spec:
   accessModes:
     - ReadWriteOnce
@@ -29,6 +29,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: etcd
+  namespace: "{{ .Values.ServiceNamespace }}"
 spec:
   accessModes:
     - ReadWriteOnce
