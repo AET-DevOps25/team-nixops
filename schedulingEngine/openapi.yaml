@@ -1,0 +1,183 @@
+openapi: 3.0.1
+info:
+  title: Scheduling API
+  description: API for creating schedules based on course events and availability.
+  version: 1.0.0
+paths:
+  /schedule:
+    post:
+      summary: Create a schedule
+      operationId: schedule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Query'
+      responses:
+        '200':
+          description: Successfully generated schedule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+components:
+  schemas:
+    Query:
+      type: object
+      properties:
+        courses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
+        availability:
+          type: array
+          items:
+            $ref: '#/components/schemas/AvailabilityBlocker'
+        ectsTarget:
+          type: integer
+      required:
+        - courses
+        - ectsTarget
+
+    AvailabilityBlocker:
+      type: object
+      properties:
+        timeSlot:
+          $ref: '#/components/schemas/TimeSlot'
+      required:
+        - timeSlot
+
+    Course:
+      type: object
+      properties:
+        courseId:
+          type: integer
+          example: 12345
+          description: "Unique identifier of the course"
+        courseType:
+          type: string
+          example: "exercise"
+          description: "Type of the course"
+        courseName:
+          type: string
+          example: "Advanced Algorithms"
+          description: "Course name (native language)"
+        courseNameEn:
+          type: string
+          nullable: true
+          example: "Advanced Algorithms (EN)"
+          description: "Course name (English)"
+        courseNameList:
+          type: string
+          nullable: true
+          example: "Algorithms, Data Structures"
+          description: "List of course names or keywords (native language)"
+        courseNameListEn:
+          type: string
+          nullable: true
+          example: "Algorithms, Data Structures (EN)"
+          description: "List of course names or keywords (English)"
+        description:
+          type: string
+          nullable: true
+          example: "Detailed course description"
+          description: "Course description (native language)"
+        descriptionEn:
+          type: string
+          nullable: true
+          example: "Detailed course description (EN)"
+          description: "Course description (English)"
+        teachingMethod:
+          type: string
+          nullable: true
+          example: "Lecture"
+          description: "Teaching method or course type (native language)"
+        teachingMethodEn:
+          type: string
+          nullable: true
+          example: "Lecture (EN)"
+          description: "Teaching method or course type (English)"
+        note:
+          type: string
+          nullable: true
+          example: "Additional notes"
+          description: "Additional notes about the course (native language)"
+        noteEn:
+          type: string
+          nullable: true
+          example: "Additional notes (EN)"
+          description: "Additional notes about the course (English)"
+
+    Event:
+      type: object
+      properties:
+        title:
+          type: string
+        type:
+          type: string
+        timeSlot:
+          $ref: '#/components/schemas/TimeSlot'
+      required:
+        - title
+        - type
+        - timeSlot
+
+    TimeSlot:
+      type: object
+      properties:
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+      required:
+        - startTime
+        - endTime
+
+    Response:
+      type: object
+      properties:
+        scheduled:
+          $ref: '#/components/schemas/Schedule'
+        complement:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+      required:
+        - scheduled
+
+    Schedule:
+      type: object
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+        score:
+          type: integer
+        collisions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Collision'
+      required:
+        - events
+        - score
+        - collisions
+
+    Collision:
+      type: object
+      properties:
+        primary:
+          $ref: '#/components/schemas/Event'
+        secondary:
+          $ref: '#/components/schemas/Event'
+        duration:
+          type: string
+          format: duration
+      required:
+        - primary
+        - secondary
+        - duration
+
