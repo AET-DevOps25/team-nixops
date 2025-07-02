@@ -99,7 +99,7 @@
             nixosMachines // packages // devShells;
 
           packages = {
-            schedulingEngine = pkgs.callPackage ./schedulingEngine {};
+            schedule-optimizer = pkgs.callPackage ./schedule-optimizer {};
             genai = pkgs.callPackage ./genai {
               inherit (inputs) pyproject-nix uv2nix pyproject-build-systems;
             };
