@@ -5,10 +5,9 @@
 }: {
   options.infra = {
     role = lib.mkOption {
-      type = lib.types.str;
+      type = lib.types.enum ["worker" "control" "etcd" "loadbalancer"];
       description = ''
-        Role of the node in the cluster. Supports:
-        "worker" | "control" | "etcd" | "loadbalancer"
+        Role of the node in the cluster.
       '';
     };
     clusterConfigDir = lib.mkOption {
