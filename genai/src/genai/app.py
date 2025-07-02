@@ -34,6 +34,7 @@ app.include_router(embedding.router)
 
 init_telemetry(app)
 
+
 origins = cors_origins.split(", ")
 
 app.add_middleware(
