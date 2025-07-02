@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: genai-db-service
-  # namespace: "{{ .Values.tumid }}-devops25"
+  namespace: "{{ .Values.ServiceNamespace }}"
 spec:
   selector:
     app: genai-db-selector

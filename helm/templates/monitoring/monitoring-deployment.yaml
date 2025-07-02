@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monitoring
+  namespace: "{{ .Values.MonitoringNamespace }}"
+spec:
+  replicas: 1
+  strategy: 
+    type: Recreate
+  selector:
+    matchLabels:
+      app: monitoring-selector
+  template:
+    metadata:
+      labels:
+        app: monitoring-selector
+    spec:
+      initContainers:
+        - name: init-permissions
+          image: busybox
+          command: ['sh', '-c', 'chown -R 472:472 /var/lib/grafana']
+          volumeMounts:
+            - name: grafana-storage
+              mountPath: /var/lib/grafana
+      containers:
+        - name: grafana
+          image: grafana/grafana-oss:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: GF_SECURITY_ADMIN_USER
+              value: "admin"
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              value: "admin"
+            - name: GF_USERS_ALLOW_SIGN_UP
+              value: "false"
+            - name: GF_FEATURE_TOGGLES_ENABLE
+              value: "logsInExplore"
+            - name: GF_LOG_CONSOLECOLORS
+              value: "true"
+          volumeMounts:
+            - name: grafana-storage
+              mountPath: /var/lib/grafana
+        - name: loki
+          image: grafana/loki:2.9.0
+          args: ["-config.file=/etc/loki/loki-config.yml"]
+          ports:
+            - containerPort: 3100
+          volumeMounts:
+            - name: loki-config
+              mountPath: /etc/loki
+      volumes:
+        - name: loki-config
+          configMap:
+            name: monitoring-configmap
+        - name: grafana-storage
+          persistentVolumeClaim:
+            claimName: grafana

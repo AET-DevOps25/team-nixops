@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: client
-  # namespace: ""
+  namespace: "{{ .Values.ServiceNamespace }}"
 spec:
   replicas: {{ .Values.client.replicaCount }}
   selector:

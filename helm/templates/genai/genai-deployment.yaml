@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: genai
-  # namespace: ""
+  namespace: "{{ .Values.ServiceNamespace }}"
 spec:
   replicas: {{ .Values.genai.replicaCount }}
   selector:
@@ -42,3 +42,27 @@ spec:
           ports:
             - containerPort: {{ .Values.genai.service.targetPort }}
               name: genai-api
+          volumeMounts:
+           - name: shared-logs # shared space monitored with Promtail
+             mountPath: /app/logs
+        - name: promtail
+          image: grafana/promtail:master
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+          volumeMounts:
+            - name: config
+              mountPath: /etc/promtail
+            - name: shared-logs # shared space
+              mountPath: /app/logs
+      volumes:
+         - name: config
+           configMap:
+            name: genai-promtail-configmap
+         - name: shared-logs  # shared space monitored with Promtail
+           emptyDir: 
+            sizeLimit: 500Mi
