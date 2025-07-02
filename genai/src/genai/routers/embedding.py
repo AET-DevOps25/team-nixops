@@ -30,18 +30,31 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
         self,
         study_program: StudyProgram,
     ) -> None:
+
         with Session(engine) as session:
             sem = list(
                 map(lambda x: SqlSemester(name=x), study_program.semesters.keys())
             )
-            sp = SqlStudyProgram(
-                id=study_program.study_id,
-                name=study_program.program_name,
-                degree_program_name=study_program.degree_program_name,
-                degree_type_name=study_program.degree_type_name,
-                semesters=sem,
-            )
-            session.add_all([sp])
+
+            sp = session.query(SqlStudyProgram).get(study_program.study_id)
+
+            if sp:
+                # Update existing fields
+                sp.name = study_program.program_name
+                sp.degree_program_name = study_program.degree_program_name
+                sp.degree_type_name = study_program.degree_type_name
+                sp.semesters = sem
+            else:
+                # Create new object if not exists
+                sp = SqlStudyProgram(
+                    id=study_program.study_id,
+                    name=study_program.program_name,
+                    degree_program_name=study_program.degree_program_name,
+                    degree_type_name=study_program.degree_type_name,
+                    semesters=sem,
+                )
+                session.add(sp)
+
             session.commit()
 
             for s in sem:
@@ -53,13 +66,13 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
                     desc = (
                         mod.id
                         + "\n\n"
-                        + mod.content
+                        + (mod.content or "")
                         + "\n\n"
-                        + mod.outcome
+                        + (mod.outcome or "")
                         + "\n\n"
-                        + mod.methods
+                        + (mod.methods or "")
                         + "\n\n"
-                        + mod.exam
+                        + (mod.exam or "")
                         + "\n\nCredits: "
                         + str(mod.credits)
                     )
