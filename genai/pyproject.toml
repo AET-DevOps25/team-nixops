@@ -17,6 +17,7 @@ dependencies = [
     "pymilvus>=2.5.10",
     "python-decouple>=3.8",
     "setuptools>=80.9.0",
+	 "prometheus_fastapi_instrumentator>=7.1.0",
 ]
 
 [project.scripts]
