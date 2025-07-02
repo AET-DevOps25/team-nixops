@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: genai-db
-  # namespace: ""
+  namespace: "{{ .Values.ServiceNamespace }}"
 spec:
   replicas: 1
   strategy: 
