@@ -76,6 +76,7 @@ class EmbeddingScheduler(
             embeddingService.embed(studyProgram, semester)
           } catch (e: ConnectException) {
             logger.error { "Failed to connect to GenAI" }
+            break
           } catch (e: Exception) {
             logger.error(e) {
               "Unexpected error while embedding $studyId, $semesterKey, $curriculumId: ${e.message}"
