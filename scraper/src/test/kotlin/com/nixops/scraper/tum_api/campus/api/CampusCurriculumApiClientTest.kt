@@ -3,17 +3,18 @@ package com.nixops.scraper.tum_api.campus.api
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.nixops.scraper.config.ApiClientProperties
 import com.nixops.scraper.tum_api.campus.model.CampusCurriculum
+import io.mockk.*
 import okhttp3.*
+import okhttp3.Call
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.*
 
 class CampusCurriculumApiClientTest {
 
-  private val mockClient: OkHttpClient = mock()
-  private val mockCall: Call = mock()
+  private val mockClient: OkHttpClient = mockk()
+  private val mockCall: Call = mockk()
   private val mapper = jacksonObjectMapper()
   private val campusConfig = ApiClientProperties.Campus.of("https://example.com/api")
 
@@ -43,8 +44,8 @@ class CampusCurriculumApiClientTest {
             .body(responseBody)
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = CampusCurriculumApiClient(campusConfig, mockClient)
     val result = apiClient.getCurriculaForSemester(204)
@@ -68,8 +69,8 @@ class CampusCurriculumApiClientTest {
             .body("".toResponseBody(null))
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = CampusCurriculumApiClient(campusConfig, mockClient)
 
@@ -91,8 +92,8 @@ class CampusCurriculumApiClientTest {
             .body(null)
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = CampusCurriculumApiClient(campusConfig, mockClient)
 
@@ -117,8 +118,8 @@ class CampusCurriculumApiClientTest {
             .body(responseBody)
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = CampusCurriculumApiClient(campusConfig, mockClient)
 

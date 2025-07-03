@@ -217,8 +217,8 @@ components:
       type: object
       properties:
         id:
-          type: string
-          example: "CS123"
+          type: integer
+          example: 123
         code:
           type: string
           example: "CS123"

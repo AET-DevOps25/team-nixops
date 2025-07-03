@@ -55,6 +55,8 @@ dependencies {
   testImplementation("org.mockito:mockito-core:5.18.0")
   testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
   mockitoAgent("org.mockito:mockito-core:5.18.0") { isTransitive = false }
+  testImplementation("io.mockk:mockk:1.14.4")
+  testImplementation("com.h2database:h2:2.2.224")
 }
 
 sourceSets {

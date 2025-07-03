@@ -2,21 +2,21 @@ package com.nixops.scraper.tum_api.campus.api
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.nixops.scraper.config.ApiClientProperties
-import com.nixops.scraper.tum_api.campus.model.CampusCourse
-import com.nixops.scraper.tum_api.campus.model.CampusGroup
+import com.nixops.scraper.tum_api.campus.model.*
+import io.mockk.*
 import java.io.IOException
 import okhttp3.*
+import okhttp3.Call
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.*
 
 class CampusCourseApiClientTest {
 
-  private val mockClient: OkHttpClient = mock()
-  private val mockCall: Call = mock()
+  private val mockClient: OkHttpClient = mockk()
+  private val mockCall: Call = mockk()
   private val mapper = jacksonObjectMapper()
   private val campusConfig = ApiClientProperties.Campus.of("https://example.com/api")
 
@@ -26,7 +26,25 @@ class CampusCourseApiClientTest {
           courseTitle = com.nixops.scraper.tum_api.campus.model.LangData("Sample Course"),
           semesterDto = com.nixops.scraper.tum_api.campus.model.SemesterDto(123))
 
-  private val sampleGroup = CampusGroup(id = 100, name = "Group A", appointments = emptyList())
+  private val sampleAppointments =
+      listOf(
+          CampusAppointmentSeries(
+              id = 1,
+              seriesBeginDate = DateTime("2025-09-01"),
+              seriesEndDate = DateTime("2025-12-15"),
+              weekdays = listOf(Weekday(1, "MON"), Weekday(3, "WED")),
+              beginTime = "10:00",
+              endTime = "11:30"),
+          CampusAppointmentSeries(
+              id = 2,
+              seriesBeginDate = DateTime("2025-09-02"),
+              seriesEndDate = DateTime("2025-12-16"),
+              weekdays = listOf(Weekday(2, "TUE")),
+              beginTime = "14:00",
+              endTime = "15:30"))
+
+  private val sampleGroup =
+      CampusGroup(id = 100, name = "Group A", appointments = sampleAppointments)
 
   private fun buildCoursesResponse(courses: List<CampusCourse>, totalCount: Int): String {
     val node = mapOf("courses" to courses, "totalCount" to totalCount)
@@ -77,8 +95,8 @@ class CampusCourseApiClientTest {
                     .toResponseBody("application/json".toMediaTypeOrNull()))
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(firstResponse).thenReturn(secondResponse)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returnsMany listOf(firstResponse, secondResponse)
 
     val apiClient = CampusCourseApiClient(campusConfig, mockClient)
     val courses = apiClient.getCourses(curriculumVersionId = 42, termId = 99)
@@ -99,8 +117,8 @@ class CampusCourseApiClientTest {
             .body("".toResponseBody(null))
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = CampusCourseApiClient(campusConfig, mockClient)
 
@@ -121,8 +139,8 @@ class CampusCourseApiClientTest {
             .body(null)
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = CampusCourseApiClient(campusConfig, mockClient)
 
@@ -149,8 +167,8 @@ class CampusCourseApiClientTest {
             .body(responseBody)
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = CampusCourseApiClient(campusConfig, mockClient)
     val result = apiClient.getCourseGroups(123)
@@ -173,8 +191,8 @@ class CampusCourseApiClientTest {
             .body("".toResponseBody(null))
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = CampusCourseApiClient(campusConfig, mockClient)
     val result = apiClient.getCourseGroups(999)
@@ -196,8 +214,8 @@ class CampusCourseApiClientTest {
             .body("".toResponseBody(null))
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = CampusCourseApiClient(campusConfig, mockClient)
 
@@ -218,8 +236,8 @@ class CampusCourseApiClientTest {
             .body(null)
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = CampusCourseApiClient(campusConfig, mockClient)
 

@@ -36,7 +36,7 @@ class ModuleMapper(private val courseMapper: CourseMapper) {
     val moduleCourse = ModuleCourses(lectures = lectures, tutorials = tutorials, other = other)
 
     return com.nixops.openapi.model.Module(
-        id = module.id.value.toString(),
+        id = module.id.value,
         code = module.moduleCode,
         title = module.moduleTitle,
         titleEn = module.moduleTitleEn,

@@ -5,19 +5,20 @@ import com.nixops.scraper.config.ApiClientProperties
 import com.nixops.scraper.tum_api.nat.model.NatDegree
 import com.nixops.scraper.tum_api.nat.model.NatProgram
 import com.nixops.scraper.tum_api.nat.model.NatSchool
+import io.mockk.*
 import java.io.IOException
 import okhttp3.*
+import okhttp3.Call
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.*
 
 class NatProgramApiClientTest {
 
-  private val mockClient: OkHttpClient = mock()
-  private val mockCall: Call = mock()
+  private val mockClient = mockk<OkHttpClient>()
+  private val mockCall = mockk<Call>()
   private val objectMapper = jacksonObjectMapper()
   private val natConfig = ApiClientProperties.Nat.of("https://example.com/api")
 
@@ -62,7 +63,6 @@ class NatProgramApiClientTest {
 
   @Test
   fun `searchPrograms returns all programs across pages`() {
-    // Page 1 response
     val responsePage1 =
         Response.Builder()
             .request(Request.Builder().url("${natConfig.baseUrl}/programs/search?q=test").build())
@@ -79,7 +79,6 @@ class NatProgramApiClientTest {
                     .toResponseBody("application/json".toMediaTypeOrNull()))
             .build()
 
-    // Page 2 response
     val responsePage2 =
         Response.Builder()
             .request(
@@ -99,8 +98,8 @@ class NatProgramApiClientTest {
                     .toResponseBody("application/json".toMediaTypeOrNull()))
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(responsePage1).thenReturn(responsePage2)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returnsMany listOf(responsePage1, responsePage2)
 
     val apiClient = NatProgramApiClient(natConfig, mockClient)
     val results = apiClient.searchPrograms("test")
@@ -124,8 +123,8 @@ class NatProgramApiClientTest {
             .body(emptyResponse.toResponseBody("application/json".toMediaTypeOrNull()))
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = NatProgramApiClient(natConfig, mockClient)
     val results = apiClient.getPrograms()
@@ -144,8 +143,8 @@ class NatProgramApiClientTest {
             .body("".toResponseBody(null))
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = NatProgramApiClient(natConfig, mockClient)
 
@@ -163,8 +162,8 @@ class NatProgramApiClientTest {
             .body(null) // no body
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = NatProgramApiClient(natConfig, mockClient)
 
@@ -173,13 +172,13 @@ class NatProgramApiClientTest {
 
   @Test
   fun `getPrograms calls searchPrograms with empty query`() {
-    val spyApiClient = spy(NatProgramApiClient(natConfig, mockClient))
+    val spyApiClient = spyk(NatProgramApiClient(natConfig, mockClient))
 
-    doReturn(emptyList<NatProgram>()).whenever(spyApiClient).searchPrograms("")
+    every { spyApiClient.searchPrograms("") } returns emptyList()
 
     val results = spyApiClient.getPrograms()
 
-    verify(spyApiClient).searchPrograms("")
+    verify { spyApiClient.searchPrograms("") }
     assertTrue(results.isEmpty())
   }
 

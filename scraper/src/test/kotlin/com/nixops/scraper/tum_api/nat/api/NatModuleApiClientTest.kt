@@ -4,6 +4,8 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.nixops.scraper.config.ApiClientProperties
 import com.nixops.scraper.tum_api.nat.model.Language
 import com.nixops.scraper.tum_api.nat.model.NatModule
+import io.mockk.every
+import io.mockk.mockk
 import java.io.IOException
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -11,12 +13,11 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.*
 
 class NatModuleApiClientTest {
 
-  private val mockClient: OkHttpClient = mock()
-  private val mockCall: Call = mock()
+  private val mockClient: OkHttpClient = mockk()
+  private val mockCall: Call = mockk()
   private val objectMapper = jacksonObjectMapper()
   private val natConfig = ApiClientProperties.Nat.of("https://example.com/api")
 
@@ -112,8 +113,8 @@ class NatModuleApiClientTest {
             .build()
 
     // Mock OkHttpClient to return these responses in order
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(responsePage1).thenReturn(responsePage2)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns responsePage1 andThen responsePage2
 
     val apiClient = NatModuleApiClient(natConfig, mockClient)
     val results = apiClient.fetchAllNatModules()
@@ -133,8 +134,8 @@ class NatModuleApiClientTest {
             .body("".toResponseBody(null))
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(badResponse)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns badResponse
 
     val apiClient = NatModuleApiClient(natConfig, mockClient)
 
@@ -160,8 +161,8 @@ class NatModuleApiClientTest {
             .body(responseBody)
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = NatModuleApiClient(natConfig, mockClient)
     val result = apiClient.fetchNatModuleDetail(module.code)
@@ -183,8 +184,8 @@ class NatModuleApiClientTest {
             .body("".toResponseBody(null))
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = NatModuleApiClient(natConfig, mockClient)
     val result = apiClient.fetchNatModuleDetail(moduleCode)
@@ -205,8 +206,8 @@ class NatModuleApiClientTest {
             .body("".toResponseBody(null))
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = NatModuleApiClient(natConfig, mockClient)
 

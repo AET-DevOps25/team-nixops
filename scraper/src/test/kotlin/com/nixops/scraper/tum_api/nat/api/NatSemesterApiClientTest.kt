@@ -3,19 +3,20 @@ package com.nixops.scraper.tum_api.nat.api
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.nixops.scraper.config.ApiClientProperties
 import com.nixops.scraper.tum_api.nat.model.NatSemester
+import io.mockk.*
 import java.io.IOException
 import okhttp3.*
+import okhttp3.Call
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.*
 
 class NatSemesterApiClientTest {
 
-  private val mockClient: OkHttpClient = mock()
-  private val mockCall: Call = mock()
+  private val mockClient: OkHttpClient = mockk()
+  private val mockCall: Call = mockk()
   private val objectMapper = jacksonObjectMapper()
   private val natConfig = ApiClientProperties.Nat.of("https://example.com/api")
 
@@ -46,8 +47,8 @@ class NatSemesterApiClientTest {
             .body(responseBody)
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = NatSemesterApiClient(natConfig, mockClient)
     val result = apiClient.getCurrentLectureSemester()
@@ -70,8 +71,8 @@ class NatSemesterApiClientTest {
             .body(responseBody)
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = NatSemesterApiClient(natConfig, mockClient)
     val result = apiClient.getSemester("lecture")
@@ -91,8 +92,8 @@ class NatSemesterApiClientTest {
             .body("".toResponseBody(null))
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = NatSemesterApiClient(natConfig, mockClient)
     val result = apiClient.getSemester("invalid")
@@ -111,8 +112,8 @@ class NatSemesterApiClientTest {
             .body("".toResponseBody(null))
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = NatSemesterApiClient(natConfig, mockClient)
 
@@ -130,8 +131,8 @@ class NatSemesterApiClientTest {
             .body(null)
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = NatSemesterApiClient(natConfig, mockClient)
 
@@ -155,8 +156,8 @@ class NatSemesterApiClientTest {
             .body(responseBody)
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = NatSemesterApiClient(natConfig, mockClient)
     val result = apiClient.getSemesters()
@@ -177,8 +178,8 @@ class NatSemesterApiClientTest {
             .body("".toResponseBody(null))
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = NatSemesterApiClient(natConfig, mockClient)
 
@@ -196,8 +197,8 @@ class NatSemesterApiClientTest {
             .body(null)
             .build()
 
-    whenever(mockClient.newCall(any())).thenReturn(mockCall)
-    whenever(mockCall.execute()).thenReturn(response)
+    every { mockClient.newCall(any()) } returns mockCall
+    every { mockCall.execute() } returns response
 
     val apiClient = NatSemesterApiClient(natConfig, mockClient)
 
