@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.nixops.scraper.config.ApiClientProperties
 import com.nixops.scraper.tum_api.campus.model.CampusCourse
 import com.nixops.scraper.tum_api.campus.model.CampusGroup
 import java.io.IOException
@@ -12,10 +13,11 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 
 class CampusCourseApiClient(
-    private val baseUrl: String = "https://campus.tum.de/tumonline/ee/rest/slc.tm.cp/student",
+    campusApiClientProperties: ApiClientProperties.Campus,
     private val client: OkHttpClient = OkHttpClient()
 ) {
   private val mapper = jacksonObjectMapper()
+  private val baseUrl: String = campusApiClientProperties.baseUrl
 
   @JsonIgnoreProperties(ignoreUnknown = true)
   data class CoursesResponse(
@@ -39,7 +41,7 @@ class CampusCourseApiClient(
 
     do {
       val urlBuilder =
-          ("$baseUrl/courses").toHttpUrlOrNull()?.newBuilder()
+          ("$baseUrl/slc.tm.cp/student/courses").toHttpUrlOrNull()?.newBuilder()
               ?: throw IllegalArgumentException("Invalid base URL")
 
       val filterValue =
@@ -75,7 +77,7 @@ class CampusCourseApiClient(
   }
 
   fun getCourseGroups(courseId: Int): List<CampusGroup>? {
-    val url = "$baseUrl/courseGroups/firstGroups/$courseId"
+    val url = "$baseUrl/slc.tm.cp/student/courseGroups/firstGroups/$courseId"
 
     val request = Request.Builder().url(url).addHeader("Accept", "application/json").build()
 

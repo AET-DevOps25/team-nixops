@@ -26,6 +26,7 @@ dependencies {
   implementation("org.jetbrains.kotlin:kotlin-reflect")
   implementation("com.squareup.okhttp3:okhttp:4.11.0")
   implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+  implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
 
   // Exposed
   implementation("org.springframework.boot:spring-boot-starter-jdbc")
