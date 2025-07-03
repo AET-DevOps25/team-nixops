@@ -1,4 +1,4 @@
-package com.nixops.scraper.controller.openapi
+package com.nixops.scraper.controller
 
 import com.nixops.openapi.api.StudyProgramsApi
 import com.nixops.openapi.model.*
@@ -29,6 +29,18 @@ class StudyProgramsApiController(
   }
 
   override fun getStudyProgram(studyId: Long, semesterKey: String): ResponseEntity<StudyProgram> {
+    val studyProgram =
+        studyProgramService.getStudyProgram(studyId) ?: return ResponseEntity.notFound().build()
+
+    val apiStudyProgram = studyProgramMapper.studyProgramToApiStudyProgram(studyProgram)
+
+    return ResponseEntity.ok(apiStudyProgram)
+  }
+
+  override fun getFullStudyProgram(
+      studyId: Long,
+      semesterKey: String
+  ): ResponseEntity<StudyProgram> {
     val studyProgram =
         studyProgramService.getStudyProgram(studyId) ?: return ResponseEntity.notFound().build()
 

@@ -1,4 +1,4 @@
-package com.nixops.scraper.controller.openapi
+package com.nixops.scraper.controller
 
 import com.nixops.openapi.api.ModulesApi
 import com.nixops.openapi.model.Course
