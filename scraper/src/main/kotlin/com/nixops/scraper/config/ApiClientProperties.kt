@@ -11,9 +11,17 @@ class ApiClientProperties {
 
   class Nat {
     var baseUrl: String = "https://api.srv.nat.tum.de/api/v1"
+
+    companion object {
+      fun of(baseUrl: String) = Nat().apply { this.baseUrl = baseUrl }
+    }
   }
 
   class Campus {
-    var baseUrl: String = "https://campus.tum.de/tumonline/ee/rest/slc.tm.cp/student"
+    var baseUrl: String = "https://campus.tum.de/tumonline/ee/rest/"
+
+    companion object {
+      fun of(baseUrl: String) = Campus().apply { this.baseUrl = baseUrl }
+    }
   }
 }
