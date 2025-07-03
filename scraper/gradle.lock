@@ -733,6 +733,20 @@
       "hash": "sha256-2BHPnxGMwsrRMMlCetVcF01MCm8aAKwa4cm8vsXESxk="
     }
   },
+  "io.github.microutils:kotlin-logging-jvm:3.0.5": {
+    "kotlin-logging-jvm-3.0.5.jar": {
+      "url": "https://plugins.gradle.org/m2/io/github/microutils/kotlin-logging-jvm/3.0.5/kotlin-logging-jvm-3.0.5.jar",
+      "hash": "sha256-KpR3pBOEh7t/uwV+46wPRVtY+NS+2UyIX6ZCYN5Z5Nw="
+    },
+    "kotlin-logging-jvm-3.0.5.module": {
+      "url": "https://plugins.gradle.org/m2/io/github/microutils/kotlin-logging-jvm/3.0.5/kotlin-logging-jvm-3.0.5.module",
+      "hash": "sha256-VHKuBO7UYKcXGKUv788d7FnS3V6gx6umyVfV4LtgoJg="
+    },
+    "kotlin-logging-jvm-3.0.5.pom": {
+      "url": "https://plugins.gradle.org/m2/io/github/microutils/kotlin-logging-jvm/3.0.5/kotlin-logging-jvm-3.0.5.pom",
+      "hash": "sha256-aljWp9tas/HQ8uOBam/JneflJyf/LAarRmucM3TfsyM="
+    }
+  },
   "io.kotest:kotest-assertions-api:5.7.2": {
     "kotest-assertions-api-5.7.2.jar": {
       "url": "https://plugins.gradle.org/m2/io/kotest/kotest-assertions-api/5.7.2/kotest-assertions-api-5.7.2.jar",

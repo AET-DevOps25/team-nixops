@@ -28,6 +28,7 @@ class EmbeddingService(
     private val studyProgramMapper: StudyProgramMapper,
     private val client: OkHttpClient =
         OkHttpClient.Builder()
+            .connectTimeout(1, TimeUnit.SECONDS)
             .readTimeout(0, TimeUnit.MILLISECONDS)
             .writeTimeout(0, TimeUnit.MILLISECONDS)
             .build(),

@@ -19,7 +19,7 @@ class ScraperScheduler(
   fun check(name: String, scrape: () -> Unit, interval: Duration = Duration.ofHours(2)) {
     val lastUpdated = getTimeSinceLastUpdated(name)
     if (lastUpdated == null || lastUpdated > interval) {
-      logger.info("scraper should update $name")
+      logger.info("Scraping $name")
       scrape()
       setLastUpdated(name)
     }

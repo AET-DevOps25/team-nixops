@@ -66,7 +66,7 @@ class EmbeddingScheduler(
             }
 
         if (embed) {
-          logger.info("embed: $name, $studyId, $semesterKey, $curriculumId")
+          logger.info("Embed $name, $studyId, $semesterKey, $curriculumId")
 
           val studyProgram = studyProgramService.getStudyProgram(studyId) ?: return@transaction
 
@@ -75,12 +75,10 @@ class EmbeddingScheduler(
           try {
             embeddingService.embed(studyProgram, semester)
           } catch (e: ConnectException) {
-            logger.warn {
-              "Connection failed while embedding $name, $studyId, $semesterKey, $curriculumId in $semester: ${e.message}"
-            }
+            logger.error { "Failed to connect to GenAI" }
           } catch (e: Exception) {
             logger.error(e) {
-              "Unexpected error while embedding $name, $studyId, $semesterKey, $curriculumId in $semester: ${e.message}"
+              "Unexpected error while embedding $studyId, $semesterKey, $curriculumId: ${e.message}"
             }
           }
         }

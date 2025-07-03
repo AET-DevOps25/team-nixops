@@ -9,8 +9,8 @@ class SchedulerConfig {
   @Bean
   fun taskScheduler(): ThreadPoolTaskScheduler {
     val scheduler = ThreadPoolTaskScheduler()
-    scheduler.poolSize = 10 // number of concurrent threads
-    scheduler.setThreadNamePrefix("my-scheduler-")
+    scheduler.poolSize = 10
+    scheduler.setThreadNamePrefix("thread-")
     scheduler.initialize()
     return scheduler
   }

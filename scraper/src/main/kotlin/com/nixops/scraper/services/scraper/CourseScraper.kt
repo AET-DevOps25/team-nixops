@@ -135,7 +135,7 @@ class CourseScraper(
     }
 
     curriculumIds.forEach { curriculumId ->
-      logger.trace("fetch courses for $curriculumId ${semester.semesterIdTumOnline}")
+      logger.trace("Fetch courses for $curriculumId ${semester.semesterIdTumOnline}")
 
       val existing = transaction {
         CurriculumCourses.select(CurriculumCourses.course)
@@ -147,7 +147,7 @@ class CourseScraper(
       }
 
       if (existing.isNotEmpty()) {
-        logger.trace("courses up-to-date")
+        logger.trace("Courses up-to-date")
         return@forEach
       }
 
