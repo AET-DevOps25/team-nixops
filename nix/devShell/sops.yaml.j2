@@ -1,0 +1,37 @@
+creation_rules:
+{# Define common team keys #}
+{%- set team_age_keys = [keys.floriannadam, keys.ghoscht] -%}
+{%- set team_pgp_keys = [keys.mikilio] -%}
+
+{# Helper macro to render key_groups with merged age + pgp keys #}
+{%- macro render_key_groups(age_list) %}
+- age: {%- for k in age_list %}
+    - {{ k }}
+    {%- endfor %}
+  pgp: {%-  for k in team_pgp_keys %}
+    - {{ k }}
+    {%- endfor %}
+{%- endmacro -%}
+
+{# Node specific rules #}
+{%- for node in [
+  ("worker-1", keys.worker_1),
+  ("worker-2", keys.worker_2),
+  ("loadbalancer-1", keys.loadbalancer_1),
+  ("control-1", keys.control_1),
+  ("control-2", keys.control_2),
+  ("control-3", keys.control_3),
+  ("etcd-1", keys.etcd_1),
+  ("etcd-2", keys.etcd_2),
+  ("etcd-3", keys.etcd_3),
+] %}
+  - path_regex: ^nix/targets/cluster/secrets/.*{{ node[0] }}\.ya?ml$
+    key_groups:{{ render_key_groups([node[1]] + team_age_keys) | indent(6) }}
+  {% endfor %}
+  {# Dev secrets rule #}
+  - path_regex: ^nix/targets/dev/secrets/.*\.ya?ml$
+    key_groups: {{ render_key_groups([keys.dev] + team_age_keys) | indent(6) }}
+  {# Fallback rule #}
+  - path_regex: ^.*$
+    key_groups: {{ render_key_groups(team_age_keys) | indent(6) }}
+
