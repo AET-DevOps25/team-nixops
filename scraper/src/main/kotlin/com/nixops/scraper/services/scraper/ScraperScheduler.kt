@@ -2,8 +2,11 @@ package com.nixops.scraper.services.scraper
 
 import com.nixops.scraper.model.*
 import java.time.Duration
+import mu.KotlinLogging
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+
+private val logger = KotlinLogging.logger {}
 
 @Component
 class ScraperScheduler(
@@ -16,7 +19,7 @@ class ScraperScheduler(
   fun check(name: String, scrape: () -> Unit, interval: Duration = Duration.ofHours(2)) {
     val lastUpdated = getTimeSinceLastUpdated(name)
     if (lastUpdated == null || lastUpdated > interval) {
-      println("should update $name")
+      logger.info("scraper should update $name")
       scrape()
       setLastUpdated(name)
     }

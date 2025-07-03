@@ -3,13 +3,17 @@ package com.nixops.scraper.services.embedding
 import com.nixops.scraper.model.*
 import com.nixops.scraper.services.SemesterService
 import com.nixops.scraper.services.StudyProgramService
+import java.net.ConnectException
 import java.time.Duration
 import java.time.LocalDateTime
+import mu.KotlinLogging
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+
+private val logger = KotlinLogging.logger {}
 
 @Component
 class EmbeddingScheduler(
@@ -62,13 +66,23 @@ class EmbeddingScheduler(
             }
 
         if (embed) {
-          println("embed: $name, $studyId, $semesterKey, $curriculumId")
+          logger.info("embed: $name, $studyId, $semesterKey, $curriculumId")
 
           val studyProgram = studyProgramService.getStudyProgram(studyId) ?: return@transaction
 
           val semester = semesterService.getSemester(semesterKey) ?: return@transaction
 
-          embeddingService.embed(studyProgram, semester)
+          try {
+            embeddingService.embed(studyProgram, semester)
+          } catch (e: ConnectException) {
+            logger.warn {
+              "Connection failed while embedding $name, $studyId, $semesterKey, $curriculumId in $semester: ${e.message}"
+            }
+          } catch (e: Exception) {
+            logger.error(e) {
+              "Unexpected error while embedding $name, $studyId, $semesterKey, $curriculumId in $semester: ${e.message}"
+            }
+          }
         }
       }
     }

@@ -8,9 +8,12 @@ import com.nixops.scraper.config.ApiClientProperties
 import com.nixops.scraper.tum_api.campus.model.CampusCourse
 import com.nixops.scraper.tum_api.campus.model.CampusGroup
 import java.io.IOException
+import mu.KotlinLogging
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
+
+private val logger = KotlinLogging.logger {}
 
 class CampusCourseApiClient(
     campusApiClientProperties: ApiClientProperties.Campus,
@@ -67,7 +70,7 @@ class CampusCourseApiClient(
       }
 
       if (totalCount > 0) {
-        println("Fetched ${allCourses.size}/${totalCount} courses")
+        logger.trace("Fetched ${allCourses.size}/${totalCount} courses")
       }
 
       skip = allCourses.size

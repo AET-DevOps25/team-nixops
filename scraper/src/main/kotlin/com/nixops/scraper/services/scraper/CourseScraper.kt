@@ -4,11 +4,14 @@ import com.nixops.scraper.model.*
 import com.nixops.scraper.services.SemesterService
 import com.nixops.scraper.tum_api.campus.api.CampusCourseApiClient
 import com.nixops.scraper.tum_api.nat.api.NatCourseApiClient
+import mu.KotlinLogging
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insertIgnore
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
+
+private val logger = KotlinLogging.logger {}
 
 @Service
 class CourseScraper(
@@ -21,7 +24,7 @@ class CourseScraper(
       val natCourse = natCourseApiClient.getCourseById(id) ?: return@transaction null
       val campusCourseGroups = campusCourseApiClient.getCourseGroups(id)
 
-      println("Saving course with id: $id")
+      logger.debug("Saving course with id: $id")
 
       /* natCourse.modules.let {
           for ((semester, courses) in natModule.courses.entries) {
@@ -132,7 +135,7 @@ class CourseScraper(
     }
 
     curriculumIds.forEach { curriculumId ->
-      println("fetch courses for $curriculumId ${semester.semesterIdTumOnline}")
+      logger.trace("fetch courses for $curriculumId ${semester.semesterIdTumOnline}")
 
       val existing = transaction {
         CurriculumCourses.select(CurriculumCourses.course)
@@ -144,7 +147,7 @@ class CourseScraper(
       }
 
       if (existing.isNotEmpty()) {
-        println("courses up-to-date")
+        logger.trace("courses up-to-date")
         return@forEach
       }
 

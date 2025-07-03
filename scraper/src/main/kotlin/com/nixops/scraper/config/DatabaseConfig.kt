@@ -2,12 +2,15 @@ package com.nixops.scraper.config
 
 import com.nixops.scraper.model.*
 import javax.sql.DataSource
+import mu.KotlinLogging
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+
+private val logger = KotlinLogging.logger {}
 
 @Configuration
 class DatabaseConfig {
@@ -32,7 +35,7 @@ class DatabaseConfig {
       ensureLastModifiedFunctionExists()
       addLastModifiedTrigger(Courses)
     }
-    println(">>> Exposed connected and tables created!")
+    logger.info("Exposed connected and tables created")
     return db
   }
 

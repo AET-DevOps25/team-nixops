@@ -4,9 +4,12 @@ import com.nixops.scraper.model.*
 import com.nixops.scraper.tum_api.nat.api.NatModuleApiClient
 import com.nixops.scraper.tum_api.nat.model.NatModule
 import java.io.IOException
+import mu.KotlinLogging
 import org.jetbrains.exposed.sql.insertIgnore
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
+
+private val logger = KotlinLogging.logger {}
 
 @Service
 class ModuleScraper(
@@ -63,7 +66,7 @@ class ModuleScraper(
   fun scrapeModuleByCode(code: String): Module? {
     try {
       val natModule = moduleApiClient.fetchNatModuleDetail(code) ?: return null
-      println("Saving module with id: $code")
+      logger.trace("Saving module with id: $code")
 
       return updateNatModule(natModule)
     } catch (e: IOException) {
@@ -75,7 +78,7 @@ class ModuleScraper(
     val modules = moduleApiClient.fetchAllNatModules(org)
     return modules.mapIndexedNotNull { index, natModule ->
       natModule.code.let { code ->
-        println("Fetching detail for module ${index + 1} of ${modules.size}: $code")
+        logger.trace("Fetching detail for module ${index + 1} of ${modules.size}: $code")
         scrapeModuleByCode(code)
       }
     }

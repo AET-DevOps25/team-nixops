@@ -60,15 +60,9 @@ class EmbeddingService(
 
     val response = client.newCall(request).execute()
 
-    if (response.code == 404) return
-
     if (!response.isSuccessful) {
       throw IOException("Unexpected response: $response")
     }
-
-    val returnBody = response.body?.string()
-
-    println("result: $returnBody")
 
     transaction {
       StudyProgramSemester.insertIgnore {
