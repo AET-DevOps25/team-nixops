@@ -1,6 +1,5 @@
 package com.nixops.scraper.services
 
-import Course
 import com.nixops.scraper.model.*
 import com.nixops.scraper.services.scraper.CourseScraper
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -36,11 +35,13 @@ class CourseService(
 
     val courses = courseScraper.scrapeCourses(curriculum.id.value, semester.semesterIdTumOnline)
 
-    for (course in courses) {
-      CurriculumCourses.insertIgnore {
-        it[CurriculumCourses.curriculum] = curriculum.id.value
-        it[CurriculumCourses.semester] = semester.semesterIdTumOnline
-        it[CurriculumCourses.course] = course.id.value
+    transaction {
+      for (course in courses) {
+        CurriculumCourses.insertIgnore {
+          it[CurriculumCourses.curriculum] = curriculum.id.value
+          it[CurriculumCourses.semester] = semester.semesterIdTumOnline
+          it[CurriculumCourses.course] = course.id.value
+        }
       }
     }
 

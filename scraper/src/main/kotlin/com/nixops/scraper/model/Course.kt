@@ -1,6 +1,10 @@
+package com.nixops.scraper.model
+
 import org.jetbrains.exposed.dao.*
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
+import org.jetbrains.exposed.sql.javatime.CurrentDateTime
+import org.jetbrains.exposed.sql.javatime.datetime
 
 object Courses : IdTable<Int>("courses") {
   override val id = integer("course_id").entityId()
@@ -18,6 +22,10 @@ object Courses : IdTable<Int>("courses") {
   val activityNameEn = text("activity_name_en").nullable()
   val note = text("note").nullable()
   val noteEn = text("note_en").nullable()
+
+  override val primaryKey = PrimaryKey(Courses.id, name = "PK_COURSE_ID")
+
+  val lastModified = datetime("last_modified").defaultExpression(CurrentDateTime)
 }
 
 /* object CourseInstructionLanguages : IntIdTable("course_instruction_languages") {
@@ -41,6 +49,8 @@ class Course(id: EntityID<Int>) : Entity<Int>(id) {
   var activityNameEn by Courses.activityNameEn
   var note by Courses.note
   var noteEn by Courses.noteEn
+
+  val groups by Group referrersOn Groups.courseId
 
   // val instructionLanguages by
   //   CourseInstructionLanguage referrersOn CourseInstructionLanguages.course

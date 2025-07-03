@@ -2,10 +2,13 @@ package com.nixops.scraper.services.scraper
 
 import com.nixops.scraper.model.*
 import com.nixops.scraper.tum_api.nat.api.NatProgramApiClient
+import mu.KotlinLogging
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
+
+private val logger = KotlinLogging.logger {}
 
 @Service
 class StudyProgramScraper(
@@ -17,7 +20,7 @@ class StudyProgramScraper(
       studyPrograms
           .filter { it.spoVersion != "0" }
           .map {
-            println("Saving study program with name: ${it.degreeProgramName}")
+            logger.debug("Saving study program with name: ${it.degreeProgramName}")
 
             val existing =
                 StudyProgram.find(
@@ -31,6 +34,8 @@ class StudyProgramScraper(
               existing.programName = it.programName
               existing.degreeProgramName = it.degreeProgramName
               existing.degreeTypeName = it.degree.degreeTypeName
+              existing.fullName =
+                  "${it.programName} [${it.spoVersion}], ${it.degree.degreeTypeName}"
             } else {
               StudyProgram.new {
                 studyId = it.studyId
@@ -39,6 +44,7 @@ class StudyProgramScraper(
                 programName = it.programName
                 degreeProgramName = it.degreeProgramName
                 degreeTypeName = it.degree.degreeTypeName
+                fullName = "${it.programName} [${it.spoVersion}], ${it.degree.degreeTypeName}"
               }
             }
           }

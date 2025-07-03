@@ -2,8 +2,11 @@ package com.nixops.scraper.services.scraper
 
 import com.nixops.scraper.model.*
 import com.nixops.scraper.tum_api.nat.api.NatSemesterApiClient
+import mu.KotlinLogging
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
+
+private val logger = KotlinLogging.logger {}
 
 @Service
 class SemesterScraper(
@@ -12,7 +15,7 @@ class SemesterScraper(
   fun scrapeSemester(semesterKey: String): Semester? {
     return transaction {
       val natSemester = semesterApiClient.getSemester(semesterKey) ?: return@transaction null
-      println("Saving semester with key: ${natSemester.semesterKey} $natSemester")
+      logger.debug("Saving semester with key: {} {}", natSemester.semesterKey, natSemester)
 
       val existing = Semester.findById(natSemester.semesterKey)
       if (existing != null) {

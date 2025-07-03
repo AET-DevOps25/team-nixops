@@ -4,16 +4,23 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.nixops.scraper.config.ApiClientProperties
 import com.nixops.scraper.tum_api.campus.model.CampusCourse
+import com.nixops.scraper.tum_api.campus.model.CampusGroup
+import java.io.IOException
+import mu.KotlinLogging
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
+private val logger = KotlinLogging.logger {}
+
 class CampusCourseApiClient(
-    private val baseUrl: String = "https://campus.tum.de/tumonline/ee/rest/slc.tm.cp/student",
+    campusApiClientProperties: ApiClientProperties.Campus,
     private val client: OkHttpClient = OkHttpClient()
 ) {
   private val mapper = jacksonObjectMapper()
+  private val baseUrl: String = campusApiClientProperties.baseUrl
 
   @JsonIgnoreProperties(ignoreUnknown = true)
   data class CoursesResponse(
@@ -32,12 +39,12 @@ class CampusCourseApiClient(
   fun getCourses(curriculumVersionId: Int, termId: Int): List<CampusCourse> {
     val allCourses = mutableListOf<CampusCourse>()
     var skip = 0
-    val top = 20
+    val top = 50
     var totalCount: Int
 
     do {
       val urlBuilder =
-          ("$baseUrl/courses").toHttpUrlOrNull()?.newBuilder()
+          ("$baseUrl/slc.tm.cp/student/courses").toHttpUrlOrNull()?.newBuilder()
               ?: throw IllegalArgumentException("Invalid base URL")
 
       val filterValue =
@@ -63,12 +70,35 @@ class CampusCourseApiClient(
       }
 
       if (totalCount > 0) {
-        println("Fetched ${allCourses.size}/${totalCount} courses")
+        logger.trace("Fetched ${allCourses.size}/${totalCount} courses")
       }
 
       skip = allCourses.size
     } while (allCourses.size < totalCount)
 
     return allCourses
+  }
+
+  fun getCourseGroups(courseId: Int): List<CampusGroup>? {
+    val url = "$baseUrl/slc.tm.cp/student/courseGroups/firstGroups/$courseId"
+
+    val request = Request.Builder().url(url).addHeader("Accept", "application/json").build()
+
+    val response = client.newCall(request).execute()
+
+    if (response.code == 404) return null
+
+    if (!response.isSuccessful) {
+      throw IOException("Unexpected response: $response")
+    }
+
+    val body =
+        response.body?.string()
+            ?: throw IOException("Empty response body for groups for courseId: $courseId")
+
+    val node = mapper.readTree(body)
+    val courseGroups = node["courseGroupDtos"] ?: throw Exception("Missing 'courseGroupDtos' node")
+
+    return mapper.readValue(courseGroups.toString())
   }
 }

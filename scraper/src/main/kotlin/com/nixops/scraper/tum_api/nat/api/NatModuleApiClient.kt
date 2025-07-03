@@ -2,16 +2,21 @@ package com.nixops.scraper.tum_api.nat.api
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.nixops.scraper.config.ApiClientProperties
 import com.nixops.scraper.tum_api.nat.model.NatModule
 import java.io.IOException
+import mu.KotlinLogging
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
+private val logger = KotlinLogging.logger {}
+
 class NatModuleApiClient(
-    private val baseUrl: String = "https://api.srv.nat.tum.de/api/v1",
+    natApiClientProperties: ApiClientProperties.Nat,
     private val client: OkHttpClient = OkHttpClient()
 ) {
   private val mapper = jacksonObjectMapper()
+  private val baseUrl: String = natApiClientProperties.baseUrl
 
   /** Fetch all NatModules (overview) with optional org_id. */
   @Throws(IOException::class)
@@ -34,7 +39,7 @@ class NatModuleApiClient(
       val page: PagedResponse<NatModule> = mapper.readValue(response.body!!.string())
       natModules.addAll(page.hits)
 
-      println("Fetched ${natModules.size}/${page.totalCount} modules")
+      logger.trace("Fetched ${natModules.size}/${page.totalCount} modules")
 
       nextOffset = page.nextOffset
     } while (nextOffset != null)
@@ -60,11 +65,11 @@ class NatModuleApiClient(
   @Throws(IOException::class)
   fun fetchAllNatModulesWithDetails(orgId: Int): List<NatModule> {
     val overviewNatModules = fetchAllNatModules(orgId)
-    println("Get Module Details")
+    logger.trace("Get Module Details")
 
     return overviewNatModules.mapNotNullIndexed { index, natModule ->
       natModule.code.let {
-        println("Fetching detail for module ${index + 1} of ${overviewNatModules.size}: $it")
+        logger.trace("Fetching detail for module ${index + 1} of ${overviewNatModules.size}: $it")
         fetchNatModuleDetail(it)
       }
     }
