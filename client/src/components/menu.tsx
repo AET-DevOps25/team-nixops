@@ -26,14 +26,30 @@ import { StudyProgramSelector } from "./study-program-selector";
 
 const version = pkg.version;
 
-export function MenuOverlay({setStudyProgramId, setSemester}) {
+export function MenuOverlay({
+  setStudyProgramId,
+  setSemester,
+  studyProgramId,
+  semester,
+}) {
   const { setTheme } = useTheme();
   const [isDialogOpen, setIsDialogOpen] = useState(true);
 
   return (
     <div className="fixed top-4 left-4 z-30">
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <StudyProgramSelector setStudyProgramId={setStudyProgramId} setSemester={setSemester} setIsDialogOpen={setIsDialogOpen}/>
+      <Dialog
+        open={isDialogOpen}
+        onOpenChange={(state) => {
+          if (semester && studyProgramId) {
+            setIsDialogOpen(state);
+          }
+        }}
+      >
+        <StudyProgramSelector
+          setStudyProgramId={setStudyProgramId}
+          setSemester={setSemester}
+          setIsDialogOpen={setIsDialogOpen}
+        />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon">
