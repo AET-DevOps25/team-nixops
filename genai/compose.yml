@@ -76,25 +76,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-  mcp:
-    container_name: milvus-mcp
-    build:
-      context: .
-      dockerfile: Dockerfile.mcp
-    environment:
-      MILVUS_URI: "http://milvus:19530"
-    depends_on:
-      - "milvus"
-  genai:
-    container_name: genai
-    build:
-      context: .
-      dockerfile: Dockerfile
-      # MILVUS_TOKEN: ""
-    depends_on:
-      - "mcp"
-    ports:
-      - "8888:8000" # SSE for multiple clients
 
 volumes:
   minio:
