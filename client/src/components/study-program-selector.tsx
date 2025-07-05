@@ -169,9 +169,6 @@ export function StudyProgramSelector({
         </Select>
 
         <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DialogClose>
           <Button onClick={handleSubmit(onSubmit)}>Save changes</Button>
         </DialogFooter>
       </DialogContent>
