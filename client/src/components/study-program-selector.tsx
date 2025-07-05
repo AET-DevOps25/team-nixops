@@ -33,7 +33,11 @@ import {
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
 
-export function StudyProgramSelector({ setStudyProgramId, setSemester, setIsDialogOpen }) {
+export function StudyProgramSelector({
+  setStudyProgramId,
+  setSemester,
+  setIsDialogOpen,
+}) {
   const [studyPrograms, setStudyPrograms] = useState([]);
   const [localSemesters, setLocalSemesters] = useState([]);
 
@@ -58,7 +62,7 @@ export function StudyProgramSelector({ setStudyProgramId, setSemester, setIsDial
     console.log(data);
     setSemester(data.semester);
     setStudyProgramId(data.studyProgram);
-	 setIsDialogOpen(false);
+    setIsDialogOpen(false);
   };
   const form = useForm();
   return (
@@ -95,11 +99,11 @@ export function StudyProgramSelector({ setStudyProgramId, setSemester, setIsDial
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger className="w2px [&>span]:truncate">
+                    <SelectTrigger className="w-[320px]">
                       <SelectValue placeholder="Select a Study Program" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
+                  <SelectContent >
                     {studyPrograms.map((p) => (
                       <SelectItem value={p.id} key={p.id}>
                         {p.title}
