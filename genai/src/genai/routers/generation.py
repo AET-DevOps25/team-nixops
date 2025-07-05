@@ -190,7 +190,8 @@ GENERATE_PROMPT = (
     "If you don't know the answer, just say that you don't know. "
     "Use three sentences maximum and keep the answer concise.\n"
     "Question: {question} \n"
-    "Context: {context}"
+    "Context: {context} \n"
+    "Previous messages: {messages}"
 )
 
 
@@ -204,11 +205,15 @@ def generate_answer(state: MessagesState):
         is_human_msg = not hasattr(messages[i], "tool_calls")
         if is_human_msg:
             question = messages[i].content
-            # print("------------------------")
+            # print("-----------generate_answer-------------")
+            # print(messages)
+            # print("QUESTION")
             # print(question)
-            # print("------------------------")
+            # print("-----------generate_answer-------------")
             break
-    prompt = GENERATE_PROMPT.format(question=question, context=context)
+    prompt = GENERATE_PROMPT.format(
+        question=question, context=context, messages=messages
+    )
     response = chat_llm.invoke([{"role": "user", "content": prompt}])
     return {"messages": [response]}
 
