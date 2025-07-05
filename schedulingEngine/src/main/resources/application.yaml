@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: schedulingEngine
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /api-docs
