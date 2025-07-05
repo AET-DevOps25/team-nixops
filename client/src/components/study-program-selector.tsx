@@ -31,10 +31,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useEffect, useState } from "react";
 
-export function StudyProgramSelector() {
+export function StudyProgramSelector({ setStudyProgramId, setSemester, setIsDialogOpen }) {
+  const [studyPrograms, setStudyPrograms] = useState([]);
+  const [localSemesters, setLocalSemesters] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "http://127.0.0.1:8000/embed/studyPrograms",
+        );
+        const result = await response.json();
+        setStudyPrograms(result);
+        console.log(result);
+      } catch {
+        console.error("An error occurred while fetching study programs");
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const onSubmit = (data: any) => {
     console.log(data);
+    setSemester(data.semester);
+    setStudyProgramId(data.studyProgram);
+	 setIsDialogOpen(false);
   };
   const form = useForm();
   return (
@@ -59,21 +83,28 @@ export function StudyProgramSelector() {
               <FormItem>
                 <FormLabel>Study Program</FormLabel>
                 <Select
-                  onValueChange={field.onChange}
+                  onValueChange={(data) => {
+                    field.onChange(data);
+                    setLocalSemesters(
+                      studyPrograms
+                        .filter((p) => p.id === data)
+                        .map((p) => p.semesters)
+                        .at(0),
+                    );
+                  }}
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="w2px [&>span]:truncate">
                       <SelectValue placeholder="Select a Study Program" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="M.Sc. Informatik">
-                      M.Sc. Informatik
-                    </SelectItem>
-                    <SelectItem value="M.Sc. Elektrotechnik">
-                      M.Sc. Elektrotechnik
-                    </SelectItem>
+                    {studyPrograms.map((p) => (
+                      <SelectItem value={p.id} key={p.id}>
+                        {p.title}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </FormItem>
@@ -95,8 +126,11 @@ export function StudyProgramSelector() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="2025w">2025w</SelectItem>
-                    <SelectItem value="2025s">2025s</SelectItem>
+                    {localSemesters.map((s) => (
+                      <SelectItem value={s} key={s}>
+                        {s}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </FormItem>
@@ -106,9 +140,7 @@ export function StudyProgramSelector() {
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button onClick={() => form.handleSubmit(onSubmit)()}>
-              Save changes
-            </Button>
+            <Button onClick={form.handleSubmit(onSubmit)}>Save changes</Button>
           </DialogFooter>
         </DialogContent>
       </form>

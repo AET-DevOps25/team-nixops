@@ -15,7 +15,13 @@ import useChat from "./lib";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 
-export default function Chat() {
+export default function Chat({
+  studyProgramId,
+  semester,
+}: {
+  studyProgramId: number;
+  semester: string;
+}) {
   const [apiUrl, setApiUrl] = useState(null);
   const [loadingApiUrl, setLoadingApiUrl] = useState(true);
 
@@ -37,7 +43,11 @@ export default function Chat() {
   }, []);
 
   let api = (!loadingApiUrl && apiUrl) || "http://localhost:8000";
-  const { messages, sendMessage, isGenerating } = useChat(api);
+  const { messages, sendMessage, isGenerating } = useChat(
+    api,
+    studyProgramId,
+    semester,
+  );
   const { register, handleSubmit, reset, getValues } = useForm();
 
   const submit = (data: string) => {
