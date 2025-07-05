@@ -24,6 +24,7 @@ src/openapi_server/models/module.py
 src/openapi_server/models/module_courses.py
 src/openapi_server/models/semester.py
 src/openapi_server/models/study_program.py
+src/openapi_server/models/study_program_selector_item.py
 src/openapi_server/security_api.py
 tests/conftest.py
 tests/test_embedding_api.py

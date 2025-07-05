@@ -2,11 +2,10 @@
 
 from typing import ClassVar, Dict, List, Tuple  # noqa: F401
 
-from pydantic import Field, StrictInt
-from typing import Any
-from typing_extensions import Annotated
+from typing import Any, List
 from openapi_server.models.error import Error
 from openapi_server.models.study_program import StudyProgram
+from openapi_server.models.study_program_selector_item import StudyProgramSelectorItem
 
 
 class BaseEmbeddingApi:
@@ -23,12 +22,8 @@ class BaseEmbeddingApi:
         """Create a new study program and embed the modules."""
         ...
 
-    async def delete_study_program(
+    async def fetch_study_programs(
         self,
-        id: Annotated[
-            StrictInt,
-            Field(description="ID of the study program that should be deleted"),
-        ],
-    ) -> None:
-        """Delete a study program"""
+    ) -> List[StudyProgramSelectorItem]:
+        """Get all scraped study programs and matching semesters"""
         ...

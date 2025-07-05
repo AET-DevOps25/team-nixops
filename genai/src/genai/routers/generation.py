@@ -17,8 +17,8 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai.embeddings import OpenAIEmbeddings
 from langchain_core.tools import tool
 from langgraph.checkpoint.memory import MemorySaver
-from langgraph.graph import END, START, StateGraph, MessagesState
-from langgraph.prebuilt import ToolNode
+from langgraph.graph import END, START, StateGraph
+from langgraph.prebuilt import InjectedState, ToolNode
 import os
 from ..data.vector_db import create_collection, embed_text, milvus_client
 
@@ -32,43 +32,42 @@ from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import tools_condition
 
 
-class VectorDBRetriever(BaseRetriever):
-    def _get_relevant_documents(
-        self, query: str, *, run_manager: CallbackManagerForRetrieverRun
-    ) -> List[Document]:
-        """Sync implementations for retriever."""
-        results = milvus_client.search(
-            collection_name="_171017263_additionalProp1",
-            data=[embed_text(query)],
-            anns_field="description_vec",  # only one anns field can exist
-            limit=3,
-            output_fields=["name", "description", "courses"],
-        )
-        docs = [
-            Document(
-                "Name:"
-                + doc["entity"]["name"]
-                + "\n\n"
-                + "Description: "
-                + doc["entity"]["description"]
-            )
-            for doc in results[0]
-        ]
-        return docs
-
-
-retriever_tool = create_retriever_tool(
-    VectorDBRetriever(),
-    "retrieve_modules",
-    "Search and return information about courses and modules available at Munich's technical university TUM.",
-)
-
-router = APIRouter()
-
-
 class State(TypedDict):
     messages: Annotated[list, add_messages]
+    study_program_id: int
+    semester: str
 
+
+@tool(parse_docstring=True)
+def retrieve_modules(
+    query: str, state: Annotated[State, InjectedState]
+) -> List[Document]:
+    """Search and return information about courses and modules available at Munich's technical university TUM.
+
+    Args:
+        query: Search query for the lookup
+    """
+    results = milvus_client.search(
+        collection_name=f"_{str(state['study_program_id'])}_{state['semester']}",
+        data=[embed_text(query)],
+        anns_field="description_vec",  # only one anns field can exist
+        limit=3,
+        output_fields=["name", "description", "courses"],
+    )
+    docs = [
+        Document(
+            "Name:"
+            + doc["entity"]["name"]
+            + "\n\n"
+            + "Description: "
+            + doc["entity"]["description"]
+        )
+        for doc in results[0]
+    ]
+    return docs
+
+
+router = APIRouter()
 
 llm_api_url = config("LLM_API_URL", default="https://gpu.aet.cit.tum.de/ollama")
 llm_api_key = config("LLM_API_KEY")
@@ -98,11 +97,11 @@ TOOL_SELECTION_PROMPT = (
 )
 
 
-def generate_query_or_respond(state: MessagesState):
+def generate_query_or_respond(state: State):
     """Call the model to generate a response based on the current state. Given
     the question, it will decide to retrieve using the retriever tool, or simply respond to the user.
     """
-    response = reasoning_llm.bind_tools([retriever_tool]).invoke(
+    response = reasoning_llm.bind_tools([retrieve_modules]).invoke(
         TOOL_SELECTION_PROMPT.format(state["messages"])
     )
     return {"messages": [response]}
@@ -126,7 +125,7 @@ class GradeDocuments(BaseModel):
 
 
 def grade_documents(
-    state: MessagesState,
+    state: State,
 ) -> Literal["generate_answer", "rewrite_question"]:
     """Determine whether the retrieved documents are relevant to the question."""
     messages = state["messages"]
@@ -143,6 +142,7 @@ def grade_documents(
             break
 
     prompt = GRADE_PROMPT.format(question=question, context=context)
+    print(prompt)
     response = (
         reasoning_llm.with_structured_output(  # TODO: use separate model with temp zero
             GradeDocuments
@@ -166,7 +166,7 @@ REWRITE_PROMPT = (
 )
 
 
-def rewrite_question(state: MessagesState):
+def rewrite_question(state: State):
     """Rewrite the original user question."""
     messages = state["messages"]
     question = messages[-2].content
@@ -174,9 +174,9 @@ def rewrite_question(state: MessagesState):
         is_human_msg = not hasattr(messages[i], "tool_calls")
         if is_human_msg:
             question = messages[i].content
-            print("------------------------")
-            print(question)
-            print("------------------------")
+            # print("------------------------")
+            # print(question)
+            # print("------------------------")
             break
 
     prompt = REWRITE_PROMPT.format(question=question)
@@ -195,7 +195,7 @@ GENERATE_PROMPT = (
 )
 
 
-def generate_answer(state: MessagesState):
+def generate_answer(state: State):
     """Generate an answer."""
     messages = state["messages"]
     context = messages[-1].content
@@ -219,9 +219,9 @@ def generate_answer(state: MessagesState):
 
 
 checkpointer = InMemorySaver()
-workflow = StateGraph(MessagesState)
+workflow = StateGraph(State)
 workflow.add_node(generate_query_or_respond)
-workflow.add_node("retrieve", ToolNode([retriever_tool]))
+workflow.add_node("retrieve", ToolNode([retrieve_modules]))
 workflow.add_node(rewrite_question)
 workflow.add_node(generate_answer)
 
@@ -251,18 +251,26 @@ graph = workflow.compile(checkpointer=checkpointer)
 
 
 @router.get("/chat")
-async def stream_response(prompt: str, id: str):
-    async def generate(user_input: str, user_id: str):
+async def stream_response(prompt: str, convId: str, studyProgramId: int, semester: str):
+    async def generate(
+        user_input: str, user_id: str, study_program: int, semester: str
+    ):
         config = {"configurable": {"thread_id": user_id}}
         async for msg, metadata in graph.astream(
-            {"messages": [("user", user_input)]},
+            {
+                "messages": [("user", user_input)],
+                "study_program_id": study_program,
+                "semester": semester,
+            },
             config=config,
             stream_mode="messages",
         ):
             if msg.content and metadata["langgraph_node"] == "generate_answer":
-                # print(msg)
                 yield f"data: {msg.content}\n\n"
                 await sleep(0.04)  # simply for chat output smoothing
 
-    res = StreamingResponse(generate(prompt, id), media_type="text/event-stream")
+    res = StreamingResponse(
+        generate(prompt, convId, studyProgramId, semester),
+        media_type="text/event-stream",
+    )
     return res

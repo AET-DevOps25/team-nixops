@@ -35,32 +35,20 @@ paths:
       summary: Create a new study program and embed the modules.
       tags:
       - embedding
-  /embed/{id}:
-    delete:
-      description: Delete a study program
-      operationId: deleteStudyProgram
-      parameters:
-      - description: ID of the study program that should be deleted
-        explode: false
-        in: path
-        name: id
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
+  /embed/studyPrograms:
+    get:
+      description: Get all scraped study programs and matching semesters
+      operationId: fetchStudyPrograms
       responses:
         "200":
-          description: Study program deleted
-        "400":
-          description: Invalid study program id value
-        default:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-          description: Unexpected error
-      summary: Delete a study program
+                items:
+                  $ref: '#/components/schemas/StudyProgramSelectorItem'
+                type: array
+          description: A stream of message tokens
+      summary: Get all scraped study programs
       tags:
       - embedding
   /chat:
@@ -80,11 +68,28 @@ paths:
       - description: Conversation ID
         explode: true
         in: query
-        name: id
+        name: convId
         required: true
         schema:
           default: 420
           type: integer
+        style: form
+      - description: ID of the study program that is being discussed
+        explode: true
+        in: query
+        name: studyProgramId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - description: semester that is being discussed
+        explode: true
+        in: query
+        name: semester
+        required: true
+        schema:
+          type: string
         style: form
       responses:
         "200":
@@ -942,6 +947,27 @@ components:
           title: weekdays
           type: array
       title: Appointment
+      type: object
+    StudyProgramSelectorItem:
+      example:
+        id: 0.8008281904610115
+        semesters:
+        - semesters
+        - semesters
+        title: title
+      properties:
+        title:
+          title: title
+          type: string
+        id:
+          title: id
+          type: number
+        semesters:
+          items:
+            type: string
+          title: semesters
+          type: array
+      title: StudyProgramSelectorItem
       type: object
     Error:
       example:

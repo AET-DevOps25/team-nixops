@@ -44,10 +44,26 @@ for _, name, _ in pkgutil.iter_modules(ns_pkg.__path__, ns_pkg.__name__ + "."):
     response_model_by_alias=True,
 )
 async def stream_chat(
-    prompt: Annotated[StrictStr, Field(description="Chat Prompt")] = Query('Write a poem', description="Chat Prompt", alias="prompt"),
-    id: Annotated[StrictInt, Field(description="Conversation ID")] = Query(420, description="Conversation ID", alias="id"),
+    prompt: Annotated[StrictStr, Field(description="Chat Prompt")] = Query(
+        "Write a poem", description="Chat Prompt", alias="prompt"
+    ),
+    conv_id: Annotated[StrictInt, Field(description="Conversation ID")] = Query(
+        420, description="Conversation ID", alias="convId"
+    ),
+    study_program_id: Annotated[
+        StrictInt, Field(description="ID of the study program that is being discussed")
+    ] = Query(
+        None,
+        description="ID of the study program that is being discussed",
+        alias="studyProgramId",
+    ),
+    semester: Annotated[
+        StrictStr, Field(description="semester that is being discussed")
+    ] = Query(None, description="semester that is being discussed", alias="semester"),
 ) -> str:
     """Communicate with the ChatBot making use of streamed responses"""
     if not BaseGenerationApi.subclasses:
         raise HTTPException(status_code=500, detail="Not implemented")
-    return await BaseGenerationApi.subclasses[0]().stream_chat(prompt, id)
+    return await BaseGenerationApi.subclasses[0]().stream_chat(
+        prompt, conv_id, study_program_id, semester
+    )

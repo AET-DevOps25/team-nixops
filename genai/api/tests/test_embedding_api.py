@@ -3,11 +3,12 @@
 from fastapi.testclient import TestClient
 
 
-from pydantic import Field, StrictInt  # noqa: F401
-from typing import Any  # noqa: F401
-from typing_extensions import Annotated  # noqa: F401
+from typing import Any, List  # noqa: F401
 from openapi_server.models.error import Error  # noqa: F401
 from openapi_server.models.study_program import StudyProgram  # noqa: F401
+from openapi_server.models.study_program_selector_item import (
+    StudyProgramSelectorItem,
+)  # noqa: F401
 
 
 def test_create_study_program(client: TestClient):
@@ -397,17 +398,17 @@ def test_create_study_program(client: TestClient):
     # assert response.status_code == 200
 
 
-def test_delete_study_program(client: TestClient):
-    """Test case for delete_study_program
+def test_fetch_study_programs(client: TestClient):
+    """Test case for fetch_study_programs
 
-    Delete a study program
+    Get all scraped study programs
     """
 
     headers = {}
     # uncomment below to make a request
     # response = client.request(
-    #    "DELETE",
-    #    "/embed/{id}".format(id=56),
+    #    "GET",
+    #    "/embed/studyPrograms",
     #    headers=headers,
     # )
 

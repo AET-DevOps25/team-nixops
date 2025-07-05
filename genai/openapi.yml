@@ -23,12 +23,12 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/StudyProgram'
+              $ref: "#/components/schemas/StudyProgram"
         required: true
       responses:
-        '200':
+        "200":
           description: successful operation
-        '400':
+        "400":
           description: Invalid status value
         default:
           description: Unexpected error
@@ -36,32 +36,22 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /embed/{id}:
-    delete:
+  /embed/studyPrograms:
+    get:
+      summary: Get all scraped study programs
+      description: Get all scraped study programs and matching semesters
+      operationId: fetchStudyPrograms
       tags:
         - embedding
-      summary: Delete a study program
-      description: Delete a study program
-      operationId: deleteStudyProgram
-      parameters:
-        - name: id
-          in: path
-          description: ID of the study program that should be deleted
-          required: true
-          schema:
-            type: integer
-            format: int64
       responses:
-        '200':
-          description: Study program deleted
-        '400':
-          description: Invalid study program id value
-        default:
-          description: Unexpected error
+        "200":
+          description: A stream of message tokens
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                type: array
+                items:
+                  $ref: "#/components/schemas/StudyProgramSelectorItem"
 
   /chat:
     get:
@@ -78,15 +68,28 @@ paths:
           schema:
             type: string
             default: Write a poem
-        - name: id
+        - name: convId
           in: query
           description: Conversation ID
           required: true
           schema:
             type: integer
             default: 420
+        - name: studyProgramId
+          in: query
+          description: ID of the study program that is being discussed
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: semester
+          in: query
+          description: semester that is being discussed
+          required: true
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: A stream of message tokens
           content:
             text/event-stream:
@@ -99,21 +102,33 @@ paths:
 components:
   schemas:
     Semester:
-      $ref: '../scraper/openapi.yaml#/components/schemas/Semester'
+      $ref: "../scraper/openapi.yaml#/components/schemas/Semester"
 
     StudyProgram:
-      $ref: '../scraper/openapi.yaml#/components/schemas/StudyProgram'
+      $ref: "../scraper/openapi.yaml#/components/schemas/StudyProgram"
     Module:
-      $ref: '../scraper/openapi.yaml#/components/schemas/Module'
+      $ref: "../scraper/openapi.yaml#/components/schemas/Module"
 
     ModuleCourses:
-      $ref: '../scraper/openapi.yaml#/components/schemas/ModuleCourses'
-            
+      $ref: "../scraper/openapi.yaml#/components/schemas/ModuleCourses"
+
     Course:
-      $ref: '../scraper/openapi.yaml#/components/schemas/Course'
+      $ref: "../scraper/openapi.yaml#/components/schemas/Course"
 
     Appointment:
-      $ref: '../scraper/openapi.yaml#/components/schemas/Appointment'
+      $ref: "../scraper/openapi.yaml#/components/schemas/Appointment"
+
+    StudyProgramSelectorItem:
+      type: object
+      properties:
+        title:
+          type: string
+        id:
+          type: number
+        semesters:
+          type: array
+          items:
+            type: string
     Error:
       type: object
       properties:

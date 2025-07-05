@@ -3,11 +3,14 @@ from openapi_server.apis.embedding_api import router as embedding_api_router
 from openapi_server.models.study_program import StudyProgram
 
 from pydantic import Field, StrictInt
+from typing import List
 from typing_extensions import Annotated
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 from ..data.db import engine, StudyProgram as SqlStudyProgram, Semester as SqlSemester
 from ..data.vector_db import create_collection, embed_text, milvus_client
 from datetime import datetime, date
+from openapi_server.models.study_program_selector_item import StudyProgramSelectorItem
 import json
 
 # NOTE: https://milvus.io/docs/use-async-milvus-client-with-asyncio.md#Create-index
@@ -30,7 +33,6 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
         self,
         study_program: StudyProgram,
     ) -> None:
-
         with Session(engine) as session:
             sem = list(
                 map(lambda x: SqlSemester(name=x), study_program.semesters.keys())
@@ -92,21 +94,20 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
                     print(res)
         return None
 
-    async def delete_study_program(
+    async def fetch_study_programs(
         self,
-        id: Annotated[
-            StrictInt,
-            Field(description="ID of the study program that should be deleted"),
-        ],
-    ) -> None:
-        search_res = milvus_client.search(
-            collection_name="_171017263_additionalProp1",
-            data=[embed_text("i like programming")],
-            anns_field="description_vec",  # only one anns field can exist
-            limit=3,
-            output_fields=["name", "courses"],
-        )
-        print(search_res)
+    ) -> List[StudyProgramSelectorItem]:
+        """Get all scraped study programs and matching semesters"""
+        results: List[StudyProgramSelectorItem] = []
+        with Session(engine) as session:
+            stmt = select(SqlStudyProgram)
+            for s in session.scalars(stmt):
+                semesters = list(map(lambda sem: sem.name, s.semesters))
+                res = StudyProgramSelectorItem(
+                    title=s.degree_program_name, id=s.id, semesters=semesters
+                )
+                results.append(res)
+        return results
 
 
 router = embedding_api_router

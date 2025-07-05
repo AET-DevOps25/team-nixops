@@ -23,11 +23,10 @@ from fastapi import (  # noqa: F401
 )
 
 from openapi_server.models.extra_models import TokenModel  # noqa: F401
-from pydantic import Field, StrictInt
-from typing import Any
-from typing_extensions import Annotated
+from typing import Any, List
 from openapi_server.models.error import Error
 from openapi_server.models.study_program import StudyProgram
+from openapi_server.models.study_program_selector_item import StudyProgramSelectorItem
 
 
 router = APIRouter()
@@ -57,23 +56,20 @@ async def create_study_program(
     return await BaseEmbeddingApi.subclasses[0]().create_study_program(study_program)
 
 
-@router.delete(
-    "/embed/{id}",
+@router.get(
+    "/embed/studyPrograms",
     responses={
-        200: {"description": "Study program deleted"},
-        400: {"description": "Invalid study program id value"},
-        200: {"model": Error, "description": "Unexpected error"},
+        200: {
+            "model": List[StudyProgramSelectorItem],
+            "description": "A stream of message tokens",
+        },
     },
     tags=["embedding"],
-    summary="Delete a study program",
+    summary="Get all scraped study programs",
     response_model_by_alias=True,
 )
-async def delete_study_program(
-    id: Annotated[
-        StrictInt, Field(description="ID of the study program that should be deleted")
-    ] = Path(..., description="ID of the study program that should be deleted"),
-) -> None:
-    """Delete a study program"""
+async def fetch_study_programs() -> List[StudyProgramSelectorItem]:
+    """Get all scraped study programs and matching semesters"""
     if not BaseEmbeddingApi.subclasses:
         raise HTTPException(status_code=500, detail="Not implemented")
-    return await BaseEmbeddingApi.subclasses[0]().delete_study_program(id)
+    return await BaseEmbeddingApi.subclasses[0]().fetch_study_programs()
