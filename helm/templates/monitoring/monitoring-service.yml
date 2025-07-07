@@ -9,5 +9,10 @@ spec:
     app: monitoring-selector
   ports:
     - port: 3000
+      name: grafana
       targetPort: 3000
+      protocol: TCP
+    - port: 3100
+      name: loki
+      targetPort: 3100
       protocol: TCP

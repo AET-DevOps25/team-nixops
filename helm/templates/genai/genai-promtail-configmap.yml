@@ -4,21 +4,21 @@ metadata:
   name: genai-promtail-configmap
   namespace: "{{ .Values.ServiceNamespace }}"
 data:
-  config.yml: |
+  config_template.yml: |
     server:
       http_listen_port: 9080
       grpc_listen_port: 0
       log_level: "debug"
     positions:
       filename: /tmp/positions.yaml
-    clients: # Specify target
-      - url: http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push
+    clients: 
+      - url: http://monitoring-service.{{ .Values.MonitoringNamespace }}.svc.cluster.local:3100/loki/api/v1/push
     scrape_configs:
-      - job_name: "<app-name>" 
+      - job_name: files 
         static_configs: 
           - targets: 
               - localhost 
             labels:
-              app: "storage-service"
-              environment: "<environment-name>" 
-              __path__: /app/logs/*.log # Any file .log in the EmptyDir Volume.
+              app: "genai"
+              environment: "{podname}" 
+              __path__: /app/logs/*.log 
