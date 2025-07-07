@@ -16,7 +16,7 @@ spec:
       initContainers:
         - name: init-container
           image: busybox:1.28
-          command: ['sh', '-c','sed -e "s/{hostname}/$NODE_NAME/" -e "s/{podname}/$POD_NAME/" -e "s/{podip}/$POD_IP/"  /tmp/promtail/config_template.yml > /shared/config.yml']    
+          command: ['sh', '-c','sed -e "s/{hostname}/$NODE_NAME/" -e "s/{podname}/$POD_NAME/" -e "s/{podip}/$POD_IP/"  /tmp/promtail/genai_config_template.yml > /shared/config.yml']    
           env:
           - name: NODE_NAME
             valueFrom:
@@ -31,9 +31,9 @@ spec:
               fieldRef:
                 fieldPath: status.podIP
           volumeMounts:
-              - name: config
+              - name: promtail-config
                 mountPath: /tmp/promtail
-              - name: shared-config
+              - name: shared-promtail-config
                 mountPath: /shared
       containers:
         - name: genai
@@ -65,7 +65,7 @@ spec:
             - containerPort: {{ .Values.genai.service.targetPort }}
               name: genai-api
           volumeMounts:
-           - name: shared-logs # shared space monitored with Promtail
+           - name: shared-promtail-logs # shared space monitored with Promtail
              mountPath: /app/logs
         - name: promtail
           image: grafana/promtail:master
@@ -77,17 +77,17 @@ spec:
               cpu: "200m"
               memory: "256Mi"
           volumeMounts:
-            - name: shared-logs # shared space
+            - name: shared-promtail-logs # shared space
               mountPath: /app/logs
-            - name: shared-config # shared space
+            - name: shared-promtail-config # shared space
               mountPath: /etc/promtail
       volumes:
-         - name: config
+         - name: promtail-config
            configMap:
             name: genai-promtail-configmap
-         - name: shared-logs  # shared space monitored with Promtail
+         - name: shared-promtail-logs  # shared space monitored with Promtail
            emptyDir: 
             sizeLimit: 500Mi
-         - name: shared-config # use config prepared by init container
+         - name: shared-promtail-config # use config prepared by init container
            emptyDir: 
             sizeLimit: 500Mi

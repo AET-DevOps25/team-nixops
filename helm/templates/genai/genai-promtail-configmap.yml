@@ -4,7 +4,7 @@ metadata:
   name: genai-promtail-configmap
   namespace: "{{ .Values.ServiceNamespace }}"
 data:
-  config_template.yml: |
+  genai_config_template.yml: |
     server:
       http_listen_port: 9080
       grpc_listen_port: 0
@@ -20,5 +20,23 @@ data:
               - localhost 
             labels:
               app: "genai"
+              environment: "{podname}" 
+              __path__: /app/logs/*.log 
+  genai_db_config_template.yml: |
+    server:
+      http_listen_port: 9080
+      grpc_listen_port: 0
+      log_level: "debug"
+    positions:
+      filename: /tmp/positions.yaml
+    clients: 
+      - url: http://monitoring-service.{{ .Values.MonitoringNamespace }}.svc.cluster.local:3100/loki/api/v1/push
+    scrape_configs:
+      - job_name: files 
+        static_configs: 
+          - targets: 
+              - localhost 
+            labels:
+              app: "milvus"
               environment: "{podname}" 
               __path__: /app/logs/*.log 

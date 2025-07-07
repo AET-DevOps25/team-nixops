@@ -15,6 +15,28 @@ spec:
       labels:
         app: genai-db-selector
     spec:
+      initContainers:
+        - name: init-container
+          image: busybox:1.28
+          command: ['sh', '-c','sed -e "s/{hostname}/$NODE_NAME/" -e "s/{podname}/$POD_NAME/" -e "s/{podip}/$POD_IP/"  /tmp/promtail/genai_db_config_template.yml > /shared/config.yml']    
+          env:
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name        
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          volumeMounts:
+              - name: promtail-config
+                mountPath: /tmp/promtail
+              - name: shared-promtail-config
+                mountPath: /shared
       containers:
         - name: etcd
           image: "quay.io/coreos/etcd:v3.5.18"
@@ -90,6 +112,8 @@ spec:
               value: "localhost:2379"
             - name: MINIO_ADDRESS
               value: "localhost:9000"
+            - name: LOG_FILE_ROOTPATH
+              value: "/milvus/logs"
           ports:
             - containerPort: 19530
               name: milvus-api
@@ -98,6 +122,22 @@ spec:
           volumeMounts:
             - name: milvus-data
               mountPath: /var/lib/milvus
+            - name: shared-promtail-logs
+              mountPath: /milvus/logs
+        - name: promtail
+          image: grafana/promtail:master
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+          volumeMounts:
+            - name: shared-promtail-logs # shared space
+              mountPath: /app/logs
+            - name: shared-promtail-config # shared space
+              mountPath: /etc/promtail
       volumes:
       - name: milvus-data
         persistentVolumeClaim:
@@ -108,3 +148,12 @@ spec:
       - name: etcd-data
         persistentVolumeClaim:
           claimName: etcd
+      - name: promtail-config
+        configMap:
+         name: genai-promtail-configmap
+      - name: shared-promtail-logs  # shared space monitored with Promtail
+        emptyDir: 
+         sizeLimit: 500Mi
+      - name: shared-promtail-config # use config prepared by init container
+        emptyDir: 
+         sizeLimit: 500Mi
