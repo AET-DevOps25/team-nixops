@@ -28,6 +28,16 @@ client:
     targetPort: 3000
   replicaCount: 1
 
+scraper:
+  image:
+    repository: ghcr.io/aet-devops25/nixops-scraper
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: 8080
+  replicaCount: 1
+
 ingress:
   enabled: true
   className: "nginx"

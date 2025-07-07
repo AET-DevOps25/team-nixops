@@ -35,6 +35,7 @@ class CourseScraper(
       } */
 
       val existing = Course.findById(natCourse.courseId)
+
       if (existing != null) {
         existing.courseName = natCourse.courseName
         existing.courseNameEn = natCourse.courseNameEn

@@ -13,13 +13,13 @@ spec:
   {{- if .Values.ingress.tls }}
   tls:
     - hosts:
-        - "nixops-devops25.student.k8s.aet.cit.tum.de"
-        - "api.nixops-devops25.student.k8s.aet.cit.tum.de"
-        - "stats.nixops-devops25.student.k8s.aet.cit.tum.de"
-      secretName: "nixops-devops25-tls"
+        - "nixops-scraper-devops25.student.k8s.aet.cit.tum.de"
+        - "api.nixops-scraper-devops25.student.k8s.aet.cit.tum.de"
+        - "stats.nixops-scraper-devops25.student.k8s.aet.cit.tum.de"
+      secretName: "nixops-scraper-devops25-tls"
   {{- end }}
   rules:
-    - host: "nixops-devops25.student.k8s.aet.cit.tum.de"
+    - host: "nixops-scraper-devops25.student.k8s.aet.cit.tum.de"
       http:
         paths:
           - path: /
@@ -29,7 +29,7 @@ spec:
                 name: client-service
                 port:
                   number: {{ .Values.client.service.port }}
-    - host: "api.nixops-devops25.student.k8s.aet.cit.tum.de"
+    - host: "api.nixops-scraper-devops25.student.k8s.aet.cit.tum.de"
       http:
         paths:
           - path: /stream # only expose chatting endpoint to the public
@@ -39,7 +39,7 @@ spec:
                 name: genai-service
                 port:
                   number: {{ .Values.genai.service.port }}
-    - host: "stats.nixops-devops25.student.k8s.aet.cit.tum.de"
+    - host: "stats.nixops-scraper-devops25.student.k8s.aet.cit.tum.de"
       http:
         paths:
           - path: /
@@ -49,4 +49,14 @@ spec:
                 name: monitoring-service
                 port:
                   number: 3000
+    - host: "scraper.nixops-scraper-devops25.student.k8s.aet.cit.tum.de"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: scraper-service
+                port:
+                  number: {{ .Values.scraper.service.port }}
 {{- end }}

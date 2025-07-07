@@ -1,5 +1,5 @@
-ServiceNamespace: nixops-default
-MonitoringNamespace: nixops-monitoring
+ServiceNamespace: nixops-scraper-test
+MonitoringNamespace: nixops-scraper-monitoring
 
 ##################################################################################################################
 # No changes needed below this line
@@ -29,6 +29,17 @@ client:
     type: ClusterIP
     port: 3000
     targetPort: 3000
+  replicaCount: 1
+
+scraper:
+  image:
+    repository: ghcr.io/aet-devops25/nixops-scraper
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: 8080
   replicaCount: 1
 
 ingress:
