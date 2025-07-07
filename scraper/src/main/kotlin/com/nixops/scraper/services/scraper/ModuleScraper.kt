@@ -1,5 +1,6 @@
 package com.nixops.scraper.services.scraper
 
+import com.nixops.scraper.extensions.genericUpsert
 import com.nixops.scraper.model.*
 import com.nixops.scraper.tum_api.nat.api.NatModuleApiClient
 import com.nixops.scraper.tum_api.nat.model.NatModule
@@ -29,36 +30,20 @@ class ModuleScraper(
         }
       }
 
-      val existing = Module.findById(natModule.id)
-      if (existing != null) {
-        existing.moduleCode = natModule.code
-        existing.moduleTitle = natModule.title
-        existing.moduleTitleEn = natModule.titleEn
-        existing.moduleContent = natModule.content
-        existing.moduleContentEn = natModule.contentEn
-        existing.moduleOutcome = natModule.outcome
-        existing.moduleOutcomeEn = natModule.outcomeEn
-        existing.moduleMethods = natModule.methods
-        existing.moduleMethodsEn = natModule.methodsEn
-        existing.moduleExam = natModule.exam
-        existing.moduleExamEn = natModule.examEn
-        existing.moduleCredits = natModule.credits
-        existing
-      } else {
-        Module.new(natModule.id) {
-          moduleCode = natModule.code
-          moduleTitle = natModule.title
-          moduleTitleEn = natModule.titleEn
-          moduleContent = natModule.content
-          moduleContentEn = natModule.contentEn
-          moduleOutcome = natModule.outcome
-          moduleOutcomeEn = natModule.outcomeEn
-          moduleMethods = natModule.methods
-          moduleMethodsEn = natModule.methodsEn
-          moduleExam = natModule.exam
-          moduleExamEn = natModule.examEn
-          moduleCredits = natModule.credits
-        }
+      Modules.genericUpsert(Module) {
+        it[Modules.id] = natModule.id
+        it[Modules.moduleCode] = natModule.code
+        it[Modules.moduleTitle] = natModule.title
+        it[Modules.moduleTitleEn] = natModule.titleEn
+        it[Modules.moduleContents] = natModule.content
+        it[Modules.moduleContentsEn] = natModule.contentEn
+        it[Modules.moduleOutcome] = natModule.outcome
+        it[Modules.moduleOutcomeEn] = natModule.outcomeEn
+        it[Modules.moduleMethods] = natModule.methods
+        it[Modules.moduleMethodsEn] = natModule.methodsEn
+        it[Modules.moduleExam] = natModule.exam
+        it[Modules.moduleExamEn] = natModule.examEn
+        it[Modules.moduleCredits] = natModule.credits
       }
     }
   }
@@ -78,7 +63,7 @@ class ModuleScraper(
     val modules = moduleApiClient.fetchAllNatModules(org)
     return modules.mapIndexedNotNull { index, natModule ->
       natModule.code.let { code ->
-        logger.trace("Fetching detail for module ${index + 1} of ${modules.size}: $code")
+        logger.info("Fetching detail for module ${index + 1} of ${modules.size}: $code")
         scrapeModuleByCode(code)
       }
     }
