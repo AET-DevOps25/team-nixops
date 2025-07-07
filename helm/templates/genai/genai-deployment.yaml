@@ -13,6 +13,28 @@ spec:
       labels:
         app: genai-selector
     spec:
+      initContainers:
+        - name: init-container
+          image: busybox:1.28
+          command: ['sh', '-c','sed -e "s/{hostname}/$NODE_NAME/" -e "s/{podname}/$POD_NAME/" -e "s/{podip}/$POD_IP/"  /tmp/promtail/config_template.yml > /shared/config.yml']    
+          env:
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name        
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          volumeMounts:
+              - name: config
+                mountPath: /tmp/promtail
+              - name: shared-config
+                mountPath: /shared
       containers:
         - name: genai
           image: "{{ .Values.genai.image.repository }}:{{ .Values.genai.image.tag }}"
@@ -55,14 +77,17 @@ spec:
               cpu: "200m"
               memory: "256Mi"
           volumeMounts:
-            - name: config
-              mountPath: /etc/promtail
             - name: shared-logs # shared space
               mountPath: /app/logs
+            - name: shared-config # shared space
+              mountPath: /etc/promtail
       volumes:
          - name: config
            configMap:
             name: genai-promtail-configmap
          - name: shared-logs  # shared space monitored with Promtail
+           emptyDir: 
+            sizeLimit: 500Mi
+         - name: shared-config # use config prepared by init container
            emptyDir: 
             sizeLimit: 500Mi
