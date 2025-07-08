@@ -16,3 +16,7 @@ spec:
       name: loki
       targetPort: 3100
       protocol: TCP
+    - port: 9101
+      name: inventor
+      targetPort: 9101
+      protocol: TCP
