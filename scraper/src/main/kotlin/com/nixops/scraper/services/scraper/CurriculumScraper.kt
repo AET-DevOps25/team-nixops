@@ -1,5 +1,6 @@
 package com.nixops.scraper.services.scraper
 
+import com.nixops.scraper.extensions.genericUpsert
 import com.nixops.scraper.model.*
 import com.nixops.scraper.tum_api.campus.api.CampusCurriculumApiClient
 import mu.KotlinLogging
@@ -17,12 +18,9 @@ class CurriculumScraper(
       curriculumApiClient.getCurriculaForSemester(tumId).map { apiCurriculum ->
         logger.debug("Saving curriculum with name: ${apiCurriculum.name}")
 
-        val existing = Curriculum.findById(apiCurriculum.id)
-        if (existing != null) {
-          existing.name = apiCurriculum.name
-          existing
-        } else {
-          Curriculum.new(apiCurriculum.id) { name = apiCurriculum.name }
+        Curriculums.genericUpsert(Curriculum) {
+          it[Curriculums.id] = apiCurriculum.id
+          it[Curriculums.name] = apiCurriculum.name
         }
       }
     }

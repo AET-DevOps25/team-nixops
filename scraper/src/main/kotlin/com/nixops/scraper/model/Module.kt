@@ -18,6 +18,8 @@ object Modules : IdTable<Int>("modules") {
   val moduleExam = text("module_exam").nullable()
   val moduleExamEn = text("module_exam_en").nullable()
   val moduleCredits = float("module_credits")
+
+  override val primaryKey = PrimaryKey(id, name = "PK_MODULE_ID")
 }
 
 class Module(id: EntityID<Int>) : Entity<Int>(id) {

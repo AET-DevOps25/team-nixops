@@ -1,5 +1,6 @@
 package com.nixops.scraper.services.scraper
 
+import com.nixops.scraper.extensions.genericUpsert
 import com.nixops.scraper.model.*
 import com.nixops.scraper.tum_api.nat.api.NatSemesterApiClient
 import mu.KotlinLogging
@@ -17,18 +18,11 @@ class SemesterScraper(
       val natSemester = semesterApiClient.getSemester(semesterKey) ?: return@transaction null
       logger.debug("Saving semester with key: {} {}", natSemester.semesterKey, natSemester)
 
-      val existing = Semester.findById(natSemester.semesterKey)
-      if (existing != null) {
-        existing.semesterTag = natSemester.semesterTag
-        existing.semesterTitle = natSemester.semesterTitle
-        existing.semesterIdTumOnline = natSemester.semesterIdTumOnline
-        existing
-      } else {
-        Semester.new(natSemester.semesterKey) {
-          semesterTag = natSemester.semesterTag
-          semesterTitle = natSemester.semesterTitle
-          semesterIdTumOnline = natSemester.semesterIdTumOnline
-        }
+      Semesters.genericUpsert(Semester) {
+        it[Semesters.id] = natSemester.semesterKey
+        it[Semesters.semesterTag] = natSemester.semesterTag
+        it[Semesters.semesterTitle] = natSemester.semesterTitle
+        it[Semesters.semesterIdTumOnline] = natSemester.semesterIdTumOnline
       }
     }
   }

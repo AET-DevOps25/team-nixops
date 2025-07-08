@@ -1,13 +1,13 @@
 package com.nixops.scraper.services.scraper
 
+import com.nixops.scraper.extensions.genericUpsert
 import com.nixops.scraper.model.*
 import com.nixops.scraper.services.SemesterService
 import com.nixops.scraper.tum_api.campus.api.CampusCourseApiClient
 import com.nixops.scraper.tum_api.nat.api.NatCourseApiClient
 import mu.KotlinLogging
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.insertIgnore
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 
@@ -38,39 +38,22 @@ class CourseScraper(
           }
       } */
 
-      val existing = Course.findById(natCourse.courseId)
       val course =
-          if (existing != null) {
-            existing.courseName = natCourse.courseName
-            existing.courseNameEn = natCourse.courseNameEn
-            existing.courseNameList = natCourse.courseNameList
-            existing.courseNameListEn = natCourse.courseNameListEn
-            existing.description = natCourse.description
-            existing.descriptionEn = natCourse.descriptionEn
-            existing.teachingMethod = natCourse.teachingMethod
-            existing.teachingMethodEn = natCourse.teachingMethodEn
-            existing.note = natCourse.note
-            existing.noteEn = natCourse.noteEn
-            existing.activityId = natCourse.activity?.activityId
-            existing.activityName = natCourse.activity?.activityName
-            existing.activityNameEn = natCourse.activity?.activityNameEn
-            existing
-          } else {
-            Course.new(natCourse.courseId) {
-              courseName = natCourse.courseName
-              courseNameEn = natCourse.courseNameEn
-              courseNameList = natCourse.courseNameList
-              courseNameListEn = natCourse.courseNameListEn
-              description = natCourse.description
-              descriptionEn = natCourse.descriptionEn
-              teachingMethod = natCourse.teachingMethod
-              teachingMethodEn = natCourse.teachingMethodEn
-              note = natCourse.note
-              noteEn = natCourse.noteEn
-              activityId = natCourse.activity?.activityId
-              activityName = natCourse.activity?.activityName
-              activityNameEn = natCourse.activity?.activityNameEn
-            }
+          Courses.genericUpsert(Course) {
+            it[Courses.id] = natCourse.courseId
+            it[Courses.courseName] = natCourse.courseName
+            it[Courses.courseNameEn] = natCourse.courseNameEn
+            it[Courses.courseNameList] = natCourse.courseNameList
+            it[Courses.courseNameListEn] = natCourse.courseNameListEn
+            it[Courses.description] = natCourse.description
+            it[Courses.descriptionEn] = natCourse.descriptionEn
+            it[Courses.teachingMethod] = natCourse.teachingMethod
+            it[Courses.teachingMethodEn] = natCourse.teachingMethodEn
+            it[Courses.note] = natCourse.note
+            it[Courses.noteEn] = natCourse.noteEn
+            it[Courses.activityId] = natCourse.activity?.activityId
+            it[Courses.activityName] = natCourse.activity?.activityName
+            it[Courses.activityNameEn] = natCourse.activity?.activityNameEn
           }
 
       if (campusCourseGroups != null) {
@@ -88,22 +71,14 @@ class CourseScraper(
               }
 
           for (campusAppointment in campusGroup.appointments) {
-            val existingAppointment = Appointment.findById(campusAppointment.id)
             val appointment =
-                if (existingAppointment != null) {
-                  existingAppointment.seriesBeginDate = campusAppointment.seriesBeginDate.value
-                  existingAppointment.seriesEndDate = campusAppointment.seriesEndDate.value
-                  existingAppointment.beginTime = campusAppointment.beginTime
-                  existingAppointment.endTime = campusAppointment.endTime
-                  existingAppointment
-                } else {
-                  Appointment.new(campusAppointment.id) {
-                    seriesBeginDate = campusAppointment.seriesBeginDate.value
-                    seriesEndDate = campusAppointment.seriesEndDate.value
-                    beginTime = campusAppointment.beginTime
-                    endTime = campusAppointment.endTime
-                    this.group = group
-                  }
+                Appointments.genericUpsert(Appointment) {
+                  it[Appointments.id] = campusAppointment.id
+                  it[Appointments.seriesBeginDate] = campusAppointment.seriesBeginDate.value
+                  it[Appointments.seriesEndDate] = campusAppointment.seriesEndDate.value
+                  it[Appointments.beginTime] = campusAppointment.beginTime
+                  it[Appointments.endTime] = campusAppointment.endTime
+                  it[Appointments.groupId] = group.id
                 }
 
             Weekday.find { AppointmentWeekdays.appointment eq appointment.id }
@@ -135,7 +110,7 @@ class CourseScraper(
     }
 
     curriculumIds.forEach { curriculumId ->
-      logger.trace("Fetch courses for $curriculumId ${semester.semesterIdTumOnline}")
+      logger.info("Fetch courses for $curriculumId ${semester.semesterIdTumOnline}")
 
       val existing = transaction {
         CurriculumCourses.select(CurriculumCourses.course)
