@@ -9,6 +9,8 @@ object Semesters : IdTable<String>("semesters") {
   val semesterTag = varchar("semester_tag", 255)
   val semesterTitle = varchar("semester_title", 255)
   val semesterIdTumOnline = integer("semester_id_tumonline")
+
+  override val primaryKey = PrimaryKey(id, name = "PK_SEMESTER_ID")
 }
 
 class Semester(id: EntityID<String>) : Entity<String>(id) {

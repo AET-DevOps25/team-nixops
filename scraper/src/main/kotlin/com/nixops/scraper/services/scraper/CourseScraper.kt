@@ -1,15 +1,17 @@
 package com.nixops.scraper.services.scraper
 
-import Course
-import com.nixops.scraper.model.Curriculum
-import com.nixops.scraper.model.CurriculumCourses
-import com.nixops.scraper.model.Semester
+import com.nixops.scraper.extensions.genericUpsert
+import com.nixops.scraper.model.*
 import com.nixops.scraper.services.SemesterService
 import com.nixops.scraper.tum_api.campus.api.CampusCourseApiClient
 import com.nixops.scraper.tum_api.nat.api.NatCourseApiClient
-import org.jetbrains.exposed.sql.insertIgnore
+import mu.KotlinLogging
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
+
+private val logger = KotlinLogging.logger {}
 
 @Service
 class CourseScraper(
@@ -20,7 +22,9 @@ class CourseScraper(
   fun scrapeCourse(id: Int): Course? {
     return transaction {
       val natCourse = natCourseApiClient.getCourseById(id) ?: return@transaction null
-      println("Saving course with id: $id")
+      val campusCourseGroups = campusCourseApiClient.getCourseGroups(id)
+
+      logger.debug("Saving course with id: $id")
 
       /* natCourse.modules.let {
           for ((semester, courses) in natModule.courses.entries) {
@@ -34,39 +38,63 @@ class CourseScraper(
           }
       } */
 
-      val existing = Course.findById(natCourse.courseId)
-      if (existing != null) {
-        existing.courseName = natCourse.courseName
-        existing.courseNameEn = natCourse.courseNameEn
-        existing.courseNameList = natCourse.courseNameList
-        existing.courseNameListEn = natCourse.courseNameListEn
-        existing.description = natCourse.description
-        existing.descriptionEn = natCourse.descriptionEn
-        existing.teachingMethod = natCourse.teachingMethod
-        existing.teachingMethodEn = natCourse.teachingMethodEn
-        existing.note = natCourse.note
-        existing.noteEn = natCourse.noteEn
-        existing.activityId = natCourse.activity?.activityId
-        existing.activityName = natCourse.activity?.activityName
-        existing.activityNameEn = natCourse.activity?.activityNameEn
-        existing
-      } else {
-        Course.new(natCourse.courseId) {
-          courseName = natCourse.courseName
-          courseNameEn = natCourse.courseNameEn
-          courseNameList = natCourse.courseNameList
-          courseNameListEn = natCourse.courseNameListEn
-          description = natCourse.description
-          descriptionEn = natCourse.descriptionEn
-          teachingMethod = natCourse.teachingMethod
-          teachingMethodEn = natCourse.teachingMethodEn
-          note = natCourse.note
-          noteEn = natCourse.noteEn
-          activityId = natCourse.activity?.activityId
-          activityName = natCourse.activity?.activityName
-          activityNameEn = natCourse.activity?.activityNameEn
+      val course =
+          Courses.genericUpsert(Course) {
+            it[Courses.id] = natCourse.courseId
+            it[Courses.courseName] = natCourse.courseName
+            it[Courses.courseNameEn] = natCourse.courseNameEn
+            it[Courses.courseNameList] = natCourse.courseNameList
+            it[Courses.courseNameListEn] = natCourse.courseNameListEn
+            it[Courses.description] = natCourse.description
+            it[Courses.descriptionEn] = natCourse.descriptionEn
+            it[Courses.teachingMethod] = natCourse.teachingMethod
+            it[Courses.teachingMethodEn] = natCourse.teachingMethodEn
+            it[Courses.note] = natCourse.note
+            it[Courses.noteEn] = natCourse.noteEn
+            it[Courses.activityId] = natCourse.activity?.activityId
+            it[Courses.activityName] = natCourse.activity?.activityName
+            it[Courses.activityNameEn] = natCourse.activity?.activityNameEn
+          }
+
+      if (campusCourseGroups != null) {
+        for (campusGroup in campusCourseGroups) {
+          val existingGroup = Group.findById(campusGroup.id)
+          val group =
+              if (existingGroup != null) {
+                existingGroup.name = campusGroup.name
+                existingGroup
+              } else {
+                Group.new(campusGroup.id) {
+                  name = campusGroup.name
+                  this.course = course
+                }
+              }
+
+          for (campusAppointment in campusGroup.appointments) {
+            val appointment =
+                Appointments.genericUpsert(Appointment) {
+                  it[Appointments.id] = campusAppointment.id
+                  it[Appointments.seriesBeginDate] = campusAppointment.seriesBeginDate.value
+                  it[Appointments.seriesEndDate] = campusAppointment.seriesEndDate.value
+                  it[Appointments.beginTime] = campusAppointment.beginTime
+                  it[Appointments.endTime] = campusAppointment.endTime
+                  it[Appointments.groupId] = group.id
+                }
+
+            Weekday.find { AppointmentWeekdays.appointment eq appointment.id }
+                .forEach { it.delete() }
+
+            for (weekday in campusAppointment.weekdays) {
+              Weekday.new {
+                this.appointment = appointment
+                this.name = weekday.key.lowercase().trimEnd('.')
+              }
+            }
+          }
         }
       }
+
+      course
     }
   }
 
@@ -77,10 +105,26 @@ class CourseScraper(
   }
 
   fun scrapeCourses(semester: Semester) {
-    val curriculumIds = transaction { Curriculum.all().map { curriculum -> curriculum.id.value } }
+    val curriculumIds = transaction {
+      Curriculum.all().map { curriculum -> curriculum.id.value }.sorted()
+    }
 
     curriculumIds.forEach { curriculumId ->
-      println("fetch courses for $curriculumId ${semester.semesterIdTumOnline}")
+      logger.info("Fetch courses for $curriculumId ${semester.semesterIdTumOnline}")
+
+      val existing = transaction {
+        CurriculumCourses.select(CurriculumCourses.course)
+            .where(
+                (CurriculumCourses.curriculum eq curriculumId) and
+                    (CurriculumCourses.semester eq semester.semesterIdTumOnline))
+            .withDistinct()
+            .toList()
+      }
+
+      if (existing.isNotEmpty()) {
+        logger.trace("Courses up-to-date")
+        return@forEach
+      }
 
       val campusCourses =
           campusCourseApiClient.getCourses(curriculumId, semester.semesterIdTumOnline)

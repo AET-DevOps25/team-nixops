@@ -2,13 +2,10 @@ package com.nixops.scraper.model
 
 import java.time.Duration
 import java.time.LocalDateTime
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.insertIgnore
 import org.jetbrains.exposed.sql.javatime.datetime
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 
 object LastUpdated : Table("last_updated") {
   val key = varchar("key", 100).uniqueIndex()

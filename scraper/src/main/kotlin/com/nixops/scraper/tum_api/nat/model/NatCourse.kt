@@ -26,6 +26,7 @@ data class NatCourse(
     @JsonProperty("tumonline_url") val tumonlineUrl: String? = null,
     @JsonProperty("modules") val modules: List<NatModule> = emptyList(),
     @JsonProperty("org") val org: Org? = null,
+    @JsonProperty("groups") val groups: List<NatGroup> = emptyList(),
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -38,4 +39,26 @@ data class Activity(
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Org(
     @JsonProperty("org_id") val orgId: Int?,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class NatGroup(
+    @JsonProperty("group_id") val groupId: Int,
+    @JsonProperty("group_name") val groupName: String,
+    @JsonProperty("events") val events: List<NatEvent>,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class NatEvent(
+    @JsonProperty("event_id") val eventId: Int,
+    @JsonProperty("start") val start: String,
+    @JsonProperty("end") val end: String,
+    @JsonProperty("eventtype") val type: NatEventType,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class NatEventType(
+    @JsonProperty("eventtype_id") val eventTypeId: String,
+    @JsonProperty("eventtype") val eventType: String,
+    @JsonProperty("eventtype_en") val eventTypeEn: String,
 )

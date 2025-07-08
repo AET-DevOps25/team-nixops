@@ -559,6 +559,22 @@
       "hash": "sha256-X12sUXT4TGCi6Z56g8eCb3NJgfvCDqHUN/em/Piq2hY="
     }
   },
+  "com.h2database:h2:2.3.232": {
+    "h2-2.3.232.pom": {
+      "url": "https://plugins.gradle.org/m2/com/h2database/h2/2.3.232/h2-2.3.232.pom",
+      "hash": "sha256-7O2yquV8vtuMAhfSC5O9Ld6IAxGYwgQlGoEHu4Mr+fA="
+    }
+  },
+  "com.h2database:h2:2.2.224": {
+    "h2-2.2.224.jar": {
+      "url": "https://plugins.gradle.org/m2/com/h2database/h2/2.2.224/h2-2.2.224.jar",
+      "hash": "sha256-udjxk1itqCpPbrWxdMbP4yCjdbWpy1pP5FbWI+blVJc="
+    },
+    "h2-2.2.224.pom": {
+      "url": "https://plugins.gradle.org/m2/com/h2database/h2/2.2.224/h2-2.2.224.pom",
+      "hash": "sha256-DUUDoBpMemL5GuGmJxM5z4BvKkYt7+C+/17/1aYR45g="
+    }
+  },
   "com.jayway.jsonpath:json-path:2.9.0": {
     "json-path-2.9.0.jar": {
       "url": "https://plugins.gradle.org/m2/com/jayway/jsonpath/json-path/2.9.0/json-path-2.9.0.jar",
@@ -731,6 +747,20 @@
     "java-diff-utils-parent-4.12.pom": {
       "url": "https://plugins.gradle.org/m2/io/github/java-diff-utils/java-diff-utils-parent/4.12/java-diff-utils-parent-4.12.pom",
       "hash": "sha256-2BHPnxGMwsrRMMlCetVcF01MCm8aAKwa4cm8vsXESxk="
+    }
+  },
+  "io.github.microutils:kotlin-logging-jvm:3.0.5": {
+    "kotlin-logging-jvm-3.0.5.jar": {
+      "url": "https://plugins.gradle.org/m2/io/github/microutils/kotlin-logging-jvm/3.0.5/kotlin-logging-jvm-3.0.5.jar",
+      "hash": "sha256-KpR3pBOEh7t/uwV+46wPRVtY+NS+2UyIX6ZCYN5Z5Nw="
+    },
+    "kotlin-logging-jvm-3.0.5.module": {
+      "url": "https://plugins.gradle.org/m2/io/github/microutils/kotlin-logging-jvm/3.0.5/kotlin-logging-jvm-3.0.5.module",
+      "hash": "sha256-VHKuBO7UYKcXGKUv788d7FnS3V6gx6umyVfV4LtgoJg="
+    },
+    "kotlin-logging-jvm-3.0.5.pom": {
+      "url": "https://plugins.gradle.org/m2/io/github/microutils/kotlin-logging-jvm/3.0.5/kotlin-logging-jvm-3.0.5.pom",
+      "hash": "sha256-aljWp9tas/HQ8uOBam/JneflJyf/LAarRmucM3TfsyM="
     }
   },
   "io.kotest:kotest-assertions-api:5.7.2": {
@@ -1031,6 +1061,146 @@
     "micrometer-tracing-bom-1.5.0.pom": {
       "url": "https://plugins.gradle.org/m2/io/micrometer/micrometer-tracing-bom/1.5.0/micrometer-tracing-bom-1.5.0.pom",
       "hash": "sha256-k+Ys3TNXFWIy0k5eup6d98cPByuDzlWQ309wzDMTxRY="
+    }
+  },
+  "io.mockk:mockk:1.14.4": {
+    "mockk-1.14.4.jar": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk/1.14.4/mockk-1.14.4.jar",
+      "hash": "sha256-CJ4kQXv59sNO7Fcg7rssvMguooVezvkBM+sX4QedWGg="
+    },
+    "mockk-1.14.4.module": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk/1.14.4/mockk-1.14.4.module",
+      "hash": "sha256-zSKDUWDpcO5YrUix7LAGB08siintvwhqJhCDG2mdddw="
+    },
+    "mockk-1.14.4.pom": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk/1.14.4/mockk-1.14.4.pom",
+      "hash": "sha256-83oiiPUPc2pzMe3FMZvhETpYIrIhC+r2GSZSnWytxqA="
+    }
+  },
+  "io.mockk:mockk-agent:1.14.4": {
+    "mockk-agent-1.14.4.jar": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-agent/1.14.4/mockk-agent-1.14.4.jar",
+      "hash": "sha256-CJ4kQXv59sNO7Fcg7rssvMguooVezvkBM+sX4QedWGg="
+    },
+    "mockk-agent-1.14.4.module": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-agent/1.14.4/mockk-agent-1.14.4.module",
+      "hash": "sha256-yYv07Oe3Z8hdKAAhyW+DQvRkKGQJUA07jgLvYnpjLDQ="
+    },
+    "mockk-agent-1.14.4.pom": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-agent/1.14.4/mockk-agent-1.14.4.pom",
+      "hash": "sha256-App/IKTWto+gxfuUALtpgaPwGrfI3V+It4UKlH6zPoc="
+    }
+  },
+  "io.mockk:mockk-agent-api:1.14.4": {
+    "mockk-agent-api-1.14.4.jar": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-agent-api/1.14.4/mockk-agent-api-1.14.4.jar",
+      "hash": "sha256-CJ4kQXv59sNO7Fcg7rssvMguooVezvkBM+sX4QedWGg="
+    },
+    "mockk-agent-api-1.14.4.module": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-agent-api/1.14.4/mockk-agent-api-1.14.4.module",
+      "hash": "sha256-+OAMoBnM8/1AmOPL8N1xEVBx888hD6Ev9Em9SZ0g5cM="
+    },
+    "mockk-agent-api-1.14.4.pom": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-agent-api/1.14.4/mockk-agent-api-1.14.4.pom",
+      "hash": "sha256-nKQPTTvFgrUti3sVESBJQjyzlSMtuW5rOYQ2i6Gx380="
+    }
+  },
+  "io.mockk:mockk-agent-api-jvm:1.14.4": {
+    "mockk-agent-api-jvm-1.14.4.jar": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-agent-api-jvm/1.14.4/mockk-agent-api-jvm-1.14.4.jar",
+      "hash": "sha256-qRmo/sA9+wwITLQ9r86+Ldk1FDHHoIwvyBRwN94dBrc="
+    },
+    "mockk-agent-api-jvm-1.14.4.module": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-agent-api-jvm/1.14.4/mockk-agent-api-jvm-1.14.4.module",
+      "hash": "sha256-T+V4eSoMN58INGS+Nap3R01Tow6lKV7F1nn9ZYZAf8k="
+    },
+    "mockk-agent-api-jvm-1.14.4.pom": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-agent-api-jvm/1.14.4/mockk-agent-api-jvm-1.14.4.pom",
+      "hash": "sha256-2A9Z6nOQl5SGBapMb3ROFYmvpFurgWKcZ1RUjZ9Da58="
+    }
+  },
+  "io.mockk:mockk-agent-jvm:1.14.4": {
+    "mockk-agent-jvm-1.14.4.jar": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-agent-jvm/1.14.4/mockk-agent-jvm-1.14.4.jar",
+      "hash": "sha256-n3jpmI6EyYVp7c+aYiXVtzVJOVKWQuVMLFjaPvORMQY="
+    },
+    "mockk-agent-jvm-1.14.4.module": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-agent-jvm/1.14.4/mockk-agent-jvm-1.14.4.module",
+      "hash": "sha256-0ms3G0w+o2fXvV03SXSvN2x7aZz8Mt1JSCuJYd7VYEE="
+    },
+    "mockk-agent-jvm-1.14.4.pom": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-agent-jvm/1.14.4/mockk-agent-jvm-1.14.4.pom",
+      "hash": "sha256-Ey8n0OmVSEOInk634vJ5+Wqe+fUveUlXlnsjfogt8Ls="
+    }
+  },
+  "io.mockk:mockk-core:1.14.4": {
+    "mockk-core-1.14.4.jar": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-core/1.14.4/mockk-core-1.14.4.jar",
+      "hash": "sha256-CJ4kQXv59sNO7Fcg7rssvMguooVezvkBM+sX4QedWGg="
+    },
+    "mockk-core-1.14.4.module": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-core/1.14.4/mockk-core-1.14.4.module",
+      "hash": "sha256-p+nG44eUI8FYQvAOJLQYtmN9nhAN2Qwc8WA4mCicKsM="
+    },
+    "mockk-core-1.14.4.pom": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-core/1.14.4/mockk-core-1.14.4.pom",
+      "hash": "sha256-dBaLAEDE5OGCR7esoSXxzmqV8Cy86fiKCHRTtHjRf7k="
+    }
+  },
+  "io.mockk:mockk-core-jvm:1.14.4": {
+    "mockk-core-jvm-1.14.4.jar": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-core-jvm/1.14.4/mockk-core-jvm-1.14.4.jar",
+      "hash": "sha256-Bg//50UudPbhi7nf4SIeksTsDeKahLAi+1Yuxs2VRpE="
+    },
+    "mockk-core-jvm-1.14.4.module": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-core-jvm/1.14.4/mockk-core-jvm-1.14.4.module",
+      "hash": "sha256-vNMEh1CqtP1Wa+8PQ/z4hswmC+z66yV+03BclfZs9zM="
+    },
+    "mockk-core-jvm-1.14.4.pom": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-core-jvm/1.14.4/mockk-core-jvm-1.14.4.pom",
+      "hash": "sha256-M1n9/15Ffw4V26Z2dgHGf3TW4DFgume9Swt0w78OrqA="
+    }
+  },
+  "io.mockk:mockk-dsl:1.14.4": {
+    "mockk-dsl-1.14.4.jar": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-dsl/1.14.4/mockk-dsl-1.14.4.jar",
+      "hash": "sha256-CJ4kQXv59sNO7Fcg7rssvMguooVezvkBM+sX4QedWGg="
+    },
+    "mockk-dsl-1.14.4.module": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-dsl/1.14.4/mockk-dsl-1.14.4.module",
+      "hash": "sha256-895Uq4Lv0qRm4xLdZdlpMrXlnyE+eoGuZUaaqD932ck="
+    },
+    "mockk-dsl-1.14.4.pom": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-dsl/1.14.4/mockk-dsl-1.14.4.pom",
+      "hash": "sha256-/UiIuSuPOax8vp9G/52QqYkAhxUNZiarv4KT4kR7K1A="
+    }
+  },
+  "io.mockk:mockk-dsl-jvm:1.14.4": {
+    "mockk-dsl-jvm-1.14.4.jar": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-dsl-jvm/1.14.4/mockk-dsl-jvm-1.14.4.jar",
+      "hash": "sha256-0B1s6F+YJNjdsi6n8bzNWBuDH/rVBPSKTxir+bxvLqw="
+    },
+    "mockk-dsl-jvm-1.14.4.module": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-dsl-jvm/1.14.4/mockk-dsl-jvm-1.14.4.module",
+      "hash": "sha256-g/AlzOPcT/msieMfaSK0+XyzIeKfNv1nBtL890fvMyU="
+    },
+    "mockk-dsl-jvm-1.14.4.pom": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-dsl-jvm/1.14.4/mockk-dsl-jvm-1.14.4.pom",
+      "hash": "sha256-9FLtbMgM3C2z6Yx9uPaC/i66HoxsB6T+LPPCXQR6r5g="
+    }
+  },
+  "io.mockk:mockk-jvm:1.14.4": {
+    "mockk-jvm-1.14.4.jar": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-jvm/1.14.4/mockk-jvm-1.14.4.jar",
+      "hash": "sha256-dN64bLq2hxo+TQ+Xuo6sva56rNdTfxQrywg1kEZaYhk="
+    },
+    "mockk-jvm-1.14.4.module": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-jvm/1.14.4/mockk-jvm-1.14.4.module",
+      "hash": "sha256-puGebqqZhVcfC8lOr/wLRJR3+MeOMP75RndvnVAe3WI="
+    },
+    "mockk-jvm-1.14.4.pom": {
+      "url": "https://plugins.gradle.org/m2/io/mockk/mockk-jvm/1.14.4/mockk-jvm-1.14.4.pom",
+      "hash": "sha256-Dzz5PywzqvK1y9DN+VKd3UZLc+AUh9A5wVYX0CUVsRM="
     }
   },
   "io.netty:netty-bom:4.1.121.Final": {
@@ -1439,6 +1609,16 @@
     "joda-time-2.12.7.pom": {
       "url": "https://plugins.gradle.org/m2/joda-time/joda-time/2.12.7/joda-time-2.12.7.pom",
       "hash": "sha256-hf3b+kfCmf2OzhyT//1H2cLTyQNaM7XbAXswTGd+hCg="
+    }
+  },
+  "junit:junit:4.13.2": {
+    "junit-4.13.2.jar": {
+      "url": "https://plugins.gradle.org/m2/junit/junit/4.13.2/junit-4.13.2.jar",
+      "hash": "sha256-jklbY0Rp1k+4rPo0laBly6zIoP/1XOHjEAe+TBbcV9M="
+    },
+    "junit-4.13.2.pom": {
+      "url": "https://plugins.gradle.org/m2/junit/junit/4.13.2/junit-4.13.2.pom",
+      "hash": "sha256-Vptpd+5GA8llwcRsMFj6bpaSkbAWDraWTdCSzYnq3ZQ="
     }
   },
   "net.bytebuddy:byte-buddy:1.17.5": {
@@ -2121,6 +2301,20 @@
       "hash": "sha256-SgSmgTO/MkYfR7ilPI7p30zi9JoNrZeUvOhxe+5brDE="
     }
   },
+  "org.hamcrest:hamcrest-core:3.0": {
+    "hamcrest-core-3.0.jar": {
+      "url": "https://plugins.gradle.org/m2/org/hamcrest/hamcrest-core/3.0/hamcrest-core-3.0.jar",
+      "hash": "sha256-t4o6gWkvQhzAH8F97ZpF6ftvOUnHEvjsTQHaa4wGvG4="
+    },
+    "hamcrest-core-3.0.module": {
+      "url": "https://plugins.gradle.org/m2/org/hamcrest/hamcrest-core/3.0/hamcrest-core-3.0.module",
+      "hash": "sha256-gweKVn1bT3j27cznGvQfDnRjmIELze3N/QLiRVe8mmA="
+    },
+    "hamcrest-core-3.0.pom": {
+      "url": "https://plugins.gradle.org/m2/org/hamcrest/hamcrest-core/3.0/hamcrest-core-3.0.pom",
+      "hash": "sha256-1kyZW1baUn0+fhhmuRkNmL0QuYanfYET7EVQeZ44WqQ="
+    }
+  },
   "org.hibernate.validator:hibernate-validator:8.0.2.Final": {
     "hibernate-validator-8.0.2.Final.pom": {
       "url": "https://plugins.gradle.org/m2/org/hibernate/validator/hibernate-validator/8.0.2.Final/hibernate-validator-8.0.2.Final.pom",
@@ -2745,6 +2939,12 @@
       "hash": "sha256-aIt5ABn0F87APmldZWexc7o7skGJVBZi8U/2ZEG1Pas="
     }
   },
+  "org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.10.1": {
+    "kotlinx-coroutines-bom-1.10.1.pom": {
+      "url": "https://plugins.gradle.org/m2/org/jetbrains/kotlinx/kotlinx-coroutines-bom/1.10.1/kotlinx-coroutines-bom-1.10.1.pom",
+      "hash": "sha256-nL0EumPnOZhWdFcT4xLS8hYaHUTtpQbe1HyNVtr4Rh8="
+    }
+  },
   "org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.8.1": {
     "kotlinx-coroutines-bom-1.8.1.pom": {
       "url": "https://plugins.gradle.org/m2/org/jetbrains/kotlinx/kotlinx-coroutines-bom/1.8.1/kotlinx-coroutines-bom-1.8.1.pom",
@@ -3069,11 +3269,17 @@
       "hash": "sha256-2FMadGyYj39o7V8YjN6pRQBq6pk+xd+eUk4NJ9YUkdo="
     }
   },
-  "org.mockito:mockito-core:5.17.0": {
-    "mockito-core-5.17.0.jar": {
-      "url": "https://plugins.gradle.org/m2/org/mockito/mockito-core/5.17.0/mockito-core-5.17.0.jar",
-      "hash": "sha256-3/Wa2MYbAm74bMET+U8jAesGyq+B3sMMeKlqGmVZXF4="
+  "org.mockito:mockito-core:5.18.0": {
+    "mockito-core-5.18.0.jar": {
+      "url": "https://plugins.gradle.org/m2/org/mockito/mockito-core/5.18.0/mockito-core-5.18.0.jar",
+      "hash": "sha256-o9TkD3/mYBb+QsAN5ONDd310Eyr8hQGODwOsYzSmDyk="
     },
+    "mockito-core-5.18.0.pom": {
+      "url": "https://plugins.gradle.org/m2/org/mockito/mockito-core/5.18.0/mockito-core-5.18.0.pom",
+      "hash": "sha256-cCZWNGCaFVU3MDM5Ht/rh5Apl0EgpxL+DZrYC6JI790="
+    }
+  },
+  "org.mockito:mockito-core:5.17.0": {
     "mockito-core-5.17.0.pom": {
       "url": "https://plugins.gradle.org/m2/org/mockito/mockito-core/5.17.0/mockito-core-5.17.0.pom",
       "hash": "sha256-0BzBTnZhxjBHlApC9Qc9Sg7L4qDqXS6jQgS0zAgeFqU="
@@ -3087,6 +3293,16 @@
     "mockito-junit-jupiter-5.17.0.pom": {
       "url": "https://plugins.gradle.org/m2/org/mockito/mockito-junit-jupiter/5.17.0/mockito-junit-jupiter-5.17.0.pom",
       "hash": "sha256-AaXP6bnbkv1GSZ3oA2e7JtreMj/DH4cMyT8ArLwWRs0="
+    }
+  },
+  "org.mockito.kotlin:mockito-kotlin:5.4.0": {
+    "mockito-kotlin-5.4.0.jar": {
+      "url": "https://plugins.gradle.org/m2/org/mockito/kotlin/mockito-kotlin/5.4.0/mockito-kotlin-5.4.0.jar",
+      "hash": "sha256-yXo8CtNi2TUqE1Mjdn/T2tZHlvJjOTmbEp/hnX4wNWo="
+    },
+    "mockito-kotlin-5.4.0.pom": {
+      "url": "https://plugins.gradle.org/m2/org/mockito/kotlin/mockito-kotlin/5.4.0/mockito-kotlin-5.4.0.pom",
+      "hash": "sha256-nehH5Jjq+XkORI2OZzITf4qajxc8IUPGKD6mY/R/2Ls="
     }
   },
   "org.mongodb:mongodb-driver-bom:5.4.0": {

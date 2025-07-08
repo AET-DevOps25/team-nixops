@@ -20,12 +20,15 @@ repositories {
   mavenCentral()
 }
 
+val mockitoAgent = configurations.create("mockitoAgent")
+
 dependencies {
   implementation("org.springframework.boot:spring-boot-starter-web")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
   implementation("org.jetbrains.kotlin:kotlin-reflect")
   implementation("com.squareup.okhttp3:okhttp:4.11.0")
   implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+  implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
 
   // Exposed
   implementation("org.springframework.boot:spring-boot-starter-jdbc")
@@ -49,6 +52,11 @@ dependencies {
   testImplementation("io.kotest:kotest-runner-junit5:5.7.2")
   testImplementation("io.kotest:kotest-assertions-core:5.7.2")
   testImplementation("io.kotest:kotest-framework-engine:5.7.2")
+  testImplementation("org.mockito:mockito-core:5.18.0")
+  testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
+  mockitoAgent("org.mockito:mockito-core:5.18.0") { isTransitive = false }
+  testImplementation("io.mockk:mockk:1.14.4")
+  testImplementation("com.h2database:h2:2.2.224")
 }
 
 sourceSets {
@@ -85,4 +93,14 @@ tasks.openApiGenerate {
 
 tasks.named("compileKotlin") { dependsOn("openApiGenerate") }
 
-tasks.test { useJUnitPlatform() }
+tasks.test {
+  useJUnitPlatform { excludeTags("remoteApi") }
+  jvmArgs("-javaagent:${mockitoAgent.asPath}")
+}
+
+tasks.register<Test>("remoteApiTest") {
+  useJUnitPlatform { includeTags("remoteApi") }
+  testClassesDirs = sourceSets.test.get().output.classesDirs
+  classpath = sourceSets.test.get().runtimeClasspath
+  jvmArgs("-javaagent:${mockitoAgent.asPath}")
+}

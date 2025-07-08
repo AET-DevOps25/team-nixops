@@ -18,6 +18,7 @@ data class NatModule(
     @JsonProperty("module_methods_en") val methodsEn: String?,
     @JsonProperty("module_exam") val exam: String?,
     @JsonProperty("module_exam_en") val examEn: String?,
+    @JsonProperty("module_credits") val credits: Float,
     @JsonProperty("courses") val courses: Map<String, List<NatCourse>> = mapOf()
 )
 

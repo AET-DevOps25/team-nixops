@@ -15,11 +15,14 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class ApiClientConfig {
+class ApiClientConfig(private val apiClientProperties: ApiClientProperties) {
+  @Bean fun natApiClientProperties() = apiClientProperties.nat
+
+  @Bean fun campusApiClientProperties() = apiClientProperties.campus
 
   @Bean
   fun okHttpClient(): OkHttpClient {
-    val cacheSize = Long.MAX_VALUE
+    val cacheSize = 500L * 1024 * 1024 // 500MB
     val cacheDirectory = File("cache_directory")
     val cache = Cache(cacheDirectory, cacheSize)
 
@@ -47,21 +50,27 @@ class ApiClientConfig {
 
   @Bean
   fun campusCurriculumApiClient(okHttpClient: OkHttpClient) =
-      CampusCurriculumApiClient(client = okHttpClient)
+      CampusCurriculumApiClient(
+          client = okHttpClient, campusApiClientProperties = campusApiClientProperties())
 
   @Bean
   fun campusCourseApiClient(okHttpClient: OkHttpClient) =
-      CampusCourseApiClient(client = okHttpClient)
+      CampusCourseApiClient(
+          client = okHttpClient, campusApiClientProperties = campusApiClientProperties())
 
   @Bean
-  fun natSemesterApiClient(okHttpClient: OkHttpClient) = NatSemesterApiClient(client = okHttpClient)
+  fun natSemesterApiClient(okHttpClient: OkHttpClient) =
+      NatSemesterApiClient(client = okHttpClient, natApiClientProperties = natApiClientProperties())
 
   @Bean
-  fun natProgramApiClient(okHttpClient: OkHttpClient) = NatProgramApiClient(client = okHttpClient)
+  fun natProgramApiClient(okHttpClient: OkHttpClient) =
+      NatProgramApiClient(client = okHttpClient, natApiClientProperties = natApiClientProperties())
 
   @Bean
-  fun natModuleApiClient(okHttpClient: OkHttpClient) = NatModuleApiClient(client = okHttpClient)
+  fun natModuleApiClient(okHttpClient: OkHttpClient) =
+      NatModuleApiClient(client = okHttpClient, natApiClientProperties = natApiClientProperties())
 
   @Bean
-  fun natCourseApiClient(okHttpClient: OkHttpClient) = NatCourseApiClient(client = okHttpClient)
+  fun natCourseApiClient(okHttpClient: OkHttpClient) =
+      NatCourseApiClient(client = okHttpClient, natApiClientProperties = natApiClientProperties())
 }

@@ -2,6 +2,7 @@ package com.nixops.scraper.tum_api.nat.api
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.nixops.scraper.config.ApiClientProperties
 import com.nixops.scraper.tum_api.nat.model.NatProgram
 import java.io.IOException
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -9,10 +10,11 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 
 class NatProgramApiClient(
-    private val baseUrl: String = "https://api.srv.nat.tum.de/api/v1",
+    natApiClientProperties: ApiClientProperties.Nat,
     private val client: OkHttpClient = OkHttpClient()
 ) {
   private val mapper = jacksonObjectMapper()
+  private val baseUrl: String = natApiClientProperties.baseUrl
 
   fun getPrograms(): List<NatProgram> {
     return searchPrograms("")
