@@ -36,9 +36,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Dialog } from "@radix-ui/react-dialog";
 import { useEffect, useState } from "react";
-import { Label } from "@radix-ui/react-select";
 
 export function StudyProgramSelector({
   setStudyProgramId,

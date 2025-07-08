@@ -9,7 +9,7 @@ export default function Page() {
   const [semester, setSemester] = useState("");
   return (
     <>
-      <Chat studyProgramId={studyProgramId} semester={semester} />
+      <Chat studyProgramId={Number(studyProgramId)} semester={semester} />
       <MenuOverlay
         setStudyProgramId={setStudyProgramId}
         setSemester={setSemester}

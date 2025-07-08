@@ -20,8 +20,8 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Dialog } from "@/components/ui/dialog";
 import pkg from "../../package.json";
-import { Dialog } from "@radix-ui/react-dialog";
 import { StudyProgramSelector } from "./study-program-selector";
 
 const version = pkg.version;
