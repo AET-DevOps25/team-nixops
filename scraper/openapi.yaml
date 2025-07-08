@@ -44,10 +44,36 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/StudyProgram'
-                  
-  /study-programs/{study_id}/full:
+
+  /study-programs/{study_id}:
     get:
       operationId: getStudyProgram
+      summary: Get study program with id
+      parameters:
+        - name: study_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: semesterKey
+          in: query
+          required: true
+          description: Semester key, e.g. "2024s"
+          schema:
+            type: string
+            pattern: '^\d{4}[sSwW]$'
+      responses:
+        '200':
+          description: study program
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudyProgram'
+
+  /study-programs/{study_id}/full:
+    get:
+      operationId: getFullStudyProgram
       summary: Get study program with id
       parameters:
         - name: study_id
@@ -191,8 +217,8 @@ components:
       type: object
       properties:
         id:
-          type: string
-          example: "CS123"
+          type: integer
+          example: 123
         code:
           type: string
           example: "CS123"
