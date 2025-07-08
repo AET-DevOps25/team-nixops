@@ -18,10 +18,21 @@ spec:
       initContainers:
         - name: init-permissions
           image: busybox
-          command: ['sh', '-c', 'chown -R 472:472 /var/lib/grafana']
+          command: 
+            - 'sh'
+            - '-c'
+            - |
+              chown -R 472:472 /var/lib/grafana &&
+              chmod -R 755 /var/lib/grafana &&
+              chown -R 472:472 /var/lib/prometheus &&
+              chmod -R 755 /var/lib/prometheus &&
+              chmod -R o+rw /var/lib/prometheus &&
+              echo done setting permissions
           volumeMounts:
             - name: grafana-storage
               mountPath: /var/lib/grafana
+            - name: prometheus-storage
+              mountPath: /var/lib/prometheus
       containers:
         - name: grafana
           image: grafana/grafana-oss:latest
@@ -47,12 +58,61 @@ spec:
           ports:
             - containerPort: 3100
           volumeMounts:
-            - name: loki-config
+            - name: monitoring-config
               mountPath: /etc/loki
+        - name: inventor 
+          imagePullPolicy: Always
+          image: "ghoscht/inventor:0.0.3"
+          env:
+            - name: APP_ENV
+              value: "release"
+            - name: SD_TOKEN
+              value: ""
+            - name: LISTEN_PORT
+              value: "9101"
+            - name: REDIS_ADDR
+              value: "localhost"  
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_DBNO
+              value: "7"
+            - name: TTL_SECONDS
+              value: "300"
+            - name: API_TOKEN
+              value: "foo"
+          readinessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 9101
+            initialDelaySeconds: 4
+            periodSeconds: 60
+        - name: inventor-redis
+          imagePullPolicy: Always
+          image: redis
+          ports:
+            - containerPort: 6379
+        - name: prometheus
+          image: prom/prometheus:v2.52.0
+          ports:
+            - containerPort: 9090
+          volumeMounts:
+            - name: monitoring-config
+              mountPath: /etc/prometheus
+            - name: prometheus-storage
+              mountPath: /prometheus
+          args:
+            - '--config.file=/etc/prometheus/prometheus-config.yml'
+            - '--storage.tsdb.path=/prometheus'
+            - '--web.console.libraries=/etc/prometheus/console_libraries'
+            - '--web.console.templates=/etc/prometheus/consoles'
+            - '--web.enable-lifecycle'
       volumes:
-        - name: loki-config
+        - name: monitoring-config
           configMap:
             name: monitoring-configmap
+        - name: prometheus-storage
+          persistentVolumeClaim:
+            claimName: prometheus
         - name: grafana-storage
           persistentVolumeClaim:
             claimName: grafana

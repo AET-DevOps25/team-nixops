@@ -31,3 +31,11 @@ data:
           index:
             prefix: index_
             period: 24h
+  prometheus-config.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+    scrape_configs:
+      - job_name: http_sd
+        http_sd_configs:
+          - url: http://127.0.0.1:9101/discover
