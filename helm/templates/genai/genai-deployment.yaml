@@ -81,6 +81,16 @@ spec:
               mountPath: /app/logs
             - name: shared-promtail-config # shared space
               mountPath: /etc/promtail
+        - name: inventor-refresher
+          image: alpine:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              apk add curl
+              while true; do
+                curl -X PUT -H "x-api-token: foo" http://monitoring-service.{{ .Values.MonitoringNamespace }}.svc.cluster.local:9101/target -d '{"static_config": {"targets": ["10.0.10.2:9100"], "labels": {"__meta_datacenter": "dc-01", "__meta_prometheus_job": "node"}, "target_group": "mygroup"}}'
+                sleep 60
+              done
       volumes:
          - name: promtail-config
            configMap:
