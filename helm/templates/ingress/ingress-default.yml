@@ -38,4 +38,14 @@ spec:
                 name: genai-service
                 port:
                   number: {{ .Values.genai.service.port }}
+    - host: "scraper.nixops-devops25.student.k8s.aet.cit.tum.de"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: scraper-service
+                port:
+                  number: {{ .Values.scraper.service.port }}
 {{- end }}
