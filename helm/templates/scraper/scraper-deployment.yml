@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scraper
+  namespace: "{{ .Values.ServiceNamespace }}"
+spec:
+  replicas: {{ .Values.scraper.replicaCount }}
+  selector:
+    matchLabels:
+      app: scraper-selector
+  template:
+    metadata:
+      labels:
+        app: scraper-selector
+    spec:
+      containers:
+        - name: scraper
+          image: "{{ .Values.scraper.image.repository }}:{{ .Values.scraper.image.tag }}"
+          imagePullPolicy: {{ .Values.scraper.image.pullPolicy }}
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://scraper-db-service:5432/scraperdb
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: scraper-db-secret
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: scraper-db-secret
+                  key: password
+          ports:
+            - containerPort: {{ .Values.scraper.service.targetPort }}
+              name: scraper-api
