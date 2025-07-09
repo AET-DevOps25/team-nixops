@@ -52,6 +52,8 @@ spec:
           volumeMounts:
             - name: grafana-storage
               mountPath: /var/lib/grafana
+            - name: grafana-datasources
+              mountPath: /etc/grafana/provisioning/datasources/
         - name: loki
           image: grafana/loki:2.9.0
           args: ["-config.file=/etc/loki/loki-config.yml"]
@@ -60,37 +62,6 @@ spec:
           volumeMounts:
             - name: monitoring-config
               mountPath: /etc/loki
-        - name: inventor 
-          imagePullPolicy: Always
-          image: "ghoscht/inventor:0.0.3"
-          env:
-            - name: APP_ENV
-              value: "release"
-            - name: SD_TOKEN
-              value: ""
-            - name: LISTEN_PORT
-              value: "9101"
-            - name: REDIS_ADDR
-              value: "localhost"  
-            - name: REDIS_PORT
-              value: "6379"
-            - name: REDIS_DBNO
-              value: "7"
-            - name: TTL_SECONDS
-              value: "300"
-            - name: API_TOKEN
-              value: "foo"
-          readinessProbe:
-            httpGet:
-              path: /healthcheck
-              port: 9101
-            initialDelaySeconds: 4
-            periodSeconds: 60
-        - name: inventor-redis
-          imagePullPolicy: Always
-          image: redis
-          ports:
-            - containerPort: 6379
         - name: prometheus
           image: prom/prometheus:v2.52.0
           ports:
@@ -106,6 +77,7 @@ spec:
             - '--web.console.libraries=/etc/prometheus/console_libraries'
             - '--web.console.templates=/etc/prometheus/consoles'
             - '--web.enable-lifecycle'
+            - '--web.enable-remote-write-receiver'
       volumes:
         - name: monitoring-config
           configMap:
@@ -116,3 +88,6 @@ spec:
         - name: grafana-storage
           persistentVolumeClaim:
             claimName: grafana
+        - name: grafana-datasources
+          configMap:
+            name: grafana-datasources
