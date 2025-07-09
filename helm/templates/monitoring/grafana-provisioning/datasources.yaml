@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: "{{ .Values.MonitoringNamespace }}"
+data:
+  prometheus.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://localhost:9090
+        access: proxy
+        jsonData:
+          tlsSkipVerify: true
+  loki.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Loki
+        type: loki
+        url: http://localhost:3100
+        access: proxy
+        jsonData:
+          tlsSkipVerify: true
