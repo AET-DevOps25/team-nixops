@@ -12,6 +12,7 @@ cors_origins = config(
     "CORS_ORIGINS",
     default="http://localhost, http://localhost:8000, http://localhost:3000",
 )
+logging_filename = config("LOGGING_FILENAME", default="/var/log/genai.log")
 
 # DB
 db_user = config("POSTGRES_USER", default="pguser")

@@ -1,3 +1,5 @@
+from .env import logging_filename
+
 LOGGING_CONFIG = {
     "version": 1,
     "disable_existing_loggers": True,
@@ -21,7 +23,7 @@ LOGGING_CONFIG = {
         "file_handler": {
             "formatter": "custom_formatter",
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": "app.log",
+            "filename": logging_filename,
             "maxBytes": 1024 * 1024 * 1,  # = 1MB
             "backupCount": 3,
         },
