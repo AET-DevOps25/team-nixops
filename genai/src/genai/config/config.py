@@ -14,4 +14,10 @@ cors_origins = config(
 )
 
 # DB
-# TODO: add here
+db_user = config("POSTGRES_USER", default="pguser")
+db_pass = config("POSTGRES_PASS", default="pgpass")
+db_host = config("POSTGRES_HOST", default="localhost:5432")
+db_name = config("POSTGRES_NAME", default="nixops")
+
+milvus_uri = config("MILVUS_URI", default="http://localhost:19530")
+milvus_token = config("MILVUS_TOKEN", default="root:Milvus")
