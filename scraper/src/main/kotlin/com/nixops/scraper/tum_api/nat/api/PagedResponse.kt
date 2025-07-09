@@ -1,7 +1,9 @@
 package com.nixops.scraper.tum_api.nat.api
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class PagedResponse<T>(
     @JsonProperty("hits") val hits: List<T>,
     @JsonProperty("count") val count: Int,
