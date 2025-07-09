@@ -14,7 +14,7 @@ from contextlib import asynccontextmanager
 
 from .db.relational_db import create_db_and_tables
 from .routers import embedding, generation
-from .config.config import cors_origins
+from .config.env import cors_origins
 from .config.telemetry import init_telemetry
 from .config.openapi import custom_openapi
 from .config.logging import LOGGING_CONFIG
@@ -48,4 +48,4 @@ app.openapi = custom_openapi
 
 
 def run():
-    uvicorn.run(app, host="0.0.0.0", log_level="trace", log_config=LOGGING_CONFIG)
+    uvicorn.run(app, host="0.0.0.0", log_level="info", log_config=LOGGING_CONFIG)

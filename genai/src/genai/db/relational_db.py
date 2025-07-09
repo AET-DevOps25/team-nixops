@@ -8,7 +8,7 @@ from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 
-from ..config import config
+from ..config import env
 
 
 class Base(DeclarativeBase):
@@ -55,9 +55,7 @@ class Semester(Base):
         return f"Semester(id={self.id!r}, name={self.name!r})"
 
 
-database_uri = (
-    f"postgresql://{config.db_user}:{config.db_pass}@{config.db_host}/{config.db_name}"
-)
+database_uri = f"postgresql://{env.db_user}:{env.db_pass}@{env.db_host}/{env.db_name}"
 
 engine = create_engine(database_uri, echo=True)
 

@@ -2,12 +2,12 @@ from ollama import Client
 
 from pymilvus import IndexType, MilvusClient, DataType
 
-from ..config import config
+from ..config import env
 
-milvus_client = MilvusClient(uri=config.milvus_uri, token=config.milvus_token)
+milvus_client = MilvusClient(uri=env.milvus_uri, token=env.milvus_token)
 
 ollama_client = Client(
-    host=config.llm_api_url, headers={"Authorization": f"Bearer {config.llm_api_key}"}
+    host=env.llm_api_url, headers={"Authorization": f"Bearer {env.llm_api_key}"}
 )
 
 
@@ -21,7 +21,7 @@ def create_index(collection_name):
 
 def embed_text(text):
     response = ollama_client.embeddings(
-        model=config.llm_embedding_model,
+        model=env.llm_embedding_model,
         prompt=text,
     )
     return response["embedding"]

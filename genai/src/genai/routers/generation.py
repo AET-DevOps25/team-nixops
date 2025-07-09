@@ -29,7 +29,7 @@ from pydantic import BaseModel, Field
 from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import tools_condition
 
-from ..config import config
+from ..config import env
 
 
 class State(TypedDict):
@@ -70,19 +70,19 @@ def retrieve_modules(
 router = APIRouter()
 
 chat_llm = ChatOllama(
-    model=config.llm_chat_model,
-    temperature=config.llm_chat_temp,
-    base_url=config.llm_api_url,
+    model=env.llm_chat_model,
+    temperature=env.llm_chat_temp,
+    base_url=env.llm_api_url,
     tags=["chatting", "chat"],
-    client_kwargs={"headers": {"Authorization": f"Bearer {config.llm_api_key}"}},
+    client_kwargs={"headers": {"Authorization": f"Bearer {env.llm_api_key}"}},
 )
 
 reasoning_llm = ChatOllama(
-    model=config.llm_chat_model,
+    model=env.llm_chat_model,
     temperature=0,
-    base_url=config.llm_api_url,
+    base_url=env.llm_api_url,
     tags=["reasoning", "system"],
-    client_kwargs={"headers": {"Authorization": f"Bearer {config.llm_api_key}"}},
+    client_kwargs={"headers": {"Authorization": f"Bearer {env.llm_api_key}"}},
 )
 
 TOOL_SELECTION_PROMPT = (
