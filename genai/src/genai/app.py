@@ -20,10 +20,6 @@ from .config.openapi import custom_openapi
 
 logger = logging.getLogger("uvicorn.error")
 
-app = FastAPI()
-app.include_router(generation.router)
-app.include_router(embedding.router)
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
