@@ -279,7 +279,7 @@ components:
             exam: Written exam
             credits: 5.0
             title_en: Introduction to Programming (EN)
-            id: CS123
+            id: 123
             outcome: Students can write basic code.
             outcome_en: Students can write basic code. (EN)
           - methods_en: "Lecture, Exercises (EN)"
@@ -434,7 +434,7 @@ components:
             exam: Written exam
             credits: 5.0
             title_en: Introduction to Programming (EN)
-            id: CS123
+            id: 123
             outcome: Students can write basic code.
             outcome_en: Students can write basic code. (EN)
       properties:
@@ -618,14 +618,14 @@ components:
         exam: Written exam
         credits: 5.0
         title_en: Introduction to Programming (EN)
-        id: CS123
+        id: 123
         outcome: Students can write basic code.
         outcome_en: Students can write basic code. (EN)
       properties:
         id:
-          example: CS123
+          example: 123
           title: id
-          type: string
+          type: integer
         code:
           example: CS123
           title: code

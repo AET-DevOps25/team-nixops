@@ -33,7 +33,7 @@ class Module(BaseModel):
     Module
     """  # noqa: E501
 
-    id: Optional[StrictStr] = None
+    id: Optional[StrictInt] = None
     code: Optional[StrictStr] = None
     title: Optional[StrictStr] = None
     title_en: Optional[StrictStr] = None
