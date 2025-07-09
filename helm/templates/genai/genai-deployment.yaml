@@ -65,6 +65,14 @@ spec:
               value: "/app/logs/genai.log"
             - name: MILVUS_URI
               value: http://genai-db-service:19530
+            - name: POSTGRES_HOST
+              value: "localhost:5432"
+            - name: POSTGRES_USER
+              value: "myuser"
+            - name: POSTGRES_PASS
+              value: "mypassword"
+            - name: POSTGRES_NAME
+              value: "genai_db"
           ports:
             - containerPort: {{ .Values.genai.service.targetPort }}
               name: genai-api
@@ -93,13 +101,31 @@ spec:
               mountPath: /app/logs
             - name: shared-alloy-config # shared space
               mountPath: /etc/alloy
+        - name: postgres
+          image: postgres:15
+          env:
+            - name: POSTGRES_USER
+              value: "myuser"
+            - name: POSTGRES_PASSWORD
+              value: "mypassword"
+            - name: POSTGRES_DB
+              value: "genai_db"
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-storage
       volumes:
-         - name: alloy-config
-           configMap:
+        - name: alloy-config
+          configMap:
             name: genai-configmap
-         - name: shared-alloy-logs  # shared space monitored with alloy
-           emptyDir: 
+        - name: shared-alloy-logs  # shared space monitored with alloy
+          emptyDir: 
             sizeLimit: 500Mi
-         - name: shared-alloy-config # use config prepared by init container
-           emptyDir: 
+        - name: shared-alloy-config # use config prepared by init container
+          emptyDir: 
             sizeLimit: 500Mi
+        - name: postgres-storage
+          emptyDir:
+            sizeLimit: 500Mi
+
