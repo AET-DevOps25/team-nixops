@@ -5,7 +5,7 @@ metadata:
   namespace: "{{ .Values.MonitoringNamespace }}"
 spec:
   replicas: 1
-  strategy: 
+  strategy:
     type: Recreate
   selector:
     matchLabels:
@@ -18,9 +18,9 @@ spec:
       initContainers:
         - name: init-permissions
           image: busybox
-          command: 
-            - 'sh'
-            - '-c'
+          command:
+            - "sh"
+            - "-c"
             - |
               chown -R 472:472 /var/lib/grafana &&
               chmod -R 755 /var/lib/grafana &&
@@ -72,12 +72,31 @@ spec:
             - name: prometheus-storage
               mountPath: /prometheus
           args:
-            - '--config.file=/etc/prometheus/prometheus-config.yml'
-            - '--storage.tsdb.path=/prometheus'
-            - '--web.console.libraries=/etc/prometheus/console_libraries'
-            - '--web.console.templates=/etc/prometheus/consoles'
-            - '--web.enable-lifecycle'
-            - '--web.enable-remote-write-receiver'
+            - "--config.file=/etc/prometheus/prometheus-config.yml"
+            - "--storage.tsdb.path=/prometheus"
+            - "--web.console.libraries=/etc/prometheus/console_libraries"
+            - "--web.console.templates=/etc/prometheus/consoles"
+            - "--web.enable-lifecycle"
+            - "--web.enable-remote-write-receiver"
+        - name: ntfy
+          image: binwiederhier/ntfy
+          args:
+            - serve
+          env:
+            - name: TZ
+              value: "Europe/Berlin"
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - "wget -q --tries=1 http://localhost:80/v1/health -O - | grep -Eo '\"healthy\"\\s*:\\s*true' || exit 1"
+            initialDelaySeconds: 40
+            periodSeconds: 60
+            timeoutSeconds: 10
+            failureThreshold: 3
       volumes:
         - name: monitoring-config
           configMap:
