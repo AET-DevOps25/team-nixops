@@ -150,7 +150,7 @@ spec:
           claimName: etcd
       - name: promtail-config
         configMap:
-         name: genai-promtail-configmap
+         name: genai-configmap
       - name: shared-promtail-logs  # shared space monitored with Promtail
         emptyDir: 
          sizeLimit: 500Mi
