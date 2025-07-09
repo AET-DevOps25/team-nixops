@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: scraper-service
+  namespace: "{{ .Values.ServiceNamespace }}"
+spec:
+  selector:
+    app: scraper-selector
+  ports:
+    - port: {{ .Values.scraper.service.port }}
+      targetPort: {{ .Values.scraper.service.targetPort }}
+      protocol: TCP
+  type: {{ .Values.scraper.service.type }}
