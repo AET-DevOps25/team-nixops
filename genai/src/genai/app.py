@@ -17,6 +17,7 @@ from .routers import embedding, generation
 from .config.config import cors_origins
 from .config.telemetry import init_telemetry
 from .config.openapi import custom_openapi
+from .config.logging import LOGGING_CONFIG
 
 logger = logging.getLogger("uvicorn.error")
 
