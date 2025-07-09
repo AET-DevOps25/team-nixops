@@ -16,7 +16,7 @@
 
   pyprojectOverrides = final: prev: {
     psycopg2 = prev.psycopg2.overrideAttrs (old: {
-      buildInputs = (old.buildInputs or []) ++ [pkgs.libpq] ++ final.resolveBuildSystem {setuptools = [];};
+      buildInputs = (old.buildInputs or []) ++ [pkgs.libpq.pg_config] ++ final.resolveBuildSystem {setuptools = [];};
     });
     bson = prev.bson.overrideAttrs (old: {
       buildInputs = (old.buildInputs or []) ++ final.resolveBuildSystem {setuptools = [];};
