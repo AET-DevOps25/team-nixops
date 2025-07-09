@@ -16,7 +16,9 @@ dependencies = [
     "openapi_server",
     "pymilvus>=2.5.10",
     "python-decouple>=3.8",
-    "setuptools>=80.9.0",
+	 "SQLAlchemy>=2.0.41",
+	 "psycopg2>=2.9.10",
+	 "bson>=0.5.10",
 ]
 
 [project.scripts]
