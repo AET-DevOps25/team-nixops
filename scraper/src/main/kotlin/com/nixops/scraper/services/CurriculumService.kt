@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service
 @Service
 class CurriculumService {
   fun getCurriculum(studyProgram: StudyProgram, semester: Semester): Curriculum? {
-    return transaction {
-      Curriculum.find(Curriculums.name eq studyProgram.fullName()).firstOrNull()
-    }
+    return transaction { Curriculum.find(Curriculums.name eq studyProgram.fullName).firstOrNull() }
   }
 }

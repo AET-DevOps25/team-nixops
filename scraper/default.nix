@@ -13,7 +13,10 @@
 
     lockFile = ./gradle.lock;
 
-    gradleBuildFlags = ["bootJar"];
+    gradleBuildFlags = [
+      "test"
+      "bootJar"
+    ];
 
     src = ./.;
 

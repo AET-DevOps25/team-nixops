@@ -25,3 +25,6 @@ verify with
 ```sh
 nix eval --raw .#genai.version
 ```
+
+## Milvus
+web dashboard at http://localhost:9091/webui/

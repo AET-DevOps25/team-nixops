@@ -11,9 +11,16 @@ from langchain_ollama.chat_models import ChatOllama
 from langchain_ollama import OllamaEmbeddings
 from langgraph.checkpoint.memory import InMemorySaver
 
-from ..config import llm_api_url, llm_api_key, llm_chat_temp, llm_chat_model, llm_embedding_model
+from ..config import (
+    llm_api_url,
+    llm_api_key,
+    llm_chat_temp,
+    llm_chat_model,
+    llm_embedding_model,
+)
 
 router = APIRouter()
+
 
 class State(TypedDict):
     messages: Annotated[list, add_messages]

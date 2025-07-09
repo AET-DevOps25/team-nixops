@@ -2,16 +2,18 @@ package com.nixops.scraper.tum_api.nat.api
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.nixops.scraper.config.ApiClientProperties
 import com.nixops.scraper.tum_api.nat.model.NatSemester
 import java.io.IOException
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
 class NatSemesterApiClient(
-    private val baseUrl: String = "https://api.srv.nat.tum.de/api/v1",
+    natApiClientProperties: ApiClientProperties.Nat,
     private val client: OkHttpClient = OkHttpClient()
 ) {
   private val mapper = jacksonObjectMapper()
+  private val baseUrl: String = natApiClientProperties.baseUrl
 
   /** Fetch the current lecture semester. */
   @Throws(IOException::class)

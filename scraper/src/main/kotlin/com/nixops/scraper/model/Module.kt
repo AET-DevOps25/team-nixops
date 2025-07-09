@@ -17,6 +17,9 @@ object Modules : IdTable<Int>("modules") {
   val moduleMethodsEn = text("module_methods_en").nullable()
   val moduleExam = text("module_exam").nullable()
   val moduleExamEn = text("module_exam_en").nullable()
+  val moduleCredits = float("module_credits")
+
+  override val primaryKey = PrimaryKey(id, name = "PK_MODULE_ID")
 }
 
 class Module(id: EntityID<Int>) : Entity<Int>(id) {
@@ -33,4 +36,5 @@ class Module(id: EntityID<Int>) : Entity<Int>(id) {
   var moduleMethodsEn by Modules.moduleMethodsEn
   var moduleExam by Modules.moduleExam
   var moduleExamEn by Modules.moduleExamEn
+  var moduleCredits by Modules.moduleCredits
 }

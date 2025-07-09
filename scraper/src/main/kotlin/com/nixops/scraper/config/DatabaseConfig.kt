@@ -1,13 +1,15 @@
 package com.nixops.scraper.config
 
-import Courses
 import com.nixops.scraper.model.*
 import javax.sql.DataSource
+import mu.KotlinLogging
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+
+private val logger = KotlinLogging.logger {}
 
 @Configuration
 class DatabaseConfig {
@@ -24,8 +26,12 @@ class DatabaseConfig {
       SchemaUtils.create(Courses)
       SchemaUtils.create(ModuleCourses)
       SchemaUtils.create(CurriculumCourses)
+      SchemaUtils.create(Groups)
+      SchemaUtils.create(Appointments)
+      SchemaUtils.create(AppointmentWeekdays)
+      SchemaUtils.create(StudyProgramSemester)
     }
-    println(">>> Exposed connected and tables created!")
+    logger.info("Exposed connected and tables created")
     return db
   }
 }
