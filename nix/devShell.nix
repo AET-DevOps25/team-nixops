@@ -50,6 +50,7 @@
         packages = [
           pkgs.nodejs
           pkgs.importNpmLock.hooks.linkNodeModulesHook
+          pkgs.openapi-generator-cli
         ];
         env = {
           inherit npmDeps;
