@@ -42,22 +42,22 @@
           };
         };
       };
-		client-dev = let
-		inherit (self'.packages.client) npmDeps;
-		in{
-
-      packages = [
-        pkgs.nodejs
-        pkgs.importNpmLock.hooks.linkNodeModulesHook
-      ];
-		env = {
-		   inherit npmDeps;
-		};
-		enterShell = ''
-			# normally executed automatically, but not if other shell hook already exists
-			linkNodeModulesHook
-		'';
-		};
+      client-dev = let
+        inherit (self'.packages.client) npmDeps;
+      in {
+        packages = [
+          pkgs.nodejs
+          pkgs.importNpmLock.hooks.linkNodeModulesHook
+          pkgs.openapi-generator-cli
+        ];
+        env = {
+          inherit npmDeps;
+        };
+        enterShell = ''
+          # normally executed automatically, but not if other shell hook already exists
+          linkNodeModulesHook
+        '';
+      };
       genai-dev = let
         inherit (self'.packages.genai) venv;
       in {

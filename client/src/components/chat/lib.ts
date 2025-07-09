@@ -8,7 +8,7 @@ type Message = {
   content: string;
 };
 
-function useChat(api: string) {
+function useChat(api: string, studyProgramId: number, semester: string) {
   const [currentQuestion, setCurrentQuestion] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversationId, _] = useState(uuidv4());
@@ -17,7 +17,15 @@ function useChat(api: string) {
   useEffect(() => {
     if (currentQuestion !== "") {
       const source = new SSE(
-        api + "/stream?prompt=" + currentQuestion + "&id=" + conversationId,
+        api +
+          "/chat?prompt=" +
+          currentQuestion +
+          "&convId=" +
+          conversationId +
+          "&studyProgramId=" +
+          studyProgramId +
+          "&semester=" +
+          semester,
       );
 
       source.addEventListener("message", (e: any) => {

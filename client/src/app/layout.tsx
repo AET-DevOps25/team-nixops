@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
+import { PetApiFactory, Configuration } from "../api";
+
+const petApiConfig = new Configuration({ basePath: "http://localhost:8000" });
+const petApi = PetApiFactory(petApiConfig);
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,7 +24,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-		  {children}
+          {children}
         </ThemeProvider>
       </body>
     </html>
