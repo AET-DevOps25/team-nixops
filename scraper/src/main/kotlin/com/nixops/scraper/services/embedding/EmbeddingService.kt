@@ -29,8 +29,8 @@ class EmbeddingService(
     private val client: OkHttpClient =
         OkHttpClient.Builder()
             .connectTimeout(1, TimeUnit.SECONDS)
-            .readTimeout(0, TimeUnit.MILLISECONDS)
-            .writeTimeout(0, TimeUnit.MILLISECONDS)
+            .readTimeout(5, TimeUnit.SECONDS)
+            .writeTimeout(5, TimeUnit.SECONDS)
             .build(),
     embeddingProperties: EmbeddingProperties
 ) {
@@ -59,10 +59,10 @@ class EmbeddingService(
     val body = jsonString.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
     val request = Request.Builder().url(endpoint).post(body).build()
 
-    val response = client.newCall(request).execute()
-
-    if (!response.isSuccessful) {
-      throw IOException("Unexpected response: $response")
+    client.newCall(request).execute().use { response -> // ← use ensures connection closes
+      if (!response.isSuccessful) {
+        throw IOException("Unexpected response: ${response.code} - ${response.message}")
+      }
     }
 
     transaction {
