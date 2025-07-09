@@ -14,6 +14,7 @@ spec:
   tls:
     - hosts:
         - "stats.nixops-devops25.student.k8s.aet.cit.tum.de"
+        - "push.nixops-devops25.student.k8s.aet.cit.tum.de"
       secretName: "nixops-devops25-tls"
   {{- end }}
   rules:
@@ -27,4 +28,14 @@ spec:
                 name: monitoring-service
                 port:
                   number: 3000
+    - host: "push.nixops-devops25.student.k8s.aet.cit.tum.de"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: monitoring-service
+                port:
+                  number: 8080
 {{- end }}
