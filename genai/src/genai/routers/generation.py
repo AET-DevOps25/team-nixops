@@ -19,8 +19,7 @@ from langchain_core.tools import tool
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import InjectedState, ToolNode
-import os
-from ..data.vector_db import create_collection, embed_text, milvus_client
+from ..db.vector_db import create_collection, embed_text, milvus_client
 
 from langchain.tools.retriever import create_retriever_tool
 from langchain_core.callbacks import CallbackManagerForRetrieverRun

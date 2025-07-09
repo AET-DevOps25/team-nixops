@@ -7,8 +7,12 @@ from typing import List
 from typing_extensions import Annotated
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from ..data.db import engine, StudyProgram as SqlStudyProgram, Semester as SqlSemester
-from ..data.vector_db import create_collection, embed_text, milvus_client
+from ..db.relational_db import (
+    engine,
+    StudyProgram as SqlStudyProgram,
+    Semester as SqlSemester,
+)
+from ..db.vector_db import create_collection, embed_text, milvus_client
 from datetime import datetime, date
 from openapi_server.models.study_program_selector_item import StudyProgramSelectorItem
 import json
