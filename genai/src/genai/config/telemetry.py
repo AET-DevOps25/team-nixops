@@ -10,7 +10,7 @@ import importlib.metadata
 
 
 def init_telemetry(app: FastAPI):
-    FastAPIInstrumentor.instrument_app(app)
+    FastAPIInstrumentor.instrument_app(app, excluded_urls="metrics,healthcheck")
     LangchainInstrumentor().instrument()
     resource = Resource.create({"service.name": "your_service_name"})
     reader = PrometheusMetricReader()
