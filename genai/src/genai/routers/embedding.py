@@ -70,7 +70,7 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
                 modules = study_program.semesters[s.name]
                 for mod in modules:
                     desc = (
-                        mod.id
+                        str(mod.id)
                         + "\n\n"
                         + (mod.content or "")
                         + "\n\n"
