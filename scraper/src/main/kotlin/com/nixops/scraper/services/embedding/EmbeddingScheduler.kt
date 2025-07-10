@@ -89,7 +89,7 @@ class EmbeddingScheduler(
         try {
           embeddingService.embed(studyProgram, semester)
         } catch (e: ConnectException) {
-          logger.error { "Failed to connect to GenAI" }
+          logger.error(e) { "Failed to connect to GenAI" }
           break
         } catch (e: Exception) {
           logger.error(e) {
