@@ -13,6 +13,7 @@ import com.nixops.scraper.services.ModuleService
 import java.io.IOException
 import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
+import mu.KotlinLogging
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -20,6 +21,8 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.jetbrains.exposed.sql.insertIgnore
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
+
+private val logger = KotlinLogging.logger {}
 
 @Service
 class EmbeddingService(
@@ -56,14 +59,20 @@ class EmbeddingService(
 
     val jsonString = mapper.writeValueAsString(apiStudyProgram)
 
+    logger.info("Created StudyProgram DTO")
+
     val body = jsonString.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
     val request = Request.Builder().url(endpoint).post(body).build()
+
+    logger.info("Embedding")
 
     client.newCall(request).execute().use { response -> // ← use ensures connection closes
       if (!response.isSuccessful) {
         throw IOException("Unexpected response: ${response.code} - ${response.message}")
       }
     }
+
+    logger.info("Finished Embedding")
 
     transaction {
       StudyProgramSemester.insertIgnore {
