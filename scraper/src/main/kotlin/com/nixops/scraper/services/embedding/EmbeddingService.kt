@@ -64,7 +64,7 @@ class EmbeddingService(
     logger.info("Created StudyProgram DTO")
 
     val body = jsonString.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-    val request = Request.Builder().url(endpoint).post(body).build()
+    val request = Request.Builder().url("$endpoint/embed").post(body).build()
 
     logger.info("Embedding")
 
@@ -123,7 +123,7 @@ class EmbeddingService(
   }
 
   fun fetchEmbedded(): List<EmbeddingStudyProgram> {
-    val request = Request.Builder().url("http://localhost:8000/embed/studyPrograms").build()
+    val request = Request.Builder().url("$endpoint/embed/studyPrograms").build()
 
     client.newCall(request).execute().use { response ->
       if (!response.isSuccessful) {
