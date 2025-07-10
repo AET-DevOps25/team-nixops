@@ -15,6 +15,13 @@ import org.springframework.stereotype.Component
 
 private val logger = KotlinLogging.logger {}
 
+private data class EmbeddingCandidate(
+    val studyId: Long,
+    val semesterKey: String,
+    val programName: String,
+    val curriculumId: Int
+)
+
 @Component
 class EmbeddingScheduler(
     private val studyProgramService: StudyProgramService,
@@ -24,29 +31,39 @@ class EmbeddingScheduler(
 
   @Scheduled(fixedRate = 2 * 1000)
   fun embed() {
-    transaction {
-      val res =
-          CurriculumCourses.join(
-                  Curriculums, JoinType.INNER, CurriculumCourses.curriculum, Curriculums.id)
-              .join(StudyPrograms, JoinType.INNER, Curriculums.name, StudyPrograms.fullName)
-              .join(
-                  Semesters,
-                  JoinType.INNER,
-                  CurriculumCourses.semester,
-                  Semesters.semesterIdTumOnline)
-              .select(
-                  StudyPrograms.programName,
-                  StudyPrograms.studyId,
-                  Semesters.id,
-                  CurriculumCourses.curriculum)
-              .withDistinct()
+    val candidates = transaction {
+      CurriculumCourses.join(
+              Curriculums, JoinType.INNER, CurriculumCourses.curriculum, Curriculums.id)
+          .join(StudyPrograms, JoinType.INNER, Curriculums.name, StudyPrograms.fullName)
+          .join(
+              Semesters, JoinType.INNER, CurriculumCourses.semester, Semesters.semesterIdTumOnline)
+          .select(
+              StudyPrograms.programName,
+              StudyPrograms.studyId,
+              Semesters.id,
+              CurriculumCourses.curriculum)
+          .withDistinct()
+          .mapNotNull { row ->
+            val studyId = row[StudyPrograms.studyId]
+            val semesterKey = row[Semesters.id].value
+            EmbeddingCandidate(
+                studyId = studyId,
+                semesterKey = semesterKey,
+                programName = row[StudyPrograms.programName],
+                curriculumId = row[CurriculumCourses.curriculum])
+          }
+    }
 
-      for (row in res) {
-        val name = row[StudyPrograms.programName]
-        val studyId = row[StudyPrograms.studyId]
-        val semesterKey = row[Semesters.id].value
-        val curriculumId = row[CurriculumCourses.curriculum]
+    for (candidate in candidates) {
+      logger.info(
+          "Embedding ${candidate.programName}, ${candidate.studyId}, ${candidate.semesterKey}, ${candidate.curriculumId}")
 
+      val name = candidate.programName
+      val studyId = candidate.studyId
+      val semesterKey = candidate.semesterKey
+      val curriculumId = candidate.curriculumId
+
+      val embed = transaction {
         val existingStudyProgramSemester =
             StudyProgramSemester.selectAll()
                 .where(
@@ -56,31 +73,30 @@ class EmbeddingScheduler(
 
         val now = LocalDateTime.now()
 
-        val embed =
-            if (existingStudyProgramSemester != null) {
-              val lastEmbedded = existingStudyProgramSemester[StudyProgramSemester.last_embedded]
+        if (existingStudyProgramSemester != null) {
+          val lastEmbedded = existingStudyProgramSemester[StudyProgramSemester.last_embedded]
 
-              Duration.between(lastEmbedded, now) > Duration.ofDays(7)
-            } else {
-              true
-            }
+          Duration.between(lastEmbedded, now) > Duration.ofDays(7)
+        } else {
+          true
+        }
+      }
 
-        if (embed) {
-          logger.info("Embed $name, $studyId, $semesterKey, $curriculumId")
+      if (embed) {
+        logger.info("Embed $name, $studyId, $semesterKey, $curriculumId")
 
-          val studyProgram = studyProgramService.getStudyProgram(studyId) ?: return@transaction
+        val studyProgram = studyProgramService.getStudyProgram(studyId) ?: continue
 
-          val semester = semesterService.getSemester(semesterKey) ?: return@transaction
+        val semester = semesterService.getSemester(semesterKey) ?: continue
 
-          try {
-            embeddingService.embed(studyProgram, semester)
-          } catch (e: ConnectException) {
-            logger.error { "Failed to connect to GenAI" }
-            break
-          } catch (e: Exception) {
-            logger.error(e) {
-              "Unexpected error while embedding $studyId, $semesterKey, $curriculumId: ${e.message}"
-            }
+        try {
+          embeddingService.embed(studyProgram, semester)
+        } catch (e: ConnectException) {
+          logger.error { "Failed to connect to GenAI" }
+          break
+        } catch (e: Exception) {
+          logger.error(e) {
+            "Unexpected error while embedding $studyId, $semesterKey, $curriculumId: ${e.message}"
           }
         }
       }

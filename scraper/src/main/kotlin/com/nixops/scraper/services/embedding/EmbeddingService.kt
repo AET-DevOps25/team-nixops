@@ -40,7 +40,7 @@ class EmbeddingService(
   private val endpoint: String = embeddingProperties.endpoint
 
   fun embed(studyProgram: StudyProgram, semester: Semester) {
-    val modules = moduleService.getModules(studyProgram.studyId, semester) ?: return
+    val modules = transaction { moduleService.getModules(studyProgram.studyId, semester) } ?: return
 
     val semesterModules = transaction {
       mapOf(
