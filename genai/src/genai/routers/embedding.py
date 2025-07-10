@@ -33,7 +33,7 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
         super().__init_subclass__(**kwargs)
         BaseEmbeddingApi.subclasses = BaseEmbeddingApi.subclasses + (cls,)
 
-    async def create_study_program(
+    def create_study_program(
         self,
         study_program: StudyProgram,
     ) -> None:
@@ -41,6 +41,50 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
             sem = list(
                 map(lambda x: SqlSemester(name=x), study_program.semesters.keys())
             )
+
+            print(
+                "Embedding:",
+                study_program.study_id,
+                study_program.program_name,
+                list(study_program.semesters.keys()),
+            )
+
+            for s in sem:
+                collection_name = f"_{study_program.study_id}_{s.name}"
+                create_collection(collection_name)
+                milvus_client.load_collection(collection_name)
+                modules = study_program.semesters[s.name]
+                for n, mod in enumerate(modules):
+                    desc = (
+                        str(mod.id)
+                        + "\n\n"
+                        + (mod.content or "")
+                        + "\n\n"
+                        + (mod.outcome or "")
+                        + "\n\n"
+                        + (mod.methods or "")
+                        + "\n\n"
+                        + (mod.exam or "")
+                        + "\n\nCredits: "
+                        + str(mod.credits)
+                    )[:16192]
+
+                    courses = json.dumps(mod.courses.to_dict(), cls=datetime_encoder)
+                    data = {
+                        "id": mod.id,
+                        "name": mod.title[:256],
+                        "description": desc,
+                        "description_vec": embed_text(desc),
+                        "courses": courses,
+                    }
+
+                    res = milvus_client.insert(
+                        collection_name=collection_name, data=[data]
+                    )
+                    milvus_client.flush(collection_name=collection_name)
+                    print(f"Embedded module {n}/{len(modules)} ({res})")
+
+            print("Finished embedding")
 
             sp = session.query(SqlStudyProgram).get(study_program.study_id)
 
@@ -62,42 +106,6 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
                 session.add(sp)
 
             session.commit()
-
-            for s in sem:
-                collection_name = f"_{study_program.study_id}_{s.name}"
-                create_collection(collection_name)
-                milvus_client.load_collection(collection_name)
-                modules = study_program.semesters[s.name]
-                for mod in modules:
-                    desc = (
-                        str(mod.id)
-                        + "\n\n"
-                        + (mod.content or "")
-                        + "\n\n"
-                        + (mod.outcome or "")
-                        + "\n\n"
-                        + (mod.methods or "")
-                        + "\n\n"
-                        + (mod.exam or "")
-                        + "\n\nCredits: "
-                        + str(mod.credits)
-                    )[:16192]
-
-                    courses = json.dumps(mod.courses.to_dict(), cls=datetime_encoder)
-                    data = {
-                        "id": mod.id,
-                        "name": mod.title,
-                        "description": desc,
-                        "description_vec": embed_text(desc),
-                        "courses": courses,
-                    }
-
-                    res = milvus_client.insert(
-                        collection_name=collection_name, data=[data]
-                    )
-                    milvus_client.flush(collection_name=collection_name)
-                    print(res)
-        return None
 
     async def fetch_study_programs(
         self,
