@@ -30,7 +30,7 @@ class ScraperScheduler(
     check("semesters", semesterScraper::scrapeSemesters)
     check("study_programs", studyProgramScraper::scrapeStudyPrograms)
     check("curricula", curriculumScraper::scrapeCurricula)
-    check("modules", moduleScraper::scrapeModules)
+    check("modules", moduleScraper::scrapeModules, Duration.ofDays(2))
     check("courses", courseScraper::scrapeCourses, Duration.ofDays(2))
   }
 }

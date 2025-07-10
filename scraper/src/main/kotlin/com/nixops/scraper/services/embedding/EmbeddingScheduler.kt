@@ -55,9 +55,6 @@ class EmbeddingScheduler(
     }
 
     for (candidate in candidates) {
-      logger.info(
-          "Embedding ${candidate.programName}, ${candidate.studyId}, ${candidate.semesterKey}, ${candidate.curriculumId}")
-
       val name = candidate.programName
       val studyId = candidate.studyId
       val semesterKey = candidate.semesterKey
