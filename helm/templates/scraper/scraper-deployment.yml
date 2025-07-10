@@ -38,7 +38,7 @@ spec:
                   name: scraper-db-secret
                   key: password
             - name: SCRAPER_EMBEDDING_ENDPOINT
-              value: "http://genai-service:{{ .Values.genai.service.targetPort }}/embed"
+              value: "http://genai-service:{{ .Values.genai.service.targetPort }}"
           ports:
             - containerPort: {{ .Values.scraper.service.targetPort }}
               name: scraper-api
