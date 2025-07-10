@@ -37,7 +37,7 @@ schema = MilvusClient.create_schema(
 # each row is a module
 schema.add_field(field_name="id", datatype=DataType.INT64, is_primary=True)
 schema.add_field(field_name="name", datatype=DataType.VARCHAR, max_length=128)
-schema.add_field(field_name="description", datatype=DataType.VARCHAR, max_length=8096)
+schema.add_field(field_name="description", datatype=DataType.VARCHAR, max_length=16192)
 schema.add_field(
     field_name="description_vec", datatype=DataType.FLOAT_VECTOR, dim=embedding_len()
 )
