@@ -81,7 +81,8 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
                         + (mod.exam or "")
                         + "\n\nCredits: "
                         + str(mod.credits)
-                    )
+                    )[:16192]
+
                     courses = json.dumps(mod.courses.to_dict(), cls=datetime_encoder)
                     data = {
                         "id": mod.id,
