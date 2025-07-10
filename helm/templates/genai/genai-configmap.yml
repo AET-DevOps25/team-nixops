@@ -34,7 +34,7 @@ data:
     		url = "http://monitoring-service.nixops-monitoring.svc.cluster.local:9090/api/v1/write"
       }
     	external_labels = {
-        environment: "{podname}",
+        environment = "{podname}",
       }
     }
     prometheus.scrape "default" {
