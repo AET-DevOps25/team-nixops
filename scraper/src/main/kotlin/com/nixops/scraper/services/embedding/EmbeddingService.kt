@@ -1,8 +1,10 @@
 package com.nixops.scraper.services.embedding
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.nixops.scraper.config.EmbeddingProperties
 import com.nixops.scraper.mapper.StudyProgramMapper
 import com.nixops.scraper.model.Semester
@@ -31,9 +33,9 @@ class EmbeddingService(
     private val studyProgramMapper: StudyProgramMapper,
     private val client: OkHttpClient =
         OkHttpClient.Builder()
-            .connectTimeout(1, TimeUnit.SECONDS)
-            .readTimeout(0, TimeUnit.MILLISECONDS)
-            .writeTimeout(0, TimeUnit.MILLISECONDS)
+            .connectTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(5, TimeUnit.SECONDS)
+            .writeTimeout(5, TimeUnit.SECONDS)
             .build(),
     embeddingProperties: EmbeddingProperties
 ) {
@@ -66,11 +68,15 @@ class EmbeddingService(
 
     logger.info("Embedding")
 
-    client.newCall(request).execute().use { response -> // ← use ensures connection closes
+    client.newCall(request).execute().use { response ->
       if (!response.isSuccessful) {
         throw IOException("Unexpected response: ${response.code} - ${response.message}")
       }
     }
+
+    logger.info("Wait for Embedding")
+
+    waitForEmbedding(studyProgram.studyId, semester.id.value)
 
     logger.info("Finished Embedding")
 
@@ -83,4 +89,57 @@ class EmbeddingService(
       }
     }
   }
+
+  fun waitForEmbedding(
+      studyProgramId: Long,
+      semester: String,
+      timeoutSeconds: Long = 36000,
+      pollIntervalMillis: Long = 10000
+  ): EmbeddingStudyProgram? {
+    val start = System.currentTimeMillis()
+    val timeoutMillis = timeoutSeconds * 1000
+
+    while (System.currentTimeMillis() - start < timeoutMillis) {
+      val embeddedPrograms = fetchEmbedded()
+
+      logger.trace("waiting for: $studyProgramId, $semester")
+      logger.trace("embedded: $embeddedPrograms")
+
+      val found =
+          embeddedPrograms.find { it.id == studyProgramId && it.semesters.contains(semester) }
+      if (found != null) {
+        logger.debug("Study program $studyProgramId with semester $semester has been embedded.")
+        return found
+      }
+
+      logger.debug(
+          "Study program $studyProgramId with semester $semester not embedded yet, waiting...")
+      Thread.sleep(pollIntervalMillis)
+    }
+
+    logger.warn(
+        "Timeout reached: Study program $studyProgramId with semester $semester did not finish embedding within $timeoutSeconds seconds.")
+    return null
+  }
+
+  fun fetchEmbedded(): List<EmbeddingStudyProgram> {
+    val request = Request.Builder().url("http://localhost:8000/embed/studyPrograms").build()
+
+    client.newCall(request).execute().use { response ->
+      if (!response.isSuccessful) {
+        throw IOException("Failed to fetch study programs: ${response.code} - ${response.message}")
+      }
+
+      val responseBody = response.body?.string() ?: throw IOException("Empty response body")
+
+      val mapper = ObjectMapper()
+      return mapper.readValue(responseBody)
+    }
+  }
 }
+
+data class EmbeddingStudyProgram(
+    @JsonProperty("title") val title: String,
+    @JsonProperty("id") val id: Long,
+    @JsonProperty("semesters") val semesters: List<String>
+)
