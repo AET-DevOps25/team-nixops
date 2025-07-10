@@ -49,5 +49,9 @@ app.openapi = custom_openapi
 
 def run():
     uvicorn.run(
-        app, host="0.0.0.0", log_level="info", log_config=LOGGING_CONFIG, workers=16
+        "genai.app:app",
+        host="0.0.0.0",
+        log_level="info",
+        log_config=LOGGING_CONFIG,
+        workers=16,
     )
