@@ -29,22 +29,22 @@ class ApiClientConfig(private val apiClientProperties: ApiClientProperties) {
     val cacheControl = CacheControl.Builder().maxAge(5, TimeUnit.DAYS).build()
 
     return OkHttpClient.Builder()
-        .cache(cache)
+        // .cache(cache)
         .connectTimeout(60, TimeUnit.SECONDS)
         .readTimeout(60, TimeUnit.SECONDS)
         .writeTimeout(60, TimeUnit.SECONDS)
-        .addNetworkInterceptor { chain ->
-          val response = chain.proceed(chain.request())
-          if (response.header("Cache-Control") == null) {
-            response
-                .newBuilder()
-                .removeHeader("Pragma")
-                .header("Cache-Control", cacheControl.toString())
-                .build()
-          } else {
-            response
-          }
-        }
+        // .addNetworkInterceptor { chain ->
+        //   val response = chain.proceed(chain.request())
+        //   if (response.header("Cache-Control") == null) {
+        //     response
+        //         .newBuilder()
+        //         .removeHeader("Pragma")
+        //         .header("Cache-Control", cacheControl.toString())
+        //         .build()
+        //   } else {
+        //     response
+        //   }
+        // }
         .build()
   }
 
