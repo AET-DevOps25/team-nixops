@@ -29,8 +29,8 @@ class EmbeddingService(
     private val client: OkHttpClient =
         OkHttpClient.Builder()
             .connectTimeout(1, TimeUnit.SECONDS)
-            .readTimeout(5, TimeUnit.SECONDS)
-            .writeTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(4, TimeUnit.HOURS)
+            .writeTimeout(4, TimeUnit.HOURS)
             .build(),
     embeddingProperties: EmbeddingProperties
 ) {
