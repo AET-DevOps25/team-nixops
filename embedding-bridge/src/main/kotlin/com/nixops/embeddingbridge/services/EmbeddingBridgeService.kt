@@ -46,7 +46,7 @@ class EmbeddingBridgeService(
   }
 
   fun fetchNextEmbeddingCandidate(): EmbeddingCandidate? {
-    return fetchEmbeddingCandidates().firstOrNull()
+    return fetchEmbeddingCandidates().randomOrNull()
   }
 
   fun fetchStudyProgram(candidate: EmbeddingCandidate): StudyProgram {
