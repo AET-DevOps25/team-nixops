@@ -1,4 +1,4 @@
-package com.nixops.embedderbridge.config
+package com.nixops.embeddingbridge.config
 
 import com.nixops.openapi.genai.api.EmbeddingApi
 import okhttp3.OkHttpClient

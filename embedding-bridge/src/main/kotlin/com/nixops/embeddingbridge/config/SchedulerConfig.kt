@@ -1,4 +1,4 @@
-package com.nixops.embedderbridge.config
+package com.nixops.embeddingbridge.config
 
 import java.time.Duration
 import org.springframework.beans.factory.annotation.Value

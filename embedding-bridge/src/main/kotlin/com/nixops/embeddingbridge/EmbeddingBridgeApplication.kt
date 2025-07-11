@@ -1,4 +1,4 @@
-package com.nixops.embedderbridge
+package com.nixops.embeddingbridge
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

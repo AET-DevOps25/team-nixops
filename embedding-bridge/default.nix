@@ -5,10 +5,10 @@
   jre,
   gradle2nix,
 }: let
-  pname = "embedder-bridge";
+  pname = "embedding-bridge";
   version = "0.0.1";
 
-  embedder-bridge = gradle2nix.builders.x86_64-linux.buildGradlePackage {
+  embedding-bridge = gradle2nix.builders.x86_64-linux.buildGradlePackage {
     inherit pname version;
 
     lockFile = ./gradle.lock;
@@ -38,7 +38,7 @@
         copyToRoot = pkgs.buildEnv {
           name = "image-root";
           paths = [
-            embedder-bridge
+            embedding-bridge
             (pkgs.runCommand "empty-tmp" {} ''
               mkdir -p $out/tmp
               chmod 1777 $out/tmp
@@ -56,6 +56,6 @@
   };
 in {
   packages = {
-    inherit embedder-bridge;
+    inherit embedding-bridge;
   };
 }

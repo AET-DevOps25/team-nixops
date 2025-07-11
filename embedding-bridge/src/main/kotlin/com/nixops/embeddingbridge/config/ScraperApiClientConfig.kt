@@ -1,4 +1,4 @@
-package com.nixops.embedderbridge.config
+package com.nixops.embeddingbridge.config
 
 import com.nixops.openapi.scraper.api.DefaultApi
 import okhttp3.OkHttpClient

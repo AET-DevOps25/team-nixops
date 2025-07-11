@@ -1,4 +1,4 @@
-package com.nixops.embedderbridge.config
+package com.nixops.embeddingbridge.config
 
 import java.util.concurrent.TimeUnit
 import okhttp3.OkHttpClient
