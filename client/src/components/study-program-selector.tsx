@@ -53,7 +53,7 @@ export function StudyProgramSelector({
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/embed/studyPrograms",
+          "https://api.nixops-devops25.student.k8s.aet.cit.tum.de/embed/studyPrograms",
         );
         const result = await response.json();
         setStudyPrograms(result);
@@ -67,10 +67,14 @@ export function StudyProgramSelector({
   }, []);
 
   const onSubmit = (data: any) => {
-	  console.log(data)
+    console.log(data);
     if (data.studyProgram && data.semester) {
       setSemester(data.semester);
-      setStudyProgramId(data.studyProgram);
+      setStudyProgramId(
+        studyPrograms.find(
+          (studyProgram) => studyProgram.title === data.studyProgram,
+        )?.id,
+      );
       setIsDialogOpen(false);
     }
   };
@@ -84,8 +88,9 @@ export function StudyProgramSelector({
         <DialogHeader>
           <DialogTitle>Select Study Program</DialogTitle>
           <DialogDescription>
-            Select a study program and semester you want to explore or create a schedule for.
-            This can always be changed via the menu at the top left.
+            Select a study program and semester you want to explore or create a
+            schedule for. This can always be changed via the menu at the top
+            left.
           </DialogDescription>
         </DialogHeader>
 
@@ -118,7 +123,7 @@ export function StudyProgramSelector({
                 className="h-9"
               />
               <CommandList>
-                <CommandEmpty>No framework found.</CommandEmpty>
+                <CommandEmpty>No study programs found.</CommandEmpty>
                 <CommandGroup className="w-[300px]">
                   {studyPrograms.map((studyProgram) => (
                     <CommandItem
