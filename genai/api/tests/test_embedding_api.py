@@ -34,7 +34,7 @@ def test_create_study_program(client: TestClient):
                                 "appointments": [
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -42,7 +42,7 @@ def test_create_study_program(client: TestClient):
                                     },
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -60,7 +60,7 @@ def test_create_study_program(client: TestClient):
                                 "appointments": [
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -68,7 +68,7 @@ def test_create_study_program(client: TestClient):
                                     },
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -88,7 +88,7 @@ def test_create_study_program(client: TestClient):
                                 "appointments": [
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -96,7 +96,7 @@ def test_create_study_program(client: TestClient):
                                     },
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -114,7 +114,7 @@ def test_create_study_program(client: TestClient):
                                 "appointments": [
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -122,7 +122,7 @@ def test_create_study_program(client: TestClient):
                                     },
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -142,7 +142,7 @@ def test_create_study_program(client: TestClient):
                                 "appointments": [
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -150,7 +150,7 @@ def test_create_study_program(client: TestClient):
                                     },
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -168,7 +168,7 @@ def test_create_study_program(client: TestClient):
                                 "appointments": [
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -176,7 +176,7 @@ def test_create_study_program(client: TestClient):
                                     },
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -213,7 +213,7 @@ def test_create_study_program(client: TestClient):
                                 "appointments": [
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -221,7 +221,7 @@ def test_create_study_program(client: TestClient):
                                     },
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -239,7 +239,7 @@ def test_create_study_program(client: TestClient):
                                 "appointments": [
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -247,7 +247,7 @@ def test_create_study_program(client: TestClient):
                                     },
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -267,7 +267,7 @@ def test_create_study_program(client: TestClient):
                                 "appointments": [
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -275,7 +275,7 @@ def test_create_study_program(client: TestClient):
                                     },
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -293,7 +293,7 @@ def test_create_study_program(client: TestClient):
                                 "appointments": [
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -301,7 +301,7 @@ def test_create_study_program(client: TestClient):
                                     },
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -321,7 +321,7 @@ def test_create_study_program(client: TestClient):
                                 "appointments": [
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -329,7 +329,7 @@ def test_create_study_program(client: TestClient):
                                     },
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -347,7 +347,7 @@ def test_create_study_program(client: TestClient):
                                 "appointments": [
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
@@ -355,7 +355,7 @@ def test_create_study_program(client: TestClient):
                                     },
                                     {
                                         "series_end_date": "2024-07-01",
-                                        "weekdays": ["mo", "di"],
+                                        "weekdays": ["Mo", "Di"],
                                         "series_begin_date": "2024-03-01",
                                         "appointment_id": 1,
                                         "begin_time": "08:00",
