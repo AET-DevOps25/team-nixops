@@ -117,25 +117,14 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
 
             print("Finished embedding")
 
-            sp = session.query(SqlStudyProgram).get(study_program.study_id)
-
-            if sp:
-                # Update existing fields
-                sp.name = study_program.program_name
-                sp.degree_program_name = study_program.degree_program_name
-                sp.degree_type_name = study_program.degree_type_name
-                sp.semesters = sem
-            else:
-                # Create new object if not exists
-                sp = SqlStudyProgram(
-                    id=study_program.study_id,
-                    name=study_program.program_name,
-                    degree_program_name=study_program.degree_program_name,
-                    degree_type_name=study_program.degree_type_name,
-                    semesters=sem,
-                )
-                session.add(sp)
-
+            sp = SqlStudyProgram(
+                id=study_program.study_id,
+                name=study_program.program_name,
+                degree_program_name=study_program.degree_program_name,
+                degree_type_name=study_program.degree_type_name,
+                semesters=sem,
+            )
+            session.merge(sp)
             session.commit()
 
     async def fetch_study_programs(
