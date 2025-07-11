@@ -8,9 +8,19 @@ helm upgrade --install --namespace nixops-default nixops .
 
 
 ## Setup of a new namespace
+
+Required secrets:
+- minio: username, password
+- genai: llm_api_key
+- genai-postgres: username, password, db
+- scraper-postgres: username, password, db
+
+Setup using:
 ```bash
-kubectl --namespace=nixops-ge47vaq create secret generic minio --from-literal=root_user=minioadmin --from-literal=root_password=minioadmin
-kubectl --namespace=nixops-ge47vaq  create secret generic genai --from-literal=llm_api_key=sk-...
-helm install --namespace nixops-ge47vaq nixops .
+kubectl --namespace=nixops-default create secret generic minio --from-literal=username=... --from-literal=password=...
+kubectl --namespace=nixops-default create secret generic genai --from-literal=llm_api_key=...
+kubectl --namespace=nixops-default create secret generic genai-postgres --from-literal=username=... --from-literal=password=... --from-literal=db=...
+kubectl --namespace=nixops-default create secret generic scraper-postgres --from-literal=username=... --from-literal=password=... --from-literal=db=...
+
+helm install --namespace nixops-default nixops .
 ```
-default for milvus is "minioadmin", if other secrets are chosen: set secrets also in milvus
