@@ -1,6 +1,7 @@
 package com.nixops.scraper.metrics
 
 import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.core.instrument.Timer
 import org.springframework.stereotype.Component
 
 @Component
@@ -56,5 +57,13 @@ class ScraperMetrics(private val meterRegistry: MeterRegistry) {
             "degreeType",
             degreeType)
         .increment()
+  }
+
+  fun recordScrapeDuration(entity: String, block: () -> Unit) {
+    Timer.builder("scraper.duration")
+        .description("Duration of scrape")
+        .tag("data", entity)
+        .register(meterRegistry)
+        .record(block)
   }
 }
