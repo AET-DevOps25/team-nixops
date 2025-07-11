@@ -1,4 +1,4 @@
-package com.nixops.embedderbridge.mapper
+package com.nixops.embeddingbridge.mapper
 
 import org.mapstruct.Mapper
 

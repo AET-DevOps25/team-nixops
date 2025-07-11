@@ -1,6 +1,6 @@
-package com.nixops.embedderbridge.scheduler
+package com.nixops.embeddingbridge.scheduler
 
-import com.nixops.embedderbridge.services.EmbeddingBridgeService
+import com.nixops.embeddingbridge.services.EmbeddingBridgeService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 

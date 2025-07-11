@@ -84,7 +84,7 @@
           scraper = pkgs.callPackage ./scraper {
             inherit (inputs) gradle2nix;
           };
-          embedder-bridge = pkgs.callPackage ./embedder-bridge {
+          embedding-bridge = pkgs.callPackage ./embedding-bridge {
             inherit (inputs) gradle2nix;
           };
         in {
@@ -102,7 +102,7 @@
             };
             client = pkgs.callPackage ./client {};
             scraper = scraper.packages.scraper;
-            embedder-bridge = embedder-bridge.packages.embedder-bridge;
+            embedding-bridge = embedding-bridge.packages.embedding-bridge;
           };
         };
       }

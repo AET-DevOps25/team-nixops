@@ -1,7 +1,7 @@
-package com.nixops.embedderbridge.services
+package com.nixops.embeddingbridge.services
 
-import com.nixops.embedderbridge.EmbeddingCandidate
-import com.nixops.embedderbridge.mapper.StudyProgramMapper
+import com.nixops.embeddingbridge.EmbeddingCandidate
+import com.nixops.embeddingbridge.mapper.StudyProgramMapper
 import com.nixops.openapi.genai.api.EmbeddingApi
 import com.nixops.openapi.genai.model.StudyProgram
 import com.nixops.openapi.scraper.api.DefaultApi
