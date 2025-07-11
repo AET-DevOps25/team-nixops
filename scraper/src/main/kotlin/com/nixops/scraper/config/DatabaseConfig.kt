@@ -29,7 +29,6 @@ class DatabaseConfig {
       SchemaUtils.create(Groups)
       SchemaUtils.create(Appointments)
       SchemaUtils.create(AppointmentWeekdays)
-      SchemaUtils.create(StudyProgramSemester)
     }
     logger.info("Exposed connected and tables created")
     return db
