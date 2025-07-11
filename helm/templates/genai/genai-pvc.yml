@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: milvus
+  name: nixops-genai-milvus
   namespace: "{{ .Values.ServiceNamespace }}"
 spec:
   accessModes:
@@ -15,24 +15,40 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: minio
+  name: nixops-genai-minio
   namespace: "{{ .Values.ServiceNamespace }}"
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
+      storage: 20Gi
+  storageClassName: csi-rbd-sc
 
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: etcd
+  name: nixops-genai-etcd
   namespace: "{{ .Values.ServiceNamespace }}"
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
+      storage: 20Gi
+  storageClassName: csi-rbd-sc
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nixops-genai-postgres
+  namespace: "{{ .Values.ServiceNamespace }}"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: csi-rbd-sc

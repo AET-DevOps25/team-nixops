@@ -103,10 +103,10 @@ spec:
             name: monitoring-configmap
         - name: prometheus-storage
           persistentVolumeClaim:
-            claimName: prometheus
+            claimName: nixops-monitoring-prometheus
         - name: grafana-storage
           persistentVolumeClaim:
-            claimName: grafana
+            claimName: nixops-monitoring-grafana
         - name: grafana-datasources
           configMap:
             name: grafana-datasources
