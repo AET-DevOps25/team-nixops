@@ -64,8 +64,28 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
                 collection_name = f"_{study_program.study_id}_{s.name}"
                 create_collection(collection_name)
                 milvus_client.load_collection(collection_name)
+
+                try:
+                    existing_records = milvus_client.query(
+                        collection_name=collection_name,
+                        filter="id != 0",
+                        output_fields=["id"],
+                    )
+                    existing_ids = {record["id"] for record in existing_records}
+                except Exception as e:
+                    print(
+                        f"Warning: failed to query existing records in {collection_name}: {e}"
+                    )
+                    existing_ids = set()
+
                 modules = study_program.semesters[s.name]
                 for n, mod in enumerate(modules):
+                    if mod.id in existing_ids:
+                        print(
+                            f"Skipping duplicate module {mod.id} in {collection_name}"
+                        )
+                        continue
+
                     desc = (
                         str(mod.id)
                         + "\n\n"
