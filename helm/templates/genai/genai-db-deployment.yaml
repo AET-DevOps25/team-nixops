@@ -146,16 +146,32 @@ spec:
               mountPath: /app/logs
             - name: shared-alloy-config # shared space
               mountPath: /etc/alloy
+        - name: postgres
+          image: postgres:15
+          env:
+            - name: POSTGRES_USER
+              value: "myuser"
+            - name: POSTGRES_PASSWORD
+              value: "mypassword"
+            - name: POSTGRES_DB
+              value: "genai_db"
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-storage
       volumes:
       - name: milvus-data
         persistentVolumeClaim:
-          claimName: milvus
+          claimName: nixops-genai-milvus
       - name: minio-data
         persistentVolumeClaim:
-          claimName: minio
+          claimName: nixops-genai-minio
       - name: etcd-data
         persistentVolumeClaim:
-          claimName: etcd
+          claimName: nixops-genai-etcd
       - name: alloy-config
         configMap:
          name: genai-configmap
@@ -165,3 +181,6 @@ spec:
       - name: shared-alloy-config # use config prepared by init container
         emptyDir: 
          sizeLimit: 500Mi
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: nixops-genai-postgres
