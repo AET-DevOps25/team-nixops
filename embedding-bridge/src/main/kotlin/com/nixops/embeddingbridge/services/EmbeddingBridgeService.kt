@@ -59,7 +59,7 @@ class EmbeddingBridgeService(
         try {
           fetchNextEmbeddingCandidate()
         } catch (e: ConnectException) {
-          logger.error(e) { "Failed to connect to Scraper" }
+          logger.error(e) { "Failed to connect to GenAI" }
           return
         }
 

@@ -71,7 +71,22 @@ sourceSets {
 tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>(
     "openApiGenerateGenAI") {
       generatorName.set("kotlin")
-      inputSpec.set(project.rootDir.resolve("../genai/openapi.yml").absolutePath)
+
+      val externalSpec = project.rootDir.resolve("../genai/openapi.yml")
+      val internalSpec = project.file("genai/openapi.yml")
+
+      val inputSpecPath =
+          if (externalSpec.exists()) {
+            externalSpec.absolutePath
+          } else if (internalSpec.exists()) {
+            internalSpec.absolutePath
+          } else {
+            throw GradleException(
+                "Could not find openapi.yml in either external or internal locations.")
+          }
+
+      inputSpec.set(inputSpecPath)
+
       outputDir.set(project.layout.buildDirectory.dir("generated/openapi-genai").get().asFile.path)
       packageName.set("com.nixops.openapi.genai")
       apiPackage.set("com.nixops.openapi.genai.api")
@@ -88,7 +103,22 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>(
 tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>(
     "openApiGenerateScraper") {
       generatorName.set("kotlin")
-      inputSpec.set(project.rootDir.resolve("../scraper/openapi.yaml").absolutePath)
+
+      val externalSpec = project.rootDir.resolve("../scraper/openapi.yaml")
+      val internalSpec = project.file("scraper/openapi.yaml")
+
+      val inputSpecPath =
+          if (externalSpec.exists()) {
+            externalSpec.absolutePath
+          } else if (internalSpec.exists()) {
+            internalSpec.absolutePath
+          } else {
+            throw GradleException(
+                "Could not find scraper openapi.yaml in either external or internal locations.")
+          }
+
+      inputSpec.set(inputSpecPath)
+
       outputDir.set(
           project.layout.buildDirectory.dir("generated/openapi-scraper").get().asFile.path)
       packageName.set("com.nixops.openapi.scraper")

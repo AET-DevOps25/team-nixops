@@ -18,7 +18,15 @@
       "bootJar"
     ];
 
-    src = ./.;
+    src = pkgs.runCommand "embedding-src" {} ''
+      mkdir -p $out/genai
+      mkdir -p $out/scraper
+
+      cp -r ${./.}/* $out/
+
+      cp ${../genai/openapi.yml} $out/genai/openapi.yml
+      cp ${../scraper/openapi.yaml} $out/scraper/openapi.yaml
+    '';
 
     nativeBuildInputs = [makeBinaryWrapper];
 
