@@ -68,11 +68,17 @@ spec:
             - name: POSTGRES_HOST
               value: genai-db-service:5432
             - name: POSTGRES_USER
-              value: "myuser"
-            - name: POSTGRES_PASS
-              value: "mypassword"
+              valueFrom:
+                secretKeyRef:
+                  name: genai-postgres
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: genai-postgres
+                  key: password
             - name: POSTGRES_NAME
-              value: "genai_db"
+              value: genai_db
           ports:
             - containerPort: {{ .Values.genai.service.targetPort }}
               name: genai-api

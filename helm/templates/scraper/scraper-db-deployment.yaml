@@ -17,18 +17,18 @@ spec:
         - name: postgres
           image: postgres:15
           env:
-            - name: POSTGRES_DB
-              value: scraperdb
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: scraper-db-secret
+                  name: scraper-postgres
                   key: username
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: scraper-db-secret
+                  name: scraper-postgres
                   key: password
+            - name: POSTGRES_NAME
+              value: scraper_db
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata
           ports:
