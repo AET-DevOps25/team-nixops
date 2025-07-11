@@ -16,6 +16,7 @@ from ..db.vector_db import create_collection, embed_text, milvus_client
 from datetime import datetime, date
 from openapi_server.models.study_program_selector_item import StudyProgramSelectorItem
 import json
+import asyncio
 
 # NOTE: https://milvus.io/docs/use-async-milvus-client-with-asyncio.md#Create-index
 
@@ -33,7 +34,17 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
         super().__init_subclass__(**kwargs)
         BaseEmbeddingApi.subclasses = BaseEmbeddingApi.subclasses + (cls,)
 
-    def create_study_program(
+    async def create_study_program(
+        self,
+        study_program: StudyProgram,
+    ) -> None:
+
+        loop = asyncio.get_running_loop()
+        loop.run_in_executor(None, self.embed_study_program, study_program)
+
+        return {"detail": "Embedding started in background"}
+
+    def embed_study_program(
         self,
         study_program: StudyProgram,
     ) -> None:

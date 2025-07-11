@@ -136,16 +136,16 @@ components:
                 appointments:
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
                   endTime: 10:00
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
@@ -159,16 +159,16 @@ components:
                 appointments:
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
                   endTime: 10:00
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
@@ -183,16 +183,16 @@ components:
                 appointments:
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
                   endTime: 10:00
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
@@ -206,16 +206,16 @@ components:
                 appointments:
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
                   endTime: 10:00
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
@@ -230,16 +230,16 @@ components:
                 appointments:
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
                   endTime: 10:00
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
@@ -253,16 +253,16 @@ components:
                 appointments:
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
                   endTime: 10:00
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
@@ -291,16 +291,16 @@ components:
                 appointments:
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
                   endTime: 10:00
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
@@ -314,16 +314,16 @@ components:
                 appointments:
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
                   endTime: 10:00
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
@@ -338,16 +338,16 @@ components:
                 appointments:
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
                   endTime: 10:00
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
@@ -361,16 +361,16 @@ components:
                 appointments:
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
                   endTime: 10:00
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
@@ -385,16 +385,16 @@ components:
                 appointments:
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
                   endTime: 10:00
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
@@ -408,16 +408,16 @@ components:
                 appointments:
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
                   endTime: 10:00
                 - seriesEndDate: 2024-07-01
                   weekdays:
-                  - mo
-                  - di
+                  - Mo
+                  - Di
                   seriesBeginDate: 2024-03-01
                   appointment_id: 1
                   beginTime: 08:00
@@ -475,16 +475,16 @@ components:
             appointments:
             - seriesEndDate: 2024-07-01
               weekdays:
-              - mo
-              - di
+              - Mo
+              - Di
               seriesBeginDate: 2024-03-01
               appointment_id: 1
               beginTime: 08:00
               endTime: 10:00
             - seriesEndDate: 2024-07-01
               weekdays:
-              - mo
-              - di
+              - Mo
+              - Di
               seriesBeginDate: 2024-03-01
               appointment_id: 1
               beginTime: 08:00
@@ -498,16 +498,16 @@ components:
             appointments:
             - seriesEndDate: 2024-07-01
               weekdays:
-              - mo
-              - di
+              - Mo
+              - Di
               seriesBeginDate: 2024-03-01
               appointment_id: 1
               beginTime: 08:00
               endTime: 10:00
             - seriesEndDate: 2024-07-01
               weekdays:
-              - mo
-              - di
+              - Mo
+              - Di
               seriesBeginDate: 2024-03-01
               appointment_id: 1
               beginTime: 08:00
@@ -522,16 +522,16 @@ components:
             appointments:
             - seriesEndDate: 2024-07-01
               weekdays:
-              - mo
-              - di
+              - Mo
+              - Di
               seriesBeginDate: 2024-03-01
               appointment_id: 1
               beginTime: 08:00
               endTime: 10:00
             - seriesEndDate: 2024-07-01
               weekdays:
-              - mo
-              - di
+              - Mo
+              - Di
               seriesBeginDate: 2024-03-01
               appointment_id: 1
               beginTime: 08:00
@@ -545,16 +545,16 @@ components:
             appointments:
             - seriesEndDate: 2024-07-01
               weekdays:
-              - mo
-              - di
+              - Mo
+              - Di
               seriesBeginDate: 2024-03-01
               appointment_id: 1
               beginTime: 08:00
               endTime: 10:00
             - seriesEndDate: 2024-07-01
               weekdays:
-              - mo
-              - di
+              - Mo
+              - Di
               seriesBeginDate: 2024-03-01
               appointment_id: 1
               beginTime: 08:00
@@ -569,16 +569,16 @@ components:
             appointments:
             - seriesEndDate: 2024-07-01
               weekdays:
-              - mo
-              - di
+              - Mo
+              - Di
               seriesBeginDate: 2024-03-01
               appointment_id: 1
               beginTime: 08:00
               endTime: 10:00
             - seriesEndDate: 2024-07-01
               weekdays:
-              - mo
-              - di
+              - Mo
+              - Di
               seriesBeginDate: 2024-03-01
               appointment_id: 1
               beginTime: 08:00
@@ -592,16 +592,16 @@ components:
             appointments:
             - seriesEndDate: 2024-07-01
               weekdays:
-              - mo
-              - di
+              - Mo
+              - Di
               seriesBeginDate: 2024-03-01
               appointment_id: 1
               beginTime: 08:00
               endTime: 10:00
             - seriesEndDate: 2024-07-01
               weekdays:
-              - mo
-              - di
+              - Mo
+              - Di
               seriesBeginDate: 2024-03-01
               appointment_id: 1
               beginTime: 08:00
@@ -688,16 +688,16 @@ components:
           appointments:
           - seriesEndDate: 2024-07-01
             weekdays:
-            - mo
-            - di
+            - Mo
+            - Di
             seriesBeginDate: 2024-03-01
             appointment_id: 1
             beginTime: 08:00
             endTime: 10:00
           - seriesEndDate: 2024-07-01
             weekdays:
-            - mo
-            - di
+            - Mo
+            - Di
             seriesBeginDate: 2024-03-01
             appointment_id: 1
             beginTime: 08:00
@@ -711,16 +711,16 @@ components:
           appointments:
           - seriesEndDate: 2024-07-01
             weekdays:
-            - mo
-            - di
+            - Mo
+            - Di
             seriesBeginDate: 2024-03-01
             appointment_id: 1
             beginTime: 08:00
             endTime: 10:00
           - seriesEndDate: 2024-07-01
             weekdays:
-            - mo
-            - di
+            - Mo
+            - Di
             seriesBeginDate: 2024-03-01
             appointment_id: 1
             beginTime: 08:00
@@ -735,16 +735,16 @@ components:
           appointments:
           - seriesEndDate: 2024-07-01
             weekdays:
-            - mo
-            - di
+            - Mo
+            - Di
             seriesBeginDate: 2024-03-01
             appointment_id: 1
             beginTime: 08:00
             endTime: 10:00
           - seriesEndDate: 2024-07-01
             weekdays:
-            - mo
-            - di
+            - Mo
+            - Di
             seriesBeginDate: 2024-03-01
             appointment_id: 1
             beginTime: 08:00
@@ -758,16 +758,16 @@ components:
           appointments:
           - seriesEndDate: 2024-07-01
             weekdays:
-            - mo
-            - di
+            - Mo
+            - Di
             seriesBeginDate: 2024-03-01
             appointment_id: 1
             beginTime: 08:00
             endTime: 10:00
           - seriesEndDate: 2024-07-01
             weekdays:
-            - mo
-            - di
+            - Mo
+            - Di
             seriesBeginDate: 2024-03-01
             appointment_id: 1
             beginTime: 08:00
@@ -782,16 +782,16 @@ components:
           appointments:
           - seriesEndDate: 2024-07-01
             weekdays:
-            - mo
-            - di
+            - Mo
+            - Di
             seriesBeginDate: 2024-03-01
             appointment_id: 1
             beginTime: 08:00
             endTime: 10:00
           - seriesEndDate: 2024-07-01
             weekdays:
-            - mo
-            - di
+            - Mo
+            - Di
             seriesBeginDate: 2024-03-01
             appointment_id: 1
             beginTime: 08:00
@@ -805,16 +805,16 @@ components:
           appointments:
           - seriesEndDate: 2024-07-01
             weekdays:
-            - mo
-            - di
+            - Mo
+            - Di
             seriesBeginDate: 2024-03-01
             appointment_id: 1
             beginTime: 08:00
             endTime: 10:00
           - seriesEndDate: 2024-07-01
             weekdays:
-            - mo
-            - di
+            - Mo
+            - Di
             seriesBeginDate: 2024-03-01
             appointment_id: 1
             beginTime: 08:00
@@ -848,16 +848,16 @@ components:
         appointments:
         - seriesEndDate: 2024-07-01
           weekdays:
-          - mo
-          - di
+          - Mo
+          - Di
           seriesBeginDate: 2024-03-01
           appointment_id: 1
           beginTime: 08:00
           endTime: 10:00
         - seriesEndDate: 2024-07-01
           weekdays:
-          - mo
-          - di
+          - Mo
+          - Di
           seriesBeginDate: 2024-03-01
           appointment_id: 1
           beginTime: 08:00
@@ -901,8 +901,8 @@ components:
       example:
         seriesEndDate: 2024-07-01
         weekdays:
-        - mo
-        - di
+        - Mo
+        - Di
         seriesBeginDate: 2024-03-01
         appointment_id: 1
         beginTime: 08:00
@@ -932,17 +932,17 @@ components:
           type: string
         weekdays:
           example:
-          - mo
-          - di
+          - Mo
+          - Di
           items:
             enum:
-            - mo
-            - di
-            - mi
-            - do
-            - fr
-            - sa
-            - so
+            - Mo
+            - Di
+            - Mi
+            - Do
+            - Fr
+            - Sa
+            - So
             type: string
           title: weekdays
           type: array
