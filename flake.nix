@@ -84,6 +84,9 @@
           scraper = pkgs.callPackage ./scraper {
             inherit (inputs) gradle2nix;
           };
+          embedder-bridge = pkgs.callPackage ./embedder-bridge {
+            inherit (inputs) gradle2nix;
+          };
         in {
           checks = let
             nixosMachines = import ./nix/checks {inherit pkgs self;};
@@ -97,8 +100,9 @@
             genai = pkgs.callPackage ./genai {
               inherit (inputs) pyproject-nix uv2nix pyproject-build-systems;
             };
-				client = pkgs.callPackage ./client {};
+            client = pkgs.callPackage ./client {};
             scraper = scraper.packages.scraper;
+            embedder-bridge = embedder-bridge.packages.embedder-bridge;
           };
         };
       }
