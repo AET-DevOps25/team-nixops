@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class EmbeddingApiClientConfig(private val okHttpClient: OkHttpClient) {
-  @Value("\${embedder-bridge.embedding.base-url}") lateinit var baseUrl: String
+  @Value("\${embedding-bridge.embedding.base-url}") lateinit var baseUrl: String
 
   @Bean
   fun embeddingClient(): EmbeddingApi {
