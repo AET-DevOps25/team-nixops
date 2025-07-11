@@ -7,7 +7,12 @@ spec:
   selector:
     app: genai-db-selector
   ports:
-    - port: 19530
+    - name: milvus
+      port: 19530
       targetPort: 19530
+      protocol: TCP
+    - name: postgres
+      port: 5432
+      targetPort: 5432 
       protocol: TCP
   type: ClusterIP
