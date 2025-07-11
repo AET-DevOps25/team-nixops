@@ -20,9 +20,12 @@
           pull = ["pre-commit-hooks" "nix-community"];
           push = "team-nixops";
         };
-        git-hooks.hooks.treefmt = {
-          enable = true;
-          packageOverrides.treefmt = config.treefmt.build.wrapper;
+        git-hooks.hooks = {
+          treefmt = {
+            enable = true;
+            packageOverrides.treefmt = config.treefmt.build.wrapper;
+          };
+          openapi-spec-validator.enable = true;
         };
       };
       ops = {
