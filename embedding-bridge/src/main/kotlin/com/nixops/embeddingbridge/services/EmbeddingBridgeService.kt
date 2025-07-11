@@ -20,8 +20,22 @@ class EmbeddingBridgeService(
     private val studyProgramMapper: StudyProgramMapper
 ) {
   fun fetchEmbeddingCandidates(): List<EmbeddingCandidate> {
-    val finishedStudyPrograms = scraperApiClient.getFinishedStudyPrograms()
-    val embeddedStudyPrograms = embeddingApiClient.fetchStudyPrograms()
+    val finishedStudyPrograms =
+        try {
+
+          scraperApiClient.getFinishedStudyPrograms()
+        } catch (e: ConnectException) {
+          logger.error(e) { "Failed to connect to Scraper" }
+          return listOf()
+        }
+    val embeddedStudyPrograms =
+        try {
+
+          embeddingApiClient.fetchStudyPrograms()
+        } catch (e: ConnectException) {
+          logger.error(e) { "Failed to connect to GenAI" }
+          return listOf()
+        }
 
     val embeddingCandidates = mutableListOf<EmbeddingCandidate>()
     for (studyProgram in finishedStudyPrograms) {
@@ -55,13 +69,7 @@ class EmbeddingBridgeService(
   }
 
   fun embedNextCandidate() {
-    val candidate =
-        try {
-          fetchNextEmbeddingCandidate()
-        } catch (e: ConnectException) {
-          logger.error(e) { "Failed to connect to GenAI" }
-          return
-        }
+    val candidate = fetchNextEmbeddingCandidate()
 
     if (candidate != null) {
       logger.info("Embed ${candidate.id}, ${candidate.name}, ${candidate.semester}")

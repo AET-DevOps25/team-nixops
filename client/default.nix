@@ -1,8 +1,7 @@
-{ lib
-, pkgs
-,
-}:
-let
+{
+  lib,
+  pkgs,
+}: let
   npmDeps = pkgs.importNpmLock.buildNodeModules {
     npmRoot = ./.;
     inherit (pkgs) nodejs;
@@ -41,27 +40,27 @@ let
 
   dockerImage =
     pkgs.dockerTools.buildLayeredImage
-      {
-        name = "nixops-${pname}";
-        tag = version;
-        config = {
-          Cmd = [
-            "${lib.getExe pkgs.bash}"
-            "-c"
-            "${lib.getExe drv}"
-          ];
-          Env = [
-            "PATH=/bin/"
-          ];
-          ExposedPorts = {
-            "3000/tcp" = { };
-          };
+    {
+      name = "nixops-${pname}";
+      tag = version;
+      config = {
+        Cmd = [
+          "${lib.getExe pkgs.bash}"
+          "-c"
+          "${lib.getExe drv}"
+        ];
+        Env = [
+          "PATH=/bin/"
+        ];
+        ExposedPorts = {
+          "3000/tcp" = {};
         };
-        contents = [ pkgs.coreutils pkgs.util-linux pkgs.bash drv ];
       };
+      contents = [pkgs.coreutils pkgs.util-linux pkgs.bash drv];
+    };
 in
-lib.extendDerivation true
-{
-  inherit dockerImage npmDeps;
-}
+  lib.extendDerivation true
+  {
+    inherit dockerImage npmDeps;
+  }
   drv
