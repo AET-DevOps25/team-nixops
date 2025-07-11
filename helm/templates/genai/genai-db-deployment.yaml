@@ -114,6 +114,16 @@ spec:
               value: "localhost:9000"
             - name: LOG_FILE_ROOTPATH
               value: "/milvus/logs"
+            - name: MINIO_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: minio
+                  key: username
+            - name: MINIO_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio
+                  key: password
           ports:
             - containerPort: 19530
               name: milvus-api
@@ -159,7 +169,7 @@ spec:
                 secretKeyRef:
                   name: genai-postgres
                   key: password
-            - name: POSTGRES_NAME
+            - name: POSTGRES_DB
               value: genai_db
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata
