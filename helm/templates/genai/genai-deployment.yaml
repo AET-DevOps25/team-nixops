@@ -72,7 +72,7 @@ spec:
                 secretKeyRef:
                   name: genai-postgres
                   key: username
-            - name: POSTGRES_PASSWORD
+            - name: POSTGRES_PASS
               valueFrom:
                 secretKeyRef:
                   name: genai-postgres
