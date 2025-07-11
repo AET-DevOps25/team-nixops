@@ -79,12 +79,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: minio
-                  key: root_user
+                  key: username
             - name: MINIO_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: minio
-                  key: root_password
+                  key: password
           ports:
             - containerPort: 9000
               name: minio-api
@@ -150,11 +150,17 @@ spec:
           image: postgres:15
           env:
             - name: POSTGRES_USER
-              value: "myuser"
+              valueFrom:
+                secretKeyRef:
+                  name: genai-postgres
+                  key: username
             - name: POSTGRES_PASSWORD
-              value: "mypassword"
-            - name: POSTGRES_DB
-              value: "genai_db"
+              valueFrom:
+                secretKeyRef:
+                  name: genai-postgres
+                  key: password
+            - name: POSTGRES_NAME
+              value: genai_db
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata
           ports:
