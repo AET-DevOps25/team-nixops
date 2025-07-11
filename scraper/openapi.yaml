@@ -45,6 +45,20 @@ paths:
                 items:
                   $ref: '#/components/schemas/StudyProgram'
 
+  /study-programs/finished:
+    get:
+      operationId: getFinishedStudyPrograms
+      summary: Get all study programs that are fully scraped
+      responses:
+        '200':
+          description: List of study programs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudyProgram'
+
   /study-programs/{study_id}:
     get:
       operationId: getStudyProgram

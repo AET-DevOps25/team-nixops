@@ -1,3 +1,0 @@
-- bundle modules and coures
-- send over study programs with modules
-- send new module ids to genai in regular intervals

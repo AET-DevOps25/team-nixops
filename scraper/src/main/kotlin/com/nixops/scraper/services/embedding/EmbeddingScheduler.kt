@@ -10,7 +10,6 @@ import mu.KotlinLogging
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
 private val logger = KotlinLogging.logger {}
@@ -29,7 +28,7 @@ class EmbeddingScheduler(
     private val embeddingService: EmbeddingService,
 ) {
 
-  @Scheduled(fixedRate = 2 * 1000)
+  // @Scheduled(fixedRate = 2 * 1000)
   fun embed() {
     val candidates = transaction {
       CurriculumCourses.join(
