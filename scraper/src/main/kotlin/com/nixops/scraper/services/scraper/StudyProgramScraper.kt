@@ -1,5 +1,6 @@
 package com.nixops.scraper.services.scraper
 
+import com.nixops.scraper.metrics.ScraperMetrics
 import com.nixops.scraper.model.*
 import com.nixops.scraper.tum_api.nat.api.NatProgramApiClient
 import mu.KotlinLogging
@@ -13,6 +14,8 @@ private val logger = KotlinLogging.logger {}
 @Service
 class StudyProgramScraper(
     private val studyProgramApiClient: NatProgramApiClient,
+    //
+    private val scraperMetrics: ScraperMetrics
 ) {
   fun scrapeStudyPrograms() {
     val studyPrograms = studyProgramApiClient.getPrograms()
@@ -32,6 +35,12 @@ class StudyProgramScraper(
               it[StudyPrograms.fullName] =
                   "${studyProgram.programName} [${studyProgram.spoVersion}], ${studyProgram.degree.degreeTypeName}"
             }
+
+            scraperMetrics.incrementStudyProgramCounter(
+                studyProgram.studyId,
+                studyProgram.programName,
+                studyProgram.spoVersion,
+                studyProgram.degree.degreeTypeName)
           }
     }
   }
