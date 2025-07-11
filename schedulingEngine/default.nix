@@ -5,6 +5,9 @@
   gradle,
   jre,
   jdk21,
+  dockerTools,
+  buildEnv,
+  runCommand,
 }: let
   self = stdenv.mkDerivation rec {
     pname = "schedulingEngine";
@@ -27,7 +30,7 @@
     # this is required for using mitm-cache on Darwin
     __darwinAllowLocalNetworking = true;
 
-    gradleFlags = ["-Dfile.encoding=utf-8"];
+    gradleFlags = ["-Dfile.encoding=utf-8" "--warning-mode=all"];
 
     # defaults to "assemble"
     gradleBuildTask = "bootJar";
@@ -42,6 +45,31 @@
       makeWrapper ${lib.getExe jre} $out/bin/${pname} \
         --add-flags "-jar $out/share/${pname}/${pname}-${version}.jar"
     '';
+
+    passthru = {
+      dockerImage = dockerTools.buildImage {
+        name = "nixops-${pname}";
+        tag = version;
+
+        copyToRoot = buildEnv {
+          name = "image-root";
+          paths = [
+            self
+            (runCommand "empty-tmp" {} ''
+              mkdir -p $out/tmp
+              chmod 1777 $out/tmp
+            '')
+          ];
+          pathsToLink = ["/"];
+        };
+
+        config = {
+          Cmd = ["/bin/${pname}"];
+          WorkingDir = "/";
+          ExposedPorts."8000/tcp" = {};
+        };
+      };
+    };
 
     meta.sourceProvenance = with lib.sourceTypes; [
       fromSource
