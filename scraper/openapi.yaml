@@ -339,5 +339,5 @@ components:
           type: array
           items:
             type: string
-            enum: [mo, di, mi, do, fr, sa, so]
-          example: ["mo", "di"]
+            enum: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
+          example: ["Mo", "Di"]

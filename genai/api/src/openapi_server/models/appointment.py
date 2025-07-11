@@ -56,16 +56,16 @@ class Appointment(BaseModel):
 
         for i in value:
             if i not in (
-                "mo",
-                "di",
-                "mi",
-                "do",
-                "fr",
-                "sa",
-                "so",
+                "Mo",
+                "Di",
+                "Mi",
+                "Do",
+                "Fr",
+                "Sa",
+                "So",
             ):
                 raise ValueError(
-                    "each list item must be one of ('mo', 'di', 'mi', 'do', 'fr', 'sa', 'so')"
+                    "each list item must be one of ('Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So')"
                 )
         return value
 
