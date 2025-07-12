@@ -7,6 +7,8 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
+import { useSession } from '@/lib/sessionContext';
+
 type Appointment = {
   appointmentType: string;
   moduleCode: string;
@@ -36,9 +38,10 @@ const weekdayMap: Record<string, number> = {
   So: 0,
 };
 
-export default function FullCalendarClient({ conversationId }) {
+export default function FullCalendarClient() {
   const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>([]);
-  const scheduleId = conversationId;
+
+  const scheduleId = useSession();
 
   useEffect(() => {
     let isMounted = true; // to avoid setting state if unmounted

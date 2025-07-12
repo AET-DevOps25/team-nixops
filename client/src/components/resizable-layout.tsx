@@ -1,7 +1,9 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from "react"
-import { v4 as uuidv4 } from 'uuid';
+
+import { SessionProvider } from '@/lib/sessionContext';
+import { useSession } from '@/lib/sessionContext';
 
 import FullCalendarClient from "@/components/full-calendar-client"
 
@@ -45,22 +47,14 @@ export default function ResizableLayout({
     }
   }, [])
 
-  const [conversationId, _] = useState(uuidv4());
-
-  const childrenWithProps = React.Children.map(children, child => {
-    if (React.isValidElement(child)) {
-      return React.cloneElement(child, { conversationId });
-    }
-    return child;
-  });
-
   return (
+   <SessionProvider>
     <div className="flex h-screen w-screen overflow-hidden">
       <div
         style={{ width: leftWidth }}
         className="overflow-y-auto"
       >
-        {childrenWithProps}
+        {children}
       </div>
 
       <div
@@ -72,8 +66,9 @@ export default function ResizableLayout({
       />
 
       <div className="flex-1 overflow-y-auto">
-        <FullCalendarClient conversationId={conversationId}/>
+        <FullCalendarClient/>
       </div>
     </div>
+   </SessionProvider>
   )
 }
