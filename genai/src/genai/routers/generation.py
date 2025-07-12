@@ -24,10 +24,12 @@ from langchain.tools.retriever import create_retriever_tool
 from langchain_core.callbacks import CallbackManagerForRetrieverRun
 from langchain_core.documents import Document
 from langchain_core.retrievers import BaseRetriever
+from langchain_core.runnables.config import RunnableConfig
 from typing import List
 from pydantic import BaseModel, Field
 from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import tools_condition
+from langchain_core.runnables.utils import ConfigurableField
 
 from ..config import env
 
@@ -36,6 +38,8 @@ class State(TypedDict):
     messages: Annotated[list, add_messages]
     study_program_id: int
     semester: str
+    user_id: str
+    modules: List[str]
 
 
 @tool(parse_docstring=True)
@@ -107,9 +111,9 @@ def generate_query_or_respond(state: State):
 
     print("call model")
 
-    response = reasoning_llm.bind_tools([retrieve_modules, generate_schedule]).invoke(
-        TOOL_SELECTION_PROMPT.format(state["messages"])
-    )
+    response = reasoning_llm.bind_tools(
+        [retrieve_modules, generate_schedule, add_module_to_schedule, get_schedule]
+    ).invoke(TOOL_SELECTION_PROMPT.format(state["messages"]))
     return {"messages": [response]}
 
 
@@ -254,11 +258,54 @@ def generate_schedule(
     return mock_schedule
 
 
+@tool(parse_docstring=True)
+def add_module_to_schedule(
+    module_code: str,
+    state: Annotated[State, InjectedState],
+    config: RunnableConfig = None,
+) -> List[Document]:
+    """
+    Add a module to the schedule
+
+    Args:
+        module_code: The code of  amodule (e.g., "IN0001")
+    """
+
+    print("add module to schedule:", module_code)
+
+    print("user_id:", state["user_id"])
+
+    state["modules"].append(module_code)
+
+    mock_schedule = [
+        Document(f"Module {module_code} added"),
+    ]
+    return mock_schedule
+
+
+@tool(parse_docstring=True)
+def get_schedule(state: Annotated[State, InjectedState]) -> List[Document]:
+    """
+    Get the schedule
+
+    Args:
+    """
+
+    print("get schedule")
+
+    mock_schedule = [
+        Document(f"Module: {code} Data: todo") for code in state["modules"]
+    ]
+    return mock_schedule
+
+
 checkpointer = InMemorySaver()
 workflow = StateGraph(State)
 workflow.add_node(generate_query_or_respond)
 
-tool_node = ToolNode([retrieve_modules, generate_schedule])
+tool_node = ToolNode(
+    [retrieve_modules, generate_schedule, add_module_to_schedule, get_schedule]
+)
 workflow.add_node("tools", tool_node)
 
 workflow.add_edge(START, "generate_query_or_respond")
@@ -325,6 +372,8 @@ async def stream_response(prompt: str, convId: str, studyProgramId: int, semeste
                 "messages": [("user", user_input)],
                 "study_program_id": study_program,
                 "semester": semester,
+                "user_id": user_id,
+                "modules": [],
             },
             config=config,
             stream_mode="messages",
