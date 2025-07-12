@@ -24,10 +24,12 @@ from langchain.tools.retriever import create_retriever_tool
 from langchain_core.callbacks import CallbackManagerForRetrieverRun
 from langchain_core.documents import Document
 from langchain_core.retrievers import BaseRetriever
+from langchain_core.runnables.config import RunnableConfig
 from typing import List
 from pydantic import BaseModel, Field
 from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import tools_condition
+from langchain_core.runnables.utils import ConfigurableField
 
 from ..config import env
 
@@ -36,6 +38,8 @@ class State(TypedDict):
     messages: Annotated[list, add_messages]
     study_program_id: int
     semester: str
+    user_id: str
+    modules: List[str]
 
 
 @tool(parse_docstring=True)
@@ -47,17 +51,25 @@ def retrieve_modules(
     Args:
         query: Search query for the lookup
     """
+    print("retrieve modules:", query)
+
     results = milvus_client.search(
         collection_name=f"_{str(state['study_program_id'])}_{state['semester']}",
         data=[embed_text(query)],
         anns_field="description_vec",  # only one anns field can exist
         limit=3,
-        output_fields=["name", "description", "courses"],
+        output_fields=["name", "id", "code", "description", "courses"],
     )
     docs = [
         Document(
             "Name:"
             + doc["entity"]["name"]
+            + "\n\n"
+            + "Id:"
+            + str(doc["entity"]["id"])
+            + "\n\n"
+            + "Code:"
+            + doc["entity"]["code"]
             + "\n\n"
             + "Description: "
             + doc["entity"]["description"]
@@ -96,9 +108,12 @@ def generate_query_or_respond(state: State):
     """Call the model to generate a response based on the current state. Given
     the question, it will decide to retrieve using the retriever tool, or simply respond to the user.
     """
-    response = reasoning_llm.bind_tools([retrieve_modules]).invoke(
-        TOOL_SELECTION_PROMPT.format(state["messages"])
-    )
+
+    print("call model")
+
+    response = reasoning_llm.bind_tools(
+        [retrieve_modules, generate_schedule, add_module_to_schedule, get_schedule]
+    ).invoke(TOOL_SELECTION_PROMPT.format(state["messages"]))
     return {"messages": [response]}
 
 
@@ -123,6 +138,9 @@ def grade_documents(
     state: State,
 ) -> Literal["generate_answer", "rewrite_question"]:
     """Determine whether the retrieved documents are relevant to the question."""
+
+    print("grade documents")
+
     messages = state["messages"]
     context = messages[-1].content
     question = messages[-2].content
@@ -163,6 +181,9 @@ REWRITE_PROMPT = (
 
 def rewrite_question(state: State):
     """Rewrite the original user question."""
+
+    print("rewrite question")
+
     messages = state["messages"]
     question = messages[-2].content
     for i in range(len(messages) - 2, -1, -1):
@@ -192,6 +213,9 @@ GENERATE_PROMPT = (
 
 def generate_answer(state: State):
     """Generate an answer."""
+
+    print("generate answer")
+
     messages = state["messages"]
     context = messages[-1].content
     question = messages[-2].content
@@ -213,33 +237,125 @@ def generate_answer(state: State):
     return {"messages": [response]}
 
 
+@tool(parse_docstring=True)
+def generate_schedule(
+    module_codes: List[str], state: Annotated[State, InjectedState]
+) -> List[Document]:
+    """
+    Generate a weekly schedule from a list of module codes
+
+    Args:
+        module_codes: A list of module codes (e.g., "["IN0001", "MA15", "CIT000323"]")
+    """
+
+    print("generate_schedule:", module_codes)
+
+    mock_schedule = [
+        Document("Monday 9AM-11AM: Machine Learning\nRoom: 101\nLecturer: Prof. X"),
+        Document("Wednesday 2PM-4PM: Data Mining\nRoom: 203\nLecturer: Dr. Y"),
+        Document("Friday 10AM-12PM: AI Ethics\nRoom: 305\nLecturer: Dr. Z"),
+    ]
+    return mock_schedule
+
+
+@tool(parse_docstring=True)
+def add_module_to_schedule(
+    module_code: str,
+    state: Annotated[State, InjectedState],
+    config: RunnableConfig = None,
+) -> List[Document]:
+    """
+    Add a module to the schedule
+
+    Args:
+        module_code: The code of  amodule (e.g., "IN0001")
+    """
+
+    print("add module to schedule:", module_code)
+
+    print("user_id:", state["user_id"])
+
+    state["modules"].append(module_code)
+
+    mock_schedule = [
+        Document(f"Module {module_code} added"),
+    ]
+    return mock_schedule
+
+
+@tool(parse_docstring=True)
+def get_schedule(state: Annotated[State, InjectedState]) -> List[Document]:
+    """
+    Get the schedule
+
+    Args:
+    """
+
+    print("get schedule")
+
+    mock_schedule = [
+        Document(f"Module: {code} Data: todo") for code in state["modules"]
+    ]
+    return mock_schedule
+
+
 checkpointer = InMemorySaver()
 workflow = StateGraph(State)
 workflow.add_node(generate_query_or_respond)
-workflow.add_node("retrieve", ToolNode([retrieve_modules]))
-workflow.add_node(rewrite_question)
-workflow.add_node(generate_answer)
+
+tool_node = ToolNode(
+    [retrieve_modules, generate_schedule, add_module_to_schedule, get_schedule]
+)
+workflow.add_node("tools", tool_node)
 
 workflow.add_edge(START, "generate_query_or_respond")
 
 # Decide whether to retrieve
 workflow.add_conditional_edges(
     "generate_query_or_respond",
-    # Assess LLM decision (call `retriever_tool` tool or respond to the user)
     tools_condition,
     {
-        # Translate the condition outputs to nodes in our graph
-        "tools": "retrieve",
+        "tools": "tools",
         END: "generate_answer",
     },
 )
 
-# Edges taken after the `action` node is called.
+
+def route_tool_output(state: State) -> Literal["grade_documents", "generate_answer"]:
+    tool_calls = getattr(state["messages"][-1], "tool_calls", None)
+    if not tool_calls:
+        return "generate_answer"
+
+    # Tool name called by the LLM
+    tool_name = tool_calls[0]["name"]
+    if tool_name == "retrieve_modules":
+        return "grade_documents"
+    else:
+        return "generate_answer"
+
+
 workflow.add_conditional_edges(
-    "retrieve",
-    # Assess agent decision
-    grade_documents,
+    "tools",
+    route_tool_output,
+    {
+        "grade_documents": "grade_documents",
+        "generate_answer": "generate_answer",
+    },
 )
+
+workflow.add_node("grade_documents", grade_documents)
+
+workflow.add_conditional_edges(
+    "grade_documents",
+    grade_documents,
+    {
+        "generate_answer": "generate_answer",
+        "rewrite_question": "rewrite_question",
+    },
+)
+
+workflow.add_node(rewrite_question)
+workflow.add_node(generate_answer)
 workflow.add_edge("generate_answer", END)
 workflow.add_edge("rewrite_question", "generate_query_or_respond")
 graph = workflow.compile(checkpointer=checkpointer)
@@ -256,6 +372,8 @@ async def stream_response(prompt: str, convId: str, studyProgramId: int, semeste
                 "messages": [("user", user_input)],
                 "study_program_id": study_program,
                 "semester": semester,
+                "user_id": user_id,
+                "modules": [],
             },
             config=config,
             stream_mode="messages",
