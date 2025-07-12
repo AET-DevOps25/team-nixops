@@ -1,9 +1,3 @@
-#calendar {
-  margin: 40px auto;
-  margin-left: 40px;
-  margin-right: 40px;
-}
-
 a.fc-event.fc-daygrid-event[href] {
   color: #c90064;
 }
@@ -36,32 +30,20 @@ a.fc-event.fc-daygrid-event[href]:visited {
 }
 
 :root {
-  --main-page-bg-color: #211e21;
+  --main-page-bg-color: var(--background);
   --fc-small-font-size: .85em;
-  --fc-page-bg-color: #3e2f3f;
-  --fc-neutral-bg-color: #2c000631;
+  --fc-page-bg-color: var(--background);
+  --fc-neutral-bg-color: var(--background);
   --fc-neutral-text-color: #808080;
-  --fc-border-color: #464646;
-
-  --fc-button-text-color: #fff;
-  --fc-button-bg-color: #2e807d;
-  --fc-button-border-color: #2e807d;
-  --fc-button-hover-bg-color: #256b69;
-  --fc-button-hover-border-color: #184746;
-  --fc-button-active-bg-color: #184746;
-  --fc-button-active-border-color: #142b2a;
+  --fc-border-color: color-mix(in oklab, var(--ring) 30%, transparent);
 
   --fc-button-text-color: var(--primary-foreground);
-
   --fc-button-bg-color: var(--primary);
   --fc-button-border-color: var(--primary-border);
-
   --fc-button-hover-bg-color: var(--muted-foreground);
   --fc-button-hover-border-color: var(--muted);
-
   --fc-button-active-bg-color: var(--muted-foreground);
   --fc-button-active-border-color: var(--muted);
-
   --fc-button-border-radius: calc(var(--radius) - 2px);
 
   --fc-event-bg-color: #007e79;
@@ -71,10 +53,6 @@ a.fc-event.fc-daygrid-event[href]:visited {
 
   --fc-more-link-bg-color: #d0d0d0;
   --fc-more-link-text-color: inherit;
-
-  --fc-event-resizer-thickness: 8px;
-  --fc-event-resizer-dot-total-width: 8px;
-  --fc-event-resizer-dot-border-width: 1px;
 
   --fc-non-business-color: rgba(215, 215, 215, 0.3);
   --fc-bg-event-color: rgb(143, 223, 130);

@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react"
+import { useState, useRef } from "react"
+
 import { ThemeProvider } from "@/components/theme-provider";
-import "./globals.css";
+import ResizableLayout from "@/components/resizable-layout"
+
 import { PetApiFactory, Configuration } from "../api";
-import FullCalendarClient from "@/components/FullCalendarClient";
+
+import "./globals.css";
 
 const petApiConfig = new Configuration({ basePath: "http://localhost:8000" });
 const petApi = PetApiFactory(petApiConfig);
@@ -14,7 +19,9 @@ export const metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: {
+  children: ReactNode
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
@@ -23,18 +30,11 @@ export default function RootLayout({
           attribute="class"
           defaultTheme="system"
           enableSystem
-          disableTransitionOnChange>
-          <div style={{ display: "flex", height: "100vh" }}>
-            <div style={{ flex: 1, borderRight: "1px solid #ddd", overflowY: "auto" }}>
-              {children}
-            </div>
-
-            <div style={{ width: 800, borderLeft: "1px solid #ddd", overflowY: "auto" }}>
-              <FullCalendarClient/>
-            </div>
-          </div>
+          disableTransitionOnChange
+        >
+          <ResizableLayout>{children}</ResizableLayout>
         </ThemeProvider>
       </body>
     </html>
-  );
+  )
 }

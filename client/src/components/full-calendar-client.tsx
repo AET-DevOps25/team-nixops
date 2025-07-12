@@ -25,9 +25,9 @@ export default function FullCalendarClient() {
         right: "dayGridMonth,timeGridWeek,timeGridDay",
       }}
       events={calendarEvents}
-      editable={false} // no manual editing for now
+      editable={false}
       height="100%"
-      eventColor="#3b82f6" // example blue color, adapt as you want
-    />
+      eventColor="#3b82f6"
+      />
   );
 }
