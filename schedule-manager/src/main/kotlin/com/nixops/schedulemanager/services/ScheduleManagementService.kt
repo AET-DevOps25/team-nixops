@@ -20,7 +20,7 @@ class ScheduleManagementService(
     private val scheduleMetrics: ScheduleMetrics,
 ) {
   private val scheduleCache =
-      Caffeine.newBuilder().expireAfterAccess(12, TimeUnit.HOURS).build<String, Schedule>()
+      Caffeine.newBuilder().expireAfterAccess(6, TimeUnit.HOURS).build<String, Schedule>()
 
   fun createSchedule(scheduleId: String, studyId: Long, semester: String): Schedule {
     val newSchedule =
