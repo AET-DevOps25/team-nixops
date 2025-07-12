@@ -117,10 +117,3 @@ spec:
         - name: shared-alloy-config # use config prepared by init container
           emptyDir: 
             sizeLimit: 500Mi
-        - name: shared-alloy-config # use config prepared by init container
-          emptyDir: 
-            sizeLimit: 500Mi
-        - name: postgres-storage
-          emptyDir:
-            sizeLimit: 500Mi
-
