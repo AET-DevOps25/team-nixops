@@ -1,0 +1,169 @@
+openapi: 3.0.3
+info:
+  title: Ephemeral Schedule Service
+  version: 1.1.2
+  description: |
+    In-memory schedule manager. Add/remove module codes from a schedule.
+    Each module results in generated appointments. Schedules expire 24h after last use.
+
+servers:
+  - url: http://localhost:8042
+    description: Local server
+
+paths:
+  /schedule/{schedule_id}/init:
+    post:
+      summary: Initialize a schedule with given studyId and semester
+      operationId: initSchedule
+      parameters:
+        - name: schedule_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - studyId
+                - semester
+              properties:
+                studyId:
+                  type: integer
+                  format: int64
+                  example: 123456
+                semester:
+                  type: string
+                  example: "2025S"
+      responses:
+        '204':
+          description: Schedule initialized
+        '400':
+          description: Invalid input
+
+  /schedule/{schedule_id}/modules:
+    get:
+      summary: Get all module codes in a schedule
+      operationId: getModules
+      parameters:
+        - name: schedule_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of module codes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                example: ["mod-abc-123", "mod-xyz-456"]
+        '404':
+          description: Schedule not found
+
+    post:
+      summary: Add a module code to the schedule
+      operationId: addModule
+      parameters:
+        - name: schedule_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+              example: "mod-abc-123"
+      responses:
+        '204':
+          description: Module added
+        '400':
+          description: Invalid module code
+
+    delete:
+      summary: Remove a module code from the schedule
+      operationId: removeModule
+      parameters:
+        - name: schedule_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+              example: "mod-abc-123"
+      responses:
+        '204':
+          description: Module removed
+        '404':
+          description: Module or schedule not found
+
+  /schedule/{schedule_id}/appointments:
+    get:
+      summary: Get full schedule (appointments) with resolved module titles
+      operationId: getAppointments
+      parameters:
+        - name: schedule_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of appointments for all modules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Appointment'
+        '404':
+          description: Schedule not found
+
+components:
+  schemas:
+    Appointment:
+      type: object
+      properties:
+        appointmentType:
+          type: string
+          enum: ["lecture", "tutorial"]
+        moduleCode:
+          type: string
+          example: "mod-abc-123"
+        moduleTitle:
+          type: string
+          example: "Introduction to AI"
+        seriesBeginDate:
+          type: string
+          format: date
+          example: "2024-03-01"
+        seriesEndDate:
+          type: string
+          format: date
+          example: "2024-07-01"
+        beginTime:
+          type: string
+          example: "08:00"
+        endTime:
+          type: string
+          example: "10:00"
+        weekdays:
+          type: array
+          items:
+            type: string
+            enum: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
+          example: ["Mo", "Di"]
