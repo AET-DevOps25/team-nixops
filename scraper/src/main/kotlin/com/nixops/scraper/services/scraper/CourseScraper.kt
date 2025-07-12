@@ -73,6 +73,8 @@ class CourseScraper(
                 it[Groups.name] = campusGroup.name
               }
 
+          group.course = course
+
           for (campusAppointment in campusGroup.appointments) {
             val appointment =
                 Appointments.genericUpsert(Appointment) {
@@ -86,6 +88,8 @@ class CourseScraper(
                     .also { savedAppointment ->
                       scraperMetrics.incrementAppointmentCounter(savedAppointment.id.value)
                     }
+
+            appointment.group = group
 
             Weekday.find { AppointmentWeekdays.appointment eq appointment.id }
                 .forEach { it.delete() }
