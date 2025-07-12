@@ -1,5 +1,6 @@
 package com.nixops.scraper.services.scraper
 
+import com.nixops.scraper.metrics.ScraperMetrics
 import com.nixops.scraper.model.*
 import java.time.Duration
 import mu.KotlinLogging
@@ -14,13 +15,17 @@ class ScraperScheduler(
     private val curriculumScraper: CurriculumScraper,
     private val moduleScraper: ModuleScraper,
     private val studyProgramScraper: StudyProgramScraper,
-    private val courseScraper: CourseScraper
+    private val courseScraper: CourseScraper,
+    //
+    private val scraperMetrics: ScraperMetrics
 ) {
   fun check(name: String, scrape: () -> Unit, interval: Duration = Duration.ofHours(2)) {
     val lastUpdated = getTimeSinceLastUpdated(name)
     if (lastUpdated == null || lastUpdated > interval) {
       logger.info("Scraping $name")
-      scrape()
+
+      scraperMetrics.recordScrapeDuration(name) { scrape() }
+
       setLastUpdated(name)
     }
   }

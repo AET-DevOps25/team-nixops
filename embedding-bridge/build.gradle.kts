@@ -39,6 +39,10 @@ dependencies {
   implementation("org.mapstruct:mapstruct:1.5.5.Final")
   kapt("org.mapstruct:mapstruct-processor:1.5.5.Final")
 
+  // OpenTelemetry
+  implementation("io.opentelemetry.instrumentation:opentelemetry-spring-boot-starter:2.17.1")
+  implementation("org.springframework.boot:spring-boot-starter-actuator:3.5.3")
+
   // Testing
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")

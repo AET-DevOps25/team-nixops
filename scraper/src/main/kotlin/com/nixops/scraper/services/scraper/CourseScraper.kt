@@ -1,6 +1,7 @@
 package com.nixops.scraper.services.scraper
 
 import com.nixops.scraper.extensions.genericUpsert
+import com.nixops.scraper.metrics.ScraperMetrics
 import com.nixops.scraper.model.*
 import com.nixops.scraper.services.SemesterService
 import com.nixops.scraper.tum_api.campus.api.CampusCourseApiClient
@@ -17,7 +18,9 @@ private val logger = KotlinLogging.logger {}
 class CourseScraper(
     private val natCourseApiClient: NatCourseApiClient,
     private val campusCourseApiClient: CampusCourseApiClient,
-    private val semesterService: SemesterService
+    private val semesterService: SemesterService,
+    //
+    private val scraperMetrics: ScraperMetrics
 ) {
   fun scrapeCourse(id: Int): Course? {
     return transaction {
@@ -40,46 +43,49 @@ class CourseScraper(
 
       val course =
           Courses.genericUpsert(Course) {
-            it[Courses.id] = natCourse.courseId
-            it[Courses.courseName] = natCourse.courseName
-            it[Courses.courseNameEn] = natCourse.courseNameEn
-            it[Courses.courseNameList] = natCourse.courseNameList
-            it[Courses.courseNameListEn] = natCourse.courseNameListEn
-            it[Courses.description] = natCourse.description
-            it[Courses.descriptionEn] = natCourse.descriptionEn
-            it[Courses.teachingMethod] = natCourse.teachingMethod
-            it[Courses.teachingMethodEn] = natCourse.teachingMethodEn
-            it[Courses.note] = natCourse.note
-            it[Courses.noteEn] = natCourse.noteEn
-            it[Courses.activityId] = natCourse.activity?.activityId
-            it[Courses.activityName] = natCourse.activity?.activityName
-            it[Courses.activityNameEn] = natCourse.activity?.activityNameEn
-          }
+                it[Courses.id] = natCourse.courseId
+                it[Courses.courseName] = natCourse.courseName
+                it[Courses.courseNameEn] = natCourse.courseNameEn
+                it[Courses.courseNameList] = natCourse.courseNameList
+                it[Courses.courseNameListEn] = natCourse.courseNameListEn
+                it[Courses.description] = natCourse.description
+                it[Courses.descriptionEn] = natCourse.descriptionEn
+                it[Courses.teachingMethod] = natCourse.teachingMethod
+                it[Courses.teachingMethodEn] = natCourse.teachingMethodEn
+                it[Courses.note] = natCourse.note
+                it[Courses.noteEn] = natCourse.noteEn
+                it[Courses.activityId] = natCourse.activity?.activityId
+                it[Courses.activityName] = natCourse.activity?.activityName
+                it[Courses.activityNameEn] = natCourse.activity?.activityNameEn
+              }
+              .also { savedCourse ->
+                scraperMetrics.incrementCourseCounter(
+                    savedCourse.id.value,
+                    savedCourse.courseName,
+                )
+              }
 
       if (campusCourseGroups != null) {
         for (campusGroup in campusCourseGroups) {
-          val existingGroup = Group.findById(campusGroup.id)
           val group =
-              if (existingGroup != null) {
-                existingGroup.name = campusGroup.name
-                existingGroup
-              } else {
-                Group.new(campusGroup.id) {
-                  name = campusGroup.name
-                  this.course = course
-                }
+              Groups.genericUpsert(Group) {
+                it[Groups.id] = campusGroup.id
+                it[Groups.name] = campusGroup.name
               }
 
           for (campusAppointment in campusGroup.appointments) {
             val appointment =
                 Appointments.genericUpsert(Appointment) {
-                  it[Appointments.id] = campusAppointment.id
-                  it[Appointments.seriesBeginDate] = campusAppointment.seriesBeginDate.value
-                  it[Appointments.seriesEndDate] = campusAppointment.seriesEndDate.value
-                  it[Appointments.beginTime] = campusAppointment.beginTime
-                  it[Appointments.endTime] = campusAppointment.endTime
-                  it[Appointments.groupId] = group.id
-                }
+                      it[Appointments.id] = campusAppointment.id
+                      it[Appointments.seriesBeginDate] = campusAppointment.seriesBeginDate.value
+                      it[Appointments.seriesEndDate] = campusAppointment.seriesEndDate.value
+                      it[Appointments.beginTime] = campusAppointment.beginTime
+                      it[Appointments.endTime] = campusAppointment.endTime
+                      it[Appointments.groupId] = group.id
+                    }
+                    .also { savedAppointment ->
+                      scraperMetrics.incrementAppointmentCounter(savedAppointment.id.value)
+                    }
 
             Weekday.find { AppointmentWeekdays.appointment eq appointment.id }
                 .forEach { it.delete() }
