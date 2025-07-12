@@ -33,6 +33,7 @@ dependencies {
   implementation("io.swagger.core.v3:swagger-annotations:2.2.20")
   implementation("jakarta.validation:jakarta.validation-api:3.0.2")
   implementation("org.hibernate.validator:hibernate-validator:8.0.0.Final")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
 
   // OpenTelemetry
   implementation("io.opentelemetry.instrumentation:opentelemetry-spring-boot-starter:2.17.1")
@@ -63,6 +64,12 @@ sourceSets {
       srcDir(
           project.layout.buildDirectory
               .dir("generated/openapi-scraper/src/main/kotlin")
+              .get()
+              .asFile
+              .path)
+      srcDir(
+          project.layout.buildDirectory
+              .dir("generated/schedule-manager/src/main/kotlin")
               .get()
               .asFile
               .path)

@@ -12,7 +12,7 @@ private val logger = KotlinLogging.logger {}
 class ScheduleManagementService {
   private val scheduleCache =
       Caffeine.newBuilder()
-          .expireAfterAccess(1, TimeUnit.DAYS)
+          .expireAfterAccess(1, TimeUnit.MINUTES)
           .build<String, CopyOnWriteArrayList<String>>()
 
   fun addModule(scheduleId: String, module: String) {
