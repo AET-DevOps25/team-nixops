@@ -1,6 +1,7 @@
 package com.nixops.scraper.services.scraper
 
 import com.nixops.scraper.extensions.genericUpsert
+import com.nixops.scraper.metrics.ScraperMetrics
 import com.nixops.scraper.model.*
 import com.nixops.scraper.tum_api.nat.api.NatModuleApiClient
 import com.nixops.scraper.tum_api.nat.model.NatModule
@@ -15,6 +16,8 @@ private val logger = KotlinLogging.logger {}
 @Service
 class ModuleScraper(
     private val moduleApiClient: NatModuleApiClient,
+    //
+    private val scraperMetrics: ScraperMetrics
 ) {
   fun updateNatModule(natModule: NatModule): Module? {
     return transaction {
@@ -31,20 +34,24 @@ class ModuleScraper(
       }
 
       Modules.genericUpsert(Module) {
-        it[Modules.id] = natModule.id
-        it[Modules.moduleCode] = natModule.code
-        it[Modules.moduleTitle] = natModule.title
-        it[Modules.moduleTitleEn] = natModule.titleEn
-        it[Modules.moduleContents] = natModule.content
-        it[Modules.moduleContentsEn] = natModule.contentEn
-        it[Modules.moduleOutcome] = natModule.outcome
-        it[Modules.moduleOutcomeEn] = natModule.outcomeEn
-        it[Modules.moduleMethods] = natModule.methods
-        it[Modules.moduleMethodsEn] = natModule.methodsEn
-        it[Modules.moduleExam] = natModule.exam
-        it[Modules.moduleExamEn] = natModule.examEn
-        it[Modules.moduleCredits] = natModule.credits
-      }
+            it[Modules.id] = natModule.id
+            it[Modules.moduleCode] = natModule.code
+            it[Modules.moduleTitle] = natModule.title
+            it[Modules.moduleTitleEn] = natModule.titleEn
+            it[Modules.moduleContents] = natModule.content
+            it[Modules.moduleContentsEn] = natModule.contentEn
+            it[Modules.moduleOutcome] = natModule.outcome
+            it[Modules.moduleOutcomeEn] = natModule.outcomeEn
+            it[Modules.moduleMethods] = natModule.methods
+            it[Modules.moduleMethodsEn] = natModule.methodsEn
+            it[Modules.moduleExam] = natModule.exam
+            it[Modules.moduleExamEn] = natModule.examEn
+            it[Modules.moduleCredits] = natModule.credits
+          }
+          .also { savedModule ->
+            scraperMetrics.incrementModuleCounter(
+                savedModule.id.value, savedModule.moduleCode, savedModule.moduleTitle)
+          }
     }
   }
 

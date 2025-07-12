@@ -471,6 +471,20 @@
       "hash": "sha256-R2QJlPzU46EZStsn0s/kEQII7qlCwgSDTZailCVt5hQ="
     }
   },
+  "com.google.cloud.opentelemetry:detector-resources-support:0.34.0": {
+    "detector-resources-support-0.34.0.jar": {
+      "url": "https://plugins.gradle.org/m2/com/google/cloud/opentelemetry/detector-resources-support/0.34.0/detector-resources-support-0.34.0.jar",
+      "hash": "sha256-wQwJQVPO75v5W3fAcpUyNYNhrxKa4RbK+kE/4+6m6Ek="
+    },
+    "detector-resources-support-0.34.0.module": {
+      "url": "https://plugins.gradle.org/m2/com/google/cloud/opentelemetry/detector-resources-support/0.34.0/detector-resources-support-0.34.0.module",
+      "hash": "sha256-YCSM6oMZ/uhYL0qFm+qd9skYTLpW1NNf+N0txx54sQQ="
+    },
+    "detector-resources-support-0.34.0.pom": {
+      "url": "https://plugins.gradle.org/m2/com/google/cloud/opentelemetry/detector-resources-support/0.34.0/detector-resources-support-0.34.0.pom",
+      "hash": "sha256-hCgpNqIEc5Pj2lqI38CpNnSvzUefkGBOficTW7Q4kx8="
+    }
+  },
   "com.google.code.findbugs:jsr305:3.0.2": {
     "jsr305-3.0.2.jar": {
       "url": "https://plugins.gradle.org/m2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar",
@@ -617,6 +631,16 @@
       "hash": "sha256-Z77EYiZJjJBFuqct8cnH9mG4XOObYni2TWign0Xry1k="
     }
   },
+  "com.squareup.okhttp3:okhttp:4.12.0": {
+    "okhttp-4.12.0.module": {
+      "url": "https://plugins.gradle.org/m2/com/squareup/okhttp3/okhttp/4.12.0/okhttp-4.12.0.module",
+      "hash": "sha256-YH4iD/ghW5Kdgpu/VPMyiU8UWbTXlZea6vy8wc6lTPM="
+    },
+    "okhttp-4.12.0.pom": {
+      "url": "https://plugins.gradle.org/m2/com/squareup/okhttp3/okhttp/4.12.0/okhttp-4.12.0.pom",
+      "hash": "sha256-fHNwQKlBlSLnxQzAJ0FqcP58dinlKyGZNa3mtBGcfTg="
+    }
+  },
   "com.squareup.okhttp3:okhttp:4.11.0": {
     "okhttp-4.11.0.jar": {
       "url": "https://plugins.gradle.org/m2/com/squareup/okhttp3/okhttp/4.11.0/okhttp-4.11.0.jar",
@@ -631,6 +655,16 @@
       "hash": "sha256-ei1Cezixfgdtpk7o0hAuZIiNyyOK7l4tukp3UslKP94="
     }
   },
+  "com.squareup.okio:okio:3.6.0": {
+    "okio-3.6.0.module": {
+      "url": "https://plugins.gradle.org/m2/com/squareup/okio/okio/3.6.0/okio-3.6.0.module",
+      "hash": "sha256-akesUDZOZZhFlAH7hvm2z832N7mzowRbHMM8v0xAghg="
+    },
+    "okio-3.6.0.pom": {
+      "url": "https://plugins.gradle.org/m2/com/squareup/okio/okio/3.6.0/okio-3.6.0.pom",
+      "hash": "sha256-rrO3CiTBA+0MVFQfNfXFEdJ85gyuN2pZbX1lNpf4zJU="
+    }
+  },
   "com.squareup.okio:okio:3.2.0": {
     "okio-3.2.0-all.jar": {
       "url": "https://plugins.gradle.org/m2/com/squareup/okio/okio/3.2.0/okio-3.2.0-all.jar",
@@ -643,6 +677,16 @@
     "okio-3.2.0.pom": {
       "url": "https://plugins.gradle.org/m2/com/squareup/okio/okio/3.2.0/okio-3.2.0.pom",
       "hash": "sha256-i0b1jZua6xF4Nh1YpoZfTa1mWTDF/3tV4LqmHvOpcqE="
+    }
+  },
+  "com.squareup.okio:okio-jvm:3.6.0": {
+    "okio-jvm-3.6.0.module": {
+      "url": "https://plugins.gradle.org/m2/com/squareup/okio/okio-jvm/3.6.0/okio-jvm-3.6.0.module",
+      "hash": "sha256-scIZnhwMyWnvYcu+SvLsr5sGQRvd4By69vyRNN/gToo="
+    },
+    "okio-jvm-3.6.0.pom": {
+      "url": "https://plugins.gradle.org/m2/com/squareup/okio/okio-jvm/3.6.0/okio-jvm-3.6.0.pom",
+      "hash": "sha256-YbTXxRWgiU/62SX9cFJiDBQlqGQz/TURO1+rDeiQpX8="
     }
   },
   "com.squareup.okio:okio-jvm:3.2.0": {
@@ -1049,6 +1093,26 @@
       "hash": "sha256-fZYAKsyQ9qyIJ++gQf12tyKQCeDL3ySkfCF9iIUGTig="
     }
   },
+  "io.micrometer:micrometer-core:1.15.0": {
+    "micrometer-core-1.15.0.jar": {
+      "url": "https://plugins.gradle.org/m2/io/micrometer/micrometer-core/1.15.0/micrometer-core-1.15.0.jar",
+      "hash": "sha256-Z6cyMfGC2cIYIDZDq5FggGn4mfS4z/7/bljqvwpsaYo="
+    },
+    "micrometer-core-1.15.0.pom": {
+      "url": "https://plugins.gradle.org/m2/io/micrometer/micrometer-core/1.15.0/micrometer-core-1.15.0.pom",
+      "hash": "sha256-F6xWcIid2th9kE6EKRY7ZUYFOA5EwLkmeNT05e9NQT0="
+    }
+  },
+  "io.micrometer:micrometer-jakarta9:1.15.0": {
+    "micrometer-jakarta9-1.15.0.jar": {
+      "url": "https://plugins.gradle.org/m2/io/micrometer/micrometer-jakarta9/1.15.0/micrometer-jakarta9-1.15.0.jar",
+      "hash": "sha256-khADYCMOF/LJJ3R/sPha4rcG7CnvNIBrfuttYvlFXMU="
+    },
+    "micrometer-jakarta9-1.15.0.pom": {
+      "url": "https://plugins.gradle.org/m2/io/micrometer/micrometer-jakarta9/1.15.0/micrometer-jakarta9-1.15.0.pom",
+      "hash": "sha256-9M9XO6+9bG6vNU3CmpIWy+tW1ANDZ09TOCT/NQleeUQ="
+    }
+  },
   "io.micrometer:micrometer-observation:1.15.0": {
     "micrometer-observation-1.15.0.jar": {
       "url": "https://plugins.gradle.org/m2/io/micrometer/micrometer-observation/1.15.0/micrometer-observation-1.15.0.jar",
@@ -1211,6 +1275,34 @@
       "hash": "sha256-E24RjGngF0Wbor28weVaD9w2dD1X8oqOoWKpjR/LtjM="
     }
   },
+  "io.opentelemetry:opentelemetry-api:1.49.0": {
+    "opentelemetry-api-1.49.0.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-api/1.49.0/opentelemetry-api-1.49.0.jar",
+      "hash": "sha256-qBPJqSuCpP+jpi6IIWqenvmkB/zUFhT+WWsolRZ+1jg="
+    },
+    "opentelemetry-api-1.49.0.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-api/1.49.0/opentelemetry-api-1.49.0.module",
+      "hash": "sha256-PeJNiednshQdnJq1O4/lgTMOSZrFEqI4iilN67ycipg="
+    },
+    "opentelemetry-api-1.49.0.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-api/1.49.0/opentelemetry-api-1.49.0.pom",
+      "hash": "sha256-5c/wMTeJk/rxQJBWI+Pjhb3agt4GSt03vzExx0hXRGI="
+    }
+  },
+  "io.opentelemetry:opentelemetry-api-incubator:1.51.0-alpha": {
+    "opentelemetry-api-incubator-1.51.0-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-api-incubator/1.51.0-alpha/opentelemetry-api-incubator-1.51.0-alpha.jar",
+      "hash": "sha256-5dShxy6d7HjejGRywTYl6+ah1H3m4PE0LuUzcdlojvo="
+    },
+    "opentelemetry-api-incubator-1.51.0-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-api-incubator/1.51.0-alpha/opentelemetry-api-incubator-1.51.0-alpha.module",
+      "hash": "sha256-GK0ro885TMDgho7nruv6eObCP/2c80+EZWDcSwzItE8="
+    },
+    "opentelemetry-api-incubator-1.51.0-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-api-incubator/1.51.0-alpha/opentelemetry-api-incubator-1.51.0-alpha.pom",
+      "hash": "sha256-94zc1yuOA7LtIZ0RdxQcyaX45ScMn38rLb6pubw6TfA="
+    }
+  },
   "io.opentelemetry:opentelemetry-bom:1.49.0": {
     "opentelemetry-bom-1.49.0.module": {
       "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-bom/1.49.0/opentelemetry-bom-1.49.0.module",
@@ -1219,6 +1311,650 @@
     "opentelemetry-bom-1.49.0.pom": {
       "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-bom/1.49.0/opentelemetry-bom-1.49.0.pom",
       "hash": "sha256-RPy6c5ErlQ0+yIEp444DwYG5dfW17nPXureGaks3bFA="
+    }
+  },
+  "io.opentelemetry:opentelemetry-context:1.49.0": {
+    "opentelemetry-context-1.49.0.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-context/1.49.0/opentelemetry-context-1.49.0.jar",
+      "hash": "sha256-F948hbNBJAs7IWxDrb0kTJ+9OcnlRIMG1WRg+AWZp2s="
+    },
+    "opentelemetry-context-1.49.0.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-context/1.49.0/opentelemetry-context-1.49.0.module",
+      "hash": "sha256-bIEGH7Z+kc3kmNoGbQMN52Yb6EYzXOT8MCK7LZMJDeg="
+    },
+    "opentelemetry-context-1.49.0.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-context/1.49.0/opentelemetry-context-1.49.0.pom",
+      "hash": "sha256-69FY1XBdTe6mRTWwU3mNVbW7VFe9RUxg9Oza8ZT6FDg="
+    }
+  },
+  "io.opentelemetry:opentelemetry-exporter-common:1.49.0": {
+    "opentelemetry-exporter-common-1.49.0.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-exporter-common/1.49.0/opentelemetry-exporter-common-1.49.0.jar",
+      "hash": "sha256-BtCK8Auf7I6ZtqT9ousgH6y+L+OKiesRy7++QYO3MUE="
+    },
+    "opentelemetry-exporter-common-1.49.0.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-exporter-common/1.49.0/opentelemetry-exporter-common-1.49.0.module",
+      "hash": "sha256-oTSGoSplQANu6dzfJwKdaNDNy6BBwkCBzBfbnlWYXcA="
+    },
+    "opentelemetry-exporter-common-1.49.0.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-exporter-common/1.49.0/opentelemetry-exporter-common-1.49.0.pom",
+      "hash": "sha256-YafTYd+wcGOZhs2v7YS2FOSUTMh3SZEY2lbS5VynMkc="
+    }
+  },
+  "io.opentelemetry:opentelemetry-exporter-logging:1.49.0": {
+    "opentelemetry-exporter-logging-1.49.0.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-exporter-logging/1.49.0/opentelemetry-exporter-logging-1.49.0.jar",
+      "hash": "sha256-k4n5J1QgNRVYPPtQRB3E5NPM+FE6Tbz7KiNGCWiny/g="
+    },
+    "opentelemetry-exporter-logging-1.49.0.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-exporter-logging/1.49.0/opentelemetry-exporter-logging-1.49.0.module",
+      "hash": "sha256-4Yh5WF5SJipJToF5DtcE+82SDgcnTmd7myifB4TfTSY="
+    },
+    "opentelemetry-exporter-logging-1.49.0.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-exporter-logging/1.49.0/opentelemetry-exporter-logging-1.49.0.pom",
+      "hash": "sha256-TPTNYyIZWQMUcBBirD3699TV5fN5qIbYkcuk/Qs27cI="
+    }
+  },
+  "io.opentelemetry:opentelemetry-exporter-otlp:1.49.0": {
+    "opentelemetry-exporter-otlp-1.49.0.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-exporter-otlp/1.49.0/opentelemetry-exporter-otlp-1.49.0.jar",
+      "hash": "sha256-tpwWZNvXXnpMWrLhh3Zufk/NsgjJTcVp8UU8OI1ZWBI="
+    },
+    "opentelemetry-exporter-otlp-1.49.0.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-exporter-otlp/1.49.0/opentelemetry-exporter-otlp-1.49.0.module",
+      "hash": "sha256-b/yDkTAXWrRGbdnmOl1vlHMFAmOwQg2qgeaVFltc0Bc="
+    },
+    "opentelemetry-exporter-otlp-1.49.0.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-exporter-otlp/1.49.0/opentelemetry-exporter-otlp-1.49.0.pom",
+      "hash": "sha256-EGq71YT80mghGJSYe8WipEBfYmyDOmM1pFmEksRGldE="
+    }
+  },
+  "io.opentelemetry:opentelemetry-exporter-otlp-common:1.49.0": {
+    "opentelemetry-exporter-otlp-common-1.49.0.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-exporter-otlp-common/1.49.0/opentelemetry-exporter-otlp-common-1.49.0.jar",
+      "hash": "sha256-vhbWgCvg6y0IOJ/Jrx6AH8mPlgYf5rzaJWLct+Lg3Vs="
+    },
+    "opentelemetry-exporter-otlp-common-1.49.0.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-exporter-otlp-common/1.49.0/opentelemetry-exporter-otlp-common-1.49.0.module",
+      "hash": "sha256-U5csytSH7rKNaO9EjdY814EknXxz40MvRItod6fAzJg="
+    },
+    "opentelemetry-exporter-otlp-common-1.49.0.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-exporter-otlp-common/1.49.0/opentelemetry-exporter-otlp-common-1.49.0.pom",
+      "hash": "sha256-H0wjstY10w9O9NnmagF8HpktBU3DQvdYSrvHA9RksPg="
+    }
+  },
+  "io.opentelemetry:opentelemetry-exporter-sender-okhttp:1.49.0": {
+    "opentelemetry-exporter-sender-okhttp-1.49.0.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-exporter-sender-okhttp/1.49.0/opentelemetry-exporter-sender-okhttp-1.49.0.jar",
+      "hash": "sha256-F4OjPluyQaXWBiwBtcjK6bDh0pav8LTB/jKAsTa/StQ="
+    },
+    "opentelemetry-exporter-sender-okhttp-1.49.0.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-exporter-sender-okhttp/1.49.0/opentelemetry-exporter-sender-okhttp-1.49.0.module",
+      "hash": "sha256-z+TyH3KMgsAgBON58VQBfowx/OtOXIgw7QIs6v5uJ1A="
+    },
+    "opentelemetry-exporter-sender-okhttp-1.49.0.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-exporter-sender-okhttp/1.49.0/opentelemetry-exporter-sender-okhttp-1.49.0.pom",
+      "hash": "sha256-g858Xoqv0g4SUOEPII/VODyR9f2h/Fyw2ockwSvQ0sc="
+    }
+  },
+  "io.opentelemetry:opentelemetry-sdk:1.49.0": {
+    "opentelemetry-sdk-1.49.0.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk/1.49.0/opentelemetry-sdk-1.49.0.jar",
+      "hash": "sha256-1v2vDwRyTVyTYtsvgJ/SHzbpXJwDnSL+aVaS1gYQe/8="
+    },
+    "opentelemetry-sdk-1.49.0.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk/1.49.0/opentelemetry-sdk-1.49.0.module",
+      "hash": "sha256-EWqoZW38jsZof9dXMPkrFpoNfi60iE0/jIcDXyr3hTw="
+    },
+    "opentelemetry-sdk-1.49.0.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk/1.49.0/opentelemetry-sdk-1.49.0.pom",
+      "hash": "sha256-KpRUiTBGorbIQ/7hx7kZqS9LEv1TeEVKPswM2DlgsLQ="
+    }
+  },
+  "io.opentelemetry:opentelemetry-sdk-common:1.49.0": {
+    "opentelemetry-sdk-common-1.49.0.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk-common/1.49.0/opentelemetry-sdk-common-1.49.0.jar",
+      "hash": "sha256-sGIUzPPNp0ntzUJsFJJIPiAeH8+tufnLqOy0Of9cXQ8="
+    },
+    "opentelemetry-sdk-common-1.49.0.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk-common/1.49.0/opentelemetry-sdk-common-1.49.0.module",
+      "hash": "sha256-oQP0KV5B/nvLdGNTXYJyDT9RSukgLhRIlaLFag/Jk3Q="
+    },
+    "opentelemetry-sdk-common-1.49.0.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk-common/1.49.0/opentelemetry-sdk-common-1.49.0.pom",
+      "hash": "sha256-lMadkLf3tG4G4FWo0wlFO3QCBE3ifQfUUEN5ioAekzY="
+    }
+  },
+  "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.49.0": {
+    "opentelemetry-sdk-extension-autoconfigure-1.49.0.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.49.0/opentelemetry-sdk-extension-autoconfigure-1.49.0.jar",
+      "hash": "sha256-1B21VNKBOzUAamew7DV9GEj/axHCp2jzWpt3YjPu3AU="
+    },
+    "opentelemetry-sdk-extension-autoconfigure-1.49.0.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.49.0/opentelemetry-sdk-extension-autoconfigure-1.49.0.module",
+      "hash": "sha256-erLXIKW8ulOS1iHMn9xE2mw6CBl8bvIEo+QtxLGk6lk="
+    },
+    "opentelemetry-sdk-extension-autoconfigure-1.49.0.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.49.0/opentelemetry-sdk-extension-autoconfigure-1.49.0.pom",
+      "hash": "sha256-VqmgoN4Yxmod4KWJnUTfxya4vLksJPPpzj9yko8/uPA="
+    }
+  },
+  "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:1.49.0": {
+    "opentelemetry-sdk-extension-autoconfigure-spi-1.49.0.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.49.0/opentelemetry-sdk-extension-autoconfigure-spi-1.49.0.jar",
+      "hash": "sha256-swkQM+W0tLSTNHCXB4WNmTr7kv5cMtSgsn4C0ulWxbc="
+    },
+    "opentelemetry-sdk-extension-autoconfigure-spi-1.49.0.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.49.0/opentelemetry-sdk-extension-autoconfigure-spi-1.49.0.module",
+      "hash": "sha256-q7pWM47cbKT8WGfB3PyLRaR5o7u0I/lm7px/9KhgHTk="
+    },
+    "opentelemetry-sdk-extension-autoconfigure-spi-1.49.0.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.49.0/opentelemetry-sdk-extension-autoconfigure-spi-1.49.0.pom",
+      "hash": "sha256-eN8lm/ieR6uExS+2k3JIVAvEE6fw9Hm83+RrXHaJdJQ="
+    }
+  },
+  "io.opentelemetry:opentelemetry-sdk-extension-incubator:1.51.0-alpha": {
+    "opentelemetry-sdk-extension-incubator-1.51.0-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk-extension-incubator/1.51.0-alpha/opentelemetry-sdk-extension-incubator-1.51.0-alpha.jar",
+      "hash": "sha256-k6BgEwaSsRBCy8CCY3uDQDP8CfVc4Mudp5Z1AFfk+D0="
+    },
+    "opentelemetry-sdk-extension-incubator-1.51.0-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk-extension-incubator/1.51.0-alpha/opentelemetry-sdk-extension-incubator-1.51.0-alpha.module",
+      "hash": "sha256-jeBqoeos/Qr8LgFUGCcHgMJAZBSTuse6cVv1yw1gaTo="
+    },
+    "opentelemetry-sdk-extension-incubator-1.51.0-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk-extension-incubator/1.51.0-alpha/opentelemetry-sdk-extension-incubator-1.51.0-alpha.pom",
+      "hash": "sha256-iOyCX22C3V5DDfo/qEw35NAGXWPzwuDbAyGqR/KOVPU="
+    }
+  },
+  "io.opentelemetry:opentelemetry-sdk-logs:1.49.0": {
+    "opentelemetry-sdk-logs-1.49.0.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk-logs/1.49.0/opentelemetry-sdk-logs-1.49.0.jar",
+      "hash": "sha256-7ffyQR1RgAme/rxaXi8BN49keJdnGqmBnyBk4ktvfp8="
+    },
+    "opentelemetry-sdk-logs-1.49.0.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk-logs/1.49.0/opentelemetry-sdk-logs-1.49.0.module",
+      "hash": "sha256-aBLEjLUQWZKfb0rw5DJJF5BFcb2p8bNyJmkODNDCNeM="
+    },
+    "opentelemetry-sdk-logs-1.49.0.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk-logs/1.49.0/opentelemetry-sdk-logs-1.49.0.pom",
+      "hash": "sha256-kwxZEXdXxVkRs6MW9L5DQOGSkLjbBW1pGeYgGqKPl98="
+    }
+  },
+  "io.opentelemetry:opentelemetry-sdk-metrics:1.49.0": {
+    "opentelemetry-sdk-metrics-1.49.0.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk-metrics/1.49.0/opentelemetry-sdk-metrics-1.49.0.jar",
+      "hash": "sha256-zyjqKfz9RXeko72jiKwIy7uG5LG1NIIoSOpcVVS/1gM="
+    },
+    "opentelemetry-sdk-metrics-1.49.0.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk-metrics/1.49.0/opentelemetry-sdk-metrics-1.49.0.module",
+      "hash": "sha256-Y+Ls2G1128JG12TKiel5PnfLvRwNDcP7R0S55fTu/wo="
+    },
+    "opentelemetry-sdk-metrics-1.49.0.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk-metrics/1.49.0/opentelemetry-sdk-metrics-1.49.0.pom",
+      "hash": "sha256-c/jgkSMVf8moEO+BdKG/eh4u4mYgxUEgUx5BfK+I3SI="
+    }
+  },
+  "io.opentelemetry:opentelemetry-sdk-trace:1.49.0": {
+    "opentelemetry-sdk-trace-1.49.0.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk-trace/1.49.0/opentelemetry-sdk-trace-1.49.0.jar",
+      "hash": "sha256-SDvyHd4d8aLJh1un3/HjyMGmN4nNRa1YIj7GS1lRMY4="
+    },
+    "opentelemetry-sdk-trace-1.49.0.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk-trace/1.49.0/opentelemetry-sdk-trace-1.49.0.module",
+      "hash": "sha256-PuwiW7ZqcXdriXC0Ks5niFqNR/0aOGTL0S8gF8orzng="
+    },
+    "opentelemetry-sdk-trace-1.49.0.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-sdk-trace/1.49.0/opentelemetry-sdk-trace-1.49.0.pom",
+      "hash": "sha256-EvIdaXzsAqtELuA0oHjQKkCtKUYT7FovEEZIrXBltw8="
+    }
+  },
+  "io.opentelemetry.contrib:opentelemetry-aws-resources:1.46.0-alpha": {
+    "opentelemetry-aws-resources-1.46.0-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/contrib/opentelemetry-aws-resources/1.46.0-alpha/opentelemetry-aws-resources-1.46.0-alpha.jar",
+      "hash": "sha256-4kJkc/M15YFGFq8nvQks0Ocwm7M7p/EH0JcjNCeDVjw="
+    },
+    "opentelemetry-aws-resources-1.46.0-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/contrib/opentelemetry-aws-resources/1.46.0-alpha/opentelemetry-aws-resources-1.46.0-alpha.module",
+      "hash": "sha256-9OWtSc1xFpOW5ra7blp35Aikx/folbjHZKYj6i1VDgA="
+    },
+    "opentelemetry-aws-resources-1.46.0-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/contrib/opentelemetry-aws-resources/1.46.0-alpha/opentelemetry-aws-resources-1.46.0-alpha.pom",
+      "hash": "sha256-gJdSOoiiV2nyEPN2diUsUHffhYG7tljButkyZrO+Rzk="
+    }
+  },
+  "io.opentelemetry.contrib:opentelemetry-azure-resources:1.46.0-alpha": {
+    "opentelemetry-azure-resources-1.46.0-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/contrib/opentelemetry-azure-resources/1.46.0-alpha/opentelemetry-azure-resources-1.46.0-alpha.jar",
+      "hash": "sha256-lFgKORWb3DwRap9Mjz/4q8SqK1m+XqFGGetqgkHxX/Q="
+    },
+    "opentelemetry-azure-resources-1.46.0-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/contrib/opentelemetry-azure-resources/1.46.0-alpha/opentelemetry-azure-resources-1.46.0-alpha.module",
+      "hash": "sha256-OqyicnuEaKvbMYcZQWupsGNjzqlf7LUsq9P7YES6dlw="
+    },
+    "opentelemetry-azure-resources-1.46.0-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/contrib/opentelemetry-azure-resources/1.46.0-alpha/opentelemetry-azure-resources-1.46.0-alpha.pom",
+      "hash": "sha256-bjVMQst2CHBF9KydYCZ2vWIq82XslBrRb8qtdwT+QY8="
+    }
+  },
+  "io.opentelemetry.contrib:opentelemetry-baggage-processor:1.46.0-alpha": {
+    "opentelemetry-baggage-processor-1.46.0-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/contrib/opentelemetry-baggage-processor/1.46.0-alpha/opentelemetry-baggage-processor-1.46.0-alpha.jar",
+      "hash": "sha256-rGZF5eoKiu/ds+mG9lU6miehNfNl8QwM+/ghHdfmNP0="
+    },
+    "opentelemetry-baggage-processor-1.46.0-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/contrib/opentelemetry-baggage-processor/1.46.0-alpha/opentelemetry-baggage-processor-1.46.0-alpha.module",
+      "hash": "sha256-6iwlwP3J07B2dUO4N2w9AogfvysHxful+2Lepdl7xZ4="
+    },
+    "opentelemetry-baggage-processor-1.46.0-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/contrib/opentelemetry-baggage-processor/1.46.0-alpha/opentelemetry-baggage-processor-1.46.0-alpha.pom",
+      "hash": "sha256-Eg4ZzwghPg1IHJjnWcHMhBlUSvYg6FpCi6iZWMoatcY="
+    }
+  },
+  "io.opentelemetry.contrib:opentelemetry-cloudfoundry-resources:1.46.0-alpha": {
+    "opentelemetry-cloudfoundry-resources-1.46.0-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/contrib/opentelemetry-cloudfoundry-resources/1.46.0-alpha/opentelemetry-cloudfoundry-resources-1.46.0-alpha.jar",
+      "hash": "sha256-vVh1ylMUmCuMRdqngXJ3fS+NvzgCOv3HvJNxSc0BFoE="
+    },
+    "opentelemetry-cloudfoundry-resources-1.46.0-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/contrib/opentelemetry-cloudfoundry-resources/1.46.0-alpha/opentelemetry-cloudfoundry-resources-1.46.0-alpha.module",
+      "hash": "sha256-G4Wksse2zcXnqSqjzc5Tc7RcWC8ek+xWPItBho7y5nQ="
+    },
+    "opentelemetry-cloudfoundry-resources-1.46.0-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/contrib/opentelemetry-cloudfoundry-resources/1.46.0-alpha/opentelemetry-cloudfoundry-resources-1.46.0-alpha.pom",
+      "hash": "sha256-nXlweSRWnTGKSCe6dfDryQBQQ1qNRuJkzM50iFJ4SMY="
+    }
+  },
+  "io.opentelemetry.contrib:opentelemetry-gcp-resources:1.46.0-alpha": {
+    "opentelemetry-gcp-resources-1.46.0-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/contrib/opentelemetry-gcp-resources/1.46.0-alpha/opentelemetry-gcp-resources-1.46.0-alpha.jar",
+      "hash": "sha256-pjx0fsYtnfyCQOpGITZt4F+5IXZpkow633oPpU08R5Y="
+    },
+    "opentelemetry-gcp-resources-1.46.0-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/contrib/opentelemetry-gcp-resources/1.46.0-alpha/opentelemetry-gcp-resources-1.46.0-alpha.module",
+      "hash": "sha256-4+mMKxUNjqhbjaSPtYTXdGAX/PyefsSrmZ0vht0vees="
+    },
+    "opentelemetry-gcp-resources-1.46.0-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/contrib/opentelemetry-gcp-resources/1.46.0-alpha/opentelemetry-gcp-resources-1.46.0-alpha.pom",
+      "hash": "sha256-aRjuMdqgGeoznj5kS6elwwX1ywr2TKHd/0AqQP7Kl7o="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.17.1": {
+    "opentelemetry-instrumentation-annotations-2.17.1.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-instrumentation-annotations/2.17.1/opentelemetry-instrumentation-annotations-2.17.1.jar",
+      "hash": "sha256-xdn8iIg9gCO5DrJxMLgihJZ9ckt+cniQKqW2mKvZKYo="
+    },
+    "opentelemetry-instrumentation-annotations-2.17.1.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-instrumentation-annotations/2.17.1/opentelemetry-instrumentation-annotations-2.17.1.module",
+      "hash": "sha256-wxwlaZT8Rr2oGbThcUE5REIC1GjJIde4M3eCQG1NkFg="
+    },
+    "opentelemetry-instrumentation-annotations-2.17.1.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-instrumentation-annotations/2.17.1/opentelemetry-instrumentation-annotations-2.17.1.pom",
+      "hash": "sha256-NiziCtZ+e1fWCRmPe7m+PZdi0pGIlidDjNIrz3jRWDU="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations-support:2.17.1-alpha": {
+    "opentelemetry-instrumentation-annotations-support-2.17.1-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-instrumentation-annotations-support/2.17.1-alpha/opentelemetry-instrumentation-annotations-support-2.17.1-alpha.jar",
+      "hash": "sha256-1A2UWwV+0+jA8vwbhHmn/e38NSdZg5aFoQFPYwwRMCs="
+    },
+    "opentelemetry-instrumentation-annotations-support-2.17.1-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-instrumentation-annotations-support/2.17.1-alpha/opentelemetry-instrumentation-annotations-support-2.17.1-alpha.module",
+      "hash": "sha256-wxBfwU999DpmdMS8WVG6hdnGEQ+DtXI/9THCvemZs0k="
+    },
+    "opentelemetry-instrumentation-annotations-support-2.17.1-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-instrumentation-annotations-support/2.17.1-alpha/opentelemetry-instrumentation-annotations-support-2.17.1-alpha.pom",
+      "hash": "sha256-EDi3+sRpmMYhIJFFKLXKiR3zTasyxh8EeE1+mvBcsW8="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-instrumentation-api:2.17.1": {
+    "opentelemetry-instrumentation-api-2.17.1.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-instrumentation-api/2.17.1/opentelemetry-instrumentation-api-2.17.1.jar",
+      "hash": "sha256-SsAg7F7UrmCGCGq5mZnc0jXNl6oA2M/IsyHRIyOl9CM="
+    },
+    "opentelemetry-instrumentation-api-2.17.1.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-instrumentation-api/2.17.1/opentelemetry-instrumentation-api-2.17.1.module",
+      "hash": "sha256-nKyDfJEN2pQQrSpD/mVrsJZcOOeqLPzXZsm9s8/WL9g="
+    },
+    "opentelemetry-instrumentation-api-2.17.1.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-instrumentation-api/2.17.1/opentelemetry-instrumentation-api-2.17.1.pom",
+      "hash": "sha256-InS1KaP9e947fw7D5AuiMxatuPDHZ+6dvtz8+Nu5fNY="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-incubator:2.17.1-alpha": {
+    "opentelemetry-instrumentation-api-incubator-2.17.1-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-instrumentation-api-incubator/2.17.1-alpha/opentelemetry-instrumentation-api-incubator-2.17.1-alpha.jar",
+      "hash": "sha256-qiqbckM5hux/ZVcA4TGj27YoTjMPxBk03djOBzoMiHM="
+    },
+    "opentelemetry-instrumentation-api-incubator-2.17.1-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-instrumentation-api-incubator/2.17.1-alpha/opentelemetry-instrumentation-api-incubator-2.17.1-alpha.module",
+      "hash": "sha256-Br6mmm3fxy9h0E9v2fFwh5TlwJz1vM+k396sTfmz+pU="
+    },
+    "opentelemetry-instrumentation-api-incubator-2.17.1-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-instrumentation-api-incubator/2.17.1-alpha/opentelemetry-instrumentation-api-incubator-2.17.1-alpha.pom",
+      "hash": "sha256-/2a4PlMSK/3jyT/aE/YZRUq+vPcHr9jN70Tummg5ERs="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-jdbc:2.17.1-alpha": {
+    "opentelemetry-jdbc-2.17.1-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-jdbc/2.17.1-alpha/opentelemetry-jdbc-2.17.1-alpha.jar",
+      "hash": "sha256-D7stwS/waDFT/fdv92MN6ukfQqtSTHefO4z7gx7Au2Q="
+    },
+    "opentelemetry-jdbc-2.17.1-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-jdbc/2.17.1-alpha/opentelemetry-jdbc-2.17.1-alpha.module",
+      "hash": "sha256-7GkyeYLJlrExlzV7LAuMJ9+CykUK7OlZFabzpkNySHk="
+    },
+    "opentelemetry-jdbc-2.17.1-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-jdbc/2.17.1-alpha/opentelemetry-jdbc-2.17.1-alpha.pom",
+      "hash": "sha256-nJcJ1qMC6WRzbAH46QniDA48Utl8AZrJx0NLcPzNr+w="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-kafka-clients-2.6:2.17.1-alpha": {
+    "opentelemetry-kafka-clients-2.6-2.17.1-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-kafka-clients-2.6/2.17.1-alpha/opentelemetry-kafka-clients-2.6-2.17.1-alpha.jar",
+      "hash": "sha256-vNt3JET90gCYFzzQ/py9LFkasvCV0WAHJ3ngAzEXcQI="
+    },
+    "opentelemetry-kafka-clients-2.6-2.17.1-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-kafka-clients-2.6/2.17.1-alpha/opentelemetry-kafka-clients-2.6-2.17.1-alpha.module",
+      "hash": "sha256-f0HC6iF3g5JkmLgS8/U+4lo2VWje/IYHxgDOBcpa7vY="
+    },
+    "opentelemetry-kafka-clients-2.6-2.17.1-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-kafka-clients-2.6/2.17.1-alpha/opentelemetry-kafka-clients-2.6-2.17.1-alpha.pom",
+      "hash": "sha256-VjNAJfzONJQxYOhOm6JfbwmDZeLstdaJUq/iCd5ZI+U="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-kafka-clients-common-0.11:2.17.1-alpha": {
+    "opentelemetry-kafka-clients-common-0.11-2.17.1-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-kafka-clients-common-0.11/2.17.1-alpha/opentelemetry-kafka-clients-common-0.11-2.17.1-alpha.jar",
+      "hash": "sha256-qEMJhUds3RTczgnl135fyBkiiEKObVKmcKvOw0jtdmQ="
+    },
+    "opentelemetry-kafka-clients-common-0.11-2.17.1-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-kafka-clients-common-0.11/2.17.1-alpha/opentelemetry-kafka-clients-common-0.11-2.17.1-alpha.module",
+      "hash": "sha256-Yq+MPBSHfF1MmKK3acLIe/v0d1rTB9G9ROmhXxPOSC4="
+    },
+    "opentelemetry-kafka-clients-common-0.11-2.17.1-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-kafka-clients-common-0.11/2.17.1-alpha/opentelemetry-kafka-clients-common-0.11-2.17.1-alpha.pom",
+      "hash": "sha256-NkpRZbiwUWodnMRtz3vDXASROWTuVePbTClXyv1Kd9I="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-log4j-appender-2.17:2.17.1-alpha": {
+    "opentelemetry-log4j-appender-2.17-2.17.1-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-log4j-appender-2.17/2.17.1-alpha/opentelemetry-log4j-appender-2.17-2.17.1-alpha.jar",
+      "hash": "sha256-ylkH4o6FdgDad+S/5/EzyGzVcB2f9byvABkLc6WaBds="
+    },
+    "opentelemetry-log4j-appender-2.17-2.17.1-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-log4j-appender-2.17/2.17.1-alpha/opentelemetry-log4j-appender-2.17-2.17.1-alpha.module",
+      "hash": "sha256-GX1OMZ070cdQuTVg9slo4Dwho46IQRVXTi5CZrpGF/c="
+    },
+    "opentelemetry-log4j-appender-2.17-2.17.1-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-log4j-appender-2.17/2.17.1-alpha/opentelemetry-log4j-appender-2.17-2.17.1-alpha.pom",
+      "hash": "sha256-mqICWKI5KKeW7vxclyK2kO8+oCY241V+shecYPWVAq4="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-log4j-context-data-2.17-autoconfigure:2.17.1-alpha": {
+    "opentelemetry-log4j-context-data-2.17-autoconfigure-2.17.1-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-log4j-context-data-2.17-autoconfigure/2.17.1-alpha/opentelemetry-log4j-context-data-2.17-autoconfigure-2.17.1-alpha.jar",
+      "hash": "sha256-Tvi2cr1wpK5BcJwAEEi4UaqmbST9mBak0s55NHgds7E="
+    },
+    "opentelemetry-log4j-context-data-2.17-autoconfigure-2.17.1-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-log4j-context-data-2.17-autoconfigure/2.17.1-alpha/opentelemetry-log4j-context-data-2.17-autoconfigure-2.17.1-alpha.module",
+      "hash": "sha256-zNbv8BM6EDOQ1PnRQCb8TPDt6W7gvxunL6vVsOzVGFo="
+    },
+    "opentelemetry-log4j-context-data-2.17-autoconfigure-2.17.1-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-log4j-context-data-2.17-autoconfigure/2.17.1-alpha/opentelemetry-log4j-context-data-2.17-autoconfigure-2.17.1-alpha.pom",
+      "hash": "sha256-WyRt5ExoBzq89eAayO5Koto+zhVMLid6QC35ylWl+ww="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-logback-appender-1.0:2.17.1-alpha": {
+    "opentelemetry-logback-appender-1.0-2.17.1-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-logback-appender-1.0/2.17.1-alpha/opentelemetry-logback-appender-1.0-2.17.1-alpha.jar",
+      "hash": "sha256-axP/TN66tchh4ywErmUibAXGCDh2lScucht8DwCaZGY="
+    },
+    "opentelemetry-logback-appender-1.0-2.17.1-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-logback-appender-1.0/2.17.1-alpha/opentelemetry-logback-appender-1.0-2.17.1-alpha.module",
+      "hash": "sha256-AUzdCXDZ/DQdxxDOd74woIKnPsadGxremaCz8V4xWc8="
+    },
+    "opentelemetry-logback-appender-1.0-2.17.1-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-logback-appender-1.0/2.17.1-alpha/opentelemetry-logback-appender-1.0-2.17.1-alpha.pom",
+      "hash": "sha256-aamIyCFe6oYWvh3/y7Kj7doJKaUPF4KUnUZ+g5xpOzg="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-logback-mdc-1.0:2.17.1-alpha": {
+    "opentelemetry-logback-mdc-1.0-2.17.1-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-logback-mdc-1.0/2.17.1-alpha/opentelemetry-logback-mdc-1.0-2.17.1-alpha.jar",
+      "hash": "sha256-UVRysGCDQZwemrmKXvxIeW56knuFmmVaodfZxN6JhFQ="
+    },
+    "opentelemetry-logback-mdc-1.0-2.17.1-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-logback-mdc-1.0/2.17.1-alpha/opentelemetry-logback-mdc-1.0-2.17.1-alpha.module",
+      "hash": "sha256-UUVt9ejZFYmpwXP8FhgavUaLiOAm90IVCbH9/hvRyLk="
+    },
+    "opentelemetry-logback-mdc-1.0-2.17.1-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-logback-mdc-1.0/2.17.1-alpha/opentelemetry-logback-mdc-1.0-2.17.1-alpha.pom",
+      "hash": "sha256-0Hh3qvDJFGJ5RI/YwtNGnGqFBNtKENoe5r/p3EtSr+Q="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-micrometer-1.5:2.17.1-alpha": {
+    "opentelemetry-micrometer-1.5-2.17.1-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-micrometer-1.5/2.17.1-alpha/opentelemetry-micrometer-1.5-2.17.1-alpha.jar",
+      "hash": "sha256-GxukiT3ONaGr8se2iTZ44lgCyepyxvDZKp4strtjij0="
+    },
+    "opentelemetry-micrometer-1.5-2.17.1-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-micrometer-1.5/2.17.1-alpha/opentelemetry-micrometer-1.5-2.17.1-alpha.module",
+      "hash": "sha256-1nVJkln5OR53hDp7KNzRFdMiLEQPT3TIB+G/ACnuP3Q="
+    },
+    "opentelemetry-micrometer-1.5-2.17.1-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-micrometer-1.5/2.17.1-alpha/opentelemetry-micrometer-1.5-2.17.1-alpha.pom",
+      "hash": "sha256-EyCUKLgkIEZofw5tUJVJaRF/xUjhF9B/QdB0WJtx0Oo="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-mongo-3.1:2.17.1-alpha": {
+    "opentelemetry-mongo-3.1-2.17.1-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-mongo-3.1/2.17.1-alpha/opentelemetry-mongo-3.1-2.17.1-alpha.jar",
+      "hash": "sha256-tyWO1NGRiKsNUXGF0dJxwM2JaDX7MehyAbFi0tGhaVw="
+    },
+    "opentelemetry-mongo-3.1-2.17.1-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-mongo-3.1/2.17.1-alpha/opentelemetry-mongo-3.1-2.17.1-alpha.module",
+      "hash": "sha256-NQPxc0S25gIbjymo96F/fegJ1XM7Pe9jXjVf37JzbLQ="
+    },
+    "opentelemetry-mongo-3.1-2.17.1-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-mongo-3.1/2.17.1-alpha/opentelemetry-mongo-3.1-2.17.1-alpha.pom",
+      "hash": "sha256-IpMSPq9vanKnOoWM1TWuLLhJ3WAGch6J2UQfkAtCjME="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-reactor-3.1:2.17.1-alpha": {
+    "opentelemetry-reactor-3.1-2.17.1-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-reactor-3.1/2.17.1-alpha/opentelemetry-reactor-3.1-2.17.1-alpha.jar",
+      "hash": "sha256-ctX1BlBWMshRGcDkDN/rD1eENQ6w8USUCqv3Cr9qT+0="
+    },
+    "opentelemetry-reactor-3.1-2.17.1-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-reactor-3.1/2.17.1-alpha/opentelemetry-reactor-3.1-2.17.1-alpha.module",
+      "hash": "sha256-622wfyn8b/g9Mn3exDYvi7adeQ0tvrIk/gDJo/h3j28="
+    },
+    "opentelemetry-reactor-3.1-2.17.1-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-reactor-3.1/2.17.1-alpha/opentelemetry-reactor-3.1-2.17.1-alpha.pom",
+      "hash": "sha256-5LOPVKLDuP0hMT/NZMX0nxC1L18ay3dOxSJdgKZfqoA="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-resources:2.17.1-alpha": {
+    "opentelemetry-resources-2.17.1-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-resources/2.17.1-alpha/opentelemetry-resources-2.17.1-alpha.jar",
+      "hash": "sha256-fTISizhgmH+lyhgqRlLyx75whZ1RfI6zrzsLtxYfdJY="
+    },
+    "opentelemetry-resources-2.17.1-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-resources/2.17.1-alpha/opentelemetry-resources-2.17.1-alpha.module",
+      "hash": "sha256-9HLm14hIdFzybhCqT9ZAx+8u6nS+jl7ZrsA57Ox2FB8="
+    },
+    "opentelemetry-resources-2.17.1-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-resources/2.17.1-alpha/opentelemetry-resources-2.17.1-alpha.pom",
+      "hash": "sha256-DqL9iVcmWDeym8ZSgkVEaXRfV6ODERTTMzLZg3YViqA="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-runtime-telemetry-java17:2.17.1-alpha": {
+    "opentelemetry-runtime-telemetry-java17-2.17.1-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-runtime-telemetry-java17/2.17.1-alpha/opentelemetry-runtime-telemetry-java17-2.17.1-alpha.jar",
+      "hash": "sha256-Lr5yFmTziLKSc4BWjcYh6rvWbhW2UlxN8N+yvn6XH3I="
+    },
+    "opentelemetry-runtime-telemetry-java17-2.17.1-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-runtime-telemetry-java17/2.17.1-alpha/opentelemetry-runtime-telemetry-java17-2.17.1-alpha.module",
+      "hash": "sha256-Ltz7+01Ouvu2ZCvXbcq4DSoij7BGyxkrFgXyy+xUMBo="
+    },
+    "opentelemetry-runtime-telemetry-java17-2.17.1-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-runtime-telemetry-java17/2.17.1-alpha/opentelemetry-runtime-telemetry-java17-2.17.1-alpha.pom",
+      "hash": "sha256-JkkXjXdTn0e6s92gnG6mU3dlQnom1sMW+osN5obyYNU="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-runtime-telemetry-java8:2.17.1-alpha": {
+    "opentelemetry-runtime-telemetry-java8-2.17.1-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-runtime-telemetry-java8/2.17.1-alpha/opentelemetry-runtime-telemetry-java8-2.17.1-alpha.jar",
+      "hash": "sha256-hQoETsLlbeRkPL4IQt/YC8Vp0fnvxAKeQVEzoi2KRoI="
+    },
+    "opentelemetry-runtime-telemetry-java8-2.17.1-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-runtime-telemetry-java8/2.17.1-alpha/opentelemetry-runtime-telemetry-java8-2.17.1-alpha.module",
+      "hash": "sha256-aWAkMx5JAYU0cdLuCBQmiRNBCgsxrVzXqdFIVvlbhsg="
+    },
+    "opentelemetry-runtime-telemetry-java8-2.17.1-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-runtime-telemetry-java8/2.17.1-alpha/opentelemetry-runtime-telemetry-java8-2.17.1-alpha.pom",
+      "hash": "sha256-Z9yixogNJR2uMqw+bdlYOy/uZbeRXbA7+bEDWVZkmgg="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-sdk-autoconfigure-support:2.17.1-alpha": {
+    "opentelemetry-sdk-autoconfigure-support-2.17.1-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-sdk-autoconfigure-support/2.17.1-alpha/opentelemetry-sdk-autoconfigure-support-2.17.1-alpha.jar",
+      "hash": "sha256-lgADqHH5DPTYVRkXA05nfCdTF8HnJLIZ69gRPZxiBPg="
+    },
+    "opentelemetry-sdk-autoconfigure-support-2.17.1-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-sdk-autoconfigure-support/2.17.1-alpha/opentelemetry-sdk-autoconfigure-support-2.17.1-alpha.module",
+      "hash": "sha256-/Bo20VOViRZvwy0KmGzww283yFHuDT0kQSx4uqsfIiE="
+    },
+    "opentelemetry-sdk-autoconfigure-support-2.17.1-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-sdk-autoconfigure-support/2.17.1-alpha/opentelemetry-sdk-autoconfigure-support-2.17.1-alpha.pom",
+      "hash": "sha256-9HP15Nhx8PKSx//MJoI2wS3+mIdeGYP7u8jLyzdHTIE="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-spring-boot-autoconfigure:2.17.1": {
+    "opentelemetry-spring-boot-autoconfigure-2.17.1.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-spring-boot-autoconfigure/2.17.1/opentelemetry-spring-boot-autoconfigure-2.17.1.jar",
+      "hash": "sha256-DpTAYSrPaWGYxiGTQP7iSCpNoX+tH+GyPxuhDS5rdsw="
+    },
+    "opentelemetry-spring-boot-autoconfigure-2.17.1.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-spring-boot-autoconfigure/2.17.1/opentelemetry-spring-boot-autoconfigure-2.17.1.module",
+      "hash": "sha256-rkKfbZeNRabkMGCRqesD5nJWAVEc3hyS0EFXDofcCSU="
+    },
+    "opentelemetry-spring-boot-autoconfigure-2.17.1.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-spring-boot-autoconfigure/2.17.1/opentelemetry-spring-boot-autoconfigure-2.17.1.pom",
+      "hash": "sha256-LnZ4QeuNu743hhWoRzCUn3+TNEnsUspzDCLZjFt37kk="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-spring-boot-starter:2.17.1": {
+    "opentelemetry-spring-boot-starter-2.17.1.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-spring-boot-starter/2.17.1/opentelemetry-spring-boot-starter-2.17.1.jar",
+      "hash": "sha256-q+mGTcnnUc3Epd+kjKcMsT74Ps90W17H/Txg0WlUHRA="
+    },
+    "opentelemetry-spring-boot-starter-2.17.1.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-spring-boot-starter/2.17.1/opentelemetry-spring-boot-starter-2.17.1.module",
+      "hash": "sha256-yL8kx9cR4VDl00UT8r2xYXp6eiEsd59mMUHe7BVsFm8="
+    },
+    "opentelemetry-spring-boot-starter-2.17.1.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-spring-boot-starter/2.17.1/opentelemetry-spring-boot-starter-2.17.1.pom",
+      "hash": "sha256-SQGuLA6diWIjHRiMXlzVZc/xG0mwXsgxQ/wEBCkjBXs="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-spring-kafka-2.7:2.17.1-alpha": {
+    "opentelemetry-spring-kafka-2.7-2.17.1-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-spring-kafka-2.7/2.17.1-alpha/opentelemetry-spring-kafka-2.7-2.17.1-alpha.jar",
+      "hash": "sha256-hY63aE2lc8Ov4hle4RNGKWRdxF+fUrvC32Qy609aYCE="
+    },
+    "opentelemetry-spring-kafka-2.7-2.17.1-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-spring-kafka-2.7/2.17.1-alpha/opentelemetry-spring-kafka-2.7-2.17.1-alpha.module",
+      "hash": "sha256-edUonL+8Xo9MVnGQ3ERfIstQV7XuaP8pXC2PAhlAwLc="
+    },
+    "opentelemetry-spring-kafka-2.7-2.17.1-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-spring-kafka-2.7/2.17.1-alpha/opentelemetry-spring-kafka-2.7-2.17.1-alpha.pom",
+      "hash": "sha256-RjhvcN+nwVivooTh9k7LMMEYhHKe756Ede6Sc51IAuI="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-spring-web-3.1:2.17.1-alpha": {
+    "opentelemetry-spring-web-3.1-2.17.1-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-spring-web-3.1/2.17.1-alpha/opentelemetry-spring-web-3.1-2.17.1-alpha.jar",
+      "hash": "sha256-ZyUzQ0X7S3nJgZlPBhn7YfSV18yExTcpz3OioWpj7vg="
+    },
+    "opentelemetry-spring-web-3.1-2.17.1-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-spring-web-3.1/2.17.1-alpha/opentelemetry-spring-web-3.1-2.17.1-alpha.module",
+      "hash": "sha256-EC38L0aX6DPEQab3f3rrKtvCVrshjixqxVwEBFZtj6c="
+    },
+    "opentelemetry-spring-web-3.1-2.17.1-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-spring-web-3.1/2.17.1-alpha/opentelemetry-spring-web-3.1-2.17.1-alpha.pom",
+      "hash": "sha256-deRLWlHp1WAUsLqC/6bExWcyWScPomFy+KZGb9d3tb8="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-spring-webflux-5.3:2.17.1-alpha": {
+    "opentelemetry-spring-webflux-5.3-2.17.1-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-spring-webflux-5.3/2.17.1-alpha/opentelemetry-spring-webflux-5.3-2.17.1-alpha.jar",
+      "hash": "sha256-XyfL73ZUmetcH7n6mx1Ot5uGSqCB2zI6xPy+Tme0CLw="
+    },
+    "opentelemetry-spring-webflux-5.3-2.17.1-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-spring-webflux-5.3/2.17.1-alpha/opentelemetry-spring-webflux-5.3-2.17.1-alpha.module",
+      "hash": "sha256-aRprLu5BaaUl1Ma6r92XpUVzmzbaX4AgfRCQjXeoczE="
+    },
+    "opentelemetry-spring-webflux-5.3-2.17.1-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-spring-webflux-5.3/2.17.1-alpha/opentelemetry-spring-webflux-5.3-2.17.1-alpha.pom",
+      "hash": "sha256-FMBdBj6n806RQGimLOJKgL3awqAD6Tl1fvZVFbMeet4="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-spring-webmvc-5.3:2.17.1-alpha": {
+    "opentelemetry-spring-webmvc-5.3-2.17.1-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-spring-webmvc-5.3/2.17.1-alpha/opentelemetry-spring-webmvc-5.3-2.17.1-alpha.jar",
+      "hash": "sha256-3MVgtYMXRrdsLkgsAWAytIVkz0LUsZBt1yV9Y/ahKjE="
+    },
+    "opentelemetry-spring-webmvc-5.3-2.17.1-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-spring-webmvc-5.3/2.17.1-alpha/opentelemetry-spring-webmvc-5.3-2.17.1-alpha.module",
+      "hash": "sha256-6rQ/TM7iiggtdtOwD9tKec6jBUuAGfz1FQ1HQ6x6w3U="
+    },
+    "opentelemetry-spring-webmvc-5.3-2.17.1-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-spring-webmvc-5.3/2.17.1-alpha/opentelemetry-spring-webmvc-5.3-2.17.1-alpha.pom",
+      "hash": "sha256-I5jRFQ7PBa5XAz3oeMFzr/PsC7szoL9SRo9axsAH6Ig="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-spring-webmvc-6.0:2.17.1-alpha": {
+    "opentelemetry-spring-webmvc-6.0-2.17.1-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-spring-webmvc-6.0/2.17.1-alpha/opentelemetry-spring-webmvc-6.0-2.17.1-alpha.jar",
+      "hash": "sha256-eCI/vzxmhaUdMCcGFEAf6dspHlCYCseCDX6VT5dQu90="
+    },
+    "opentelemetry-spring-webmvc-6.0-2.17.1-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-spring-webmvc-6.0/2.17.1-alpha/opentelemetry-spring-webmvc-6.0-2.17.1-alpha.module",
+      "hash": "sha256-e34kyKvjXyal8EEsJ/Z78YEbU54rD6492fcDSY0VcmE="
+    },
+    "opentelemetry-spring-webmvc-6.0-2.17.1-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-spring-webmvc-6.0/2.17.1-alpha/opentelemetry-spring-webmvc-6.0-2.17.1-alpha.pom",
+      "hash": "sha256-9l8UmNT+8PG9zdDpNBFn06ibfU8bXXM7HOa4w47GY9o="
+    }
+  },
+  "io.opentelemetry.semconv:opentelemetry-semconv:1.34.0": {
+    "opentelemetry-semconv-1.34.0.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/semconv/opentelemetry-semconv/1.34.0/opentelemetry-semconv-1.34.0.jar",
+      "hash": "sha256-FrMWzi8494OOLWVidOSIYMbUdHz1ca14Ed0wLyzZdoE="
+    },
+    "opentelemetry-semconv-1.34.0.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/semconv/opentelemetry-semconv/1.34.0/opentelemetry-semconv-1.34.0.module",
+      "hash": "sha256-8hJW49+rNgTrdi//zrAnsjStMDpRWWiweUaCC9z/5MI="
+    },
+    "opentelemetry-semconv-1.34.0.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/semconv/opentelemetry-semconv/1.34.0/opentelemetry-semconv-1.34.0.pom",
+      "hash": "sha256-AhXPGN46t56iaXr8ndSTwF6iQpXuQ3pWO8JDl8v9fV8="
+    }
+  },
+  "io.opentelemetry.semconv:opentelemetry-semconv-incubating:1.34.0-alpha": {
+    "opentelemetry-semconv-incubating-1.34.0-alpha.jar": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/semconv/opentelemetry-semconv-incubating/1.34.0-alpha/opentelemetry-semconv-incubating-1.34.0-alpha.jar",
+      "hash": "sha256-2ZtmjrAv4JQizkNtvkUa1LUKx0qTnkbFbGf5P+Nv04g="
+    },
+    "opentelemetry-semconv-incubating-1.34.0-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/semconv/opentelemetry-semconv-incubating/1.34.0-alpha/opentelemetry-semconv-incubating-1.34.0-alpha.module",
+      "hash": "sha256-AfIX++0M8Q1G/WezX+uEownq+5i9Z7qt2VVxcAS9B+Y="
+    },
+    "opentelemetry-semconv-incubating-1.34.0-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/semconv/opentelemetry-semconv-incubating/1.34.0-alpha/opentelemetry-semconv-incubating-1.34.0-alpha.pom",
+      "hash": "sha256-AmNrW3l9gYwqnP8OzAA8Wua9RN//XCPjf/NlaUsH+J4="
     }
   },
   "io.projectreactor:reactor-bom:2024.0.6": {
@@ -1591,6 +2327,16 @@
     "jakarta.xml.bind-api-parent-2.3.3.pom": {
       "url": "https://plugins.gradle.org/m2/jakarta/xml/bind/jakarta.xml.bind-api-parent/2.3.3/jakarta.xml.bind-api-parent-2.3.3.pom",
       "hash": "sha256-KA2lMXYBZtRBI2jQ3Yme9K6/0KfYK/IzUC4phWgGrak="
+    }
+  },
+  "javax.validation:validation-api:2.0.1.Final": {
+    "validation-api-2.0.1.Final.jar": {
+      "url": "https://plugins.gradle.org/m2/javax/validation/validation-api/2.0.1.Final/validation-api-2.0.1.Final.jar",
+      "hash": "sha256-mHO0bfGDPJ7o9bwf9oUzdRFdrdiJe8taDf+1hIg17mw="
+    },
+    "validation-api-2.0.1.Final.pom": {
+      "url": "https://plugins.gradle.org/m2/javax/validation/validation-api/2.0.1.Final/validation-api-2.0.1.Final.pom",
+      "hash": "sha256-q7nT5k03c0RnMqMO6gsbWmOIi7FDMdKioY8zhdGkw4k="
     }
   },
   "javax.validation:validation-api:1.1.0.Final": {
@@ -2291,6 +3037,16 @@
     "hamcrest-core-3.0.pom": {
       "url": "https://plugins.gradle.org/m2/org/hamcrest/hamcrest-core/3.0/hamcrest-core-3.0.pom",
       "hash": "sha256-1kyZW1baUn0+fhhmuRkNmL0QuYanfYET7EVQeZ44WqQ="
+    }
+  },
+  "org.hdrhistogram:HdrHistogram:2.2.2": {
+    "HdrHistogram-2.2.2.jar": {
+      "url": "https://plugins.gradle.org/m2/org/hdrhistogram/HdrHistogram/2.2.2/HdrHistogram-2.2.2.jar",
+      "hash": "sha256-ItHUMWxOwTpotVnpjIJW1pBxWTcx2pYTZkD4ZPoU+tg="
+    },
+    "HdrHistogram-2.2.2.pom": {
+      "url": "https://plugins.gradle.org/m2/org/hdrhistogram/HdrHistogram/2.2.2/HdrHistogram-2.2.2.pom",
+      "hash": "sha256-JiM0ZTf3BvIgWbkRcgnLBoGwJBFFs1x10sXj7EGCZ2Y="
     }
   },
   "org.hibernate.validator:hibernate-validator:8.0.2.Final": {
@@ -3265,6 +4021,16 @@
       "hash": "sha256-fH/9bHyEzSjxSHEDEI/FvkTi0x3RYO10RGQAQ8A3TFM="
     }
   },
+  "org.latencyutils:LatencyUtils:2.0.3": {
+    "LatencyUtils-2.0.3.jar": {
+      "url": "https://plugins.gradle.org/m2/org/latencyutils/LatencyUtils/2.0.3/LatencyUtils-2.0.3.jar",
+      "hash": "sha256-oyqf+gay9OAcU2D4+d97xdlFSl03PNjzYTR/paVxZew="
+    },
+    "LatencyUtils-2.0.3.pom": {
+      "url": "https://plugins.gradle.org/m2/org/latencyutils/LatencyUtils/2.0.3/LatencyUtils-2.0.3.pom",
+      "hash": "sha256-jwwBU3kLhK9sCTFtVpvRBu4PAIuTk+gLpHj1v2Vziig="
+    }
+  },
   "org.mapstruct:mapstruct:1.5.5.Final": {
     "mapstruct-1.5.5.Final.jar": {
       "url": "https://plugins.gradle.org/m2/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar",
@@ -3543,6 +4309,16 @@
       "hash": "sha256-xWuAoKa+oqBGPnDQiSrjOKnlB+SGdnpSBFNAmBIFjRs="
     }
   },
+  "org.snakeyaml:snakeyaml-engine:2.9": {
+    "snakeyaml-engine-2.9.jar": {
+      "url": "https://plugins.gradle.org/m2/org/snakeyaml/snakeyaml-engine/2.9/snakeyaml-engine-2.9.jar",
+      "hash": "sha256-L3qVdGG21wwABeLDW3ihyXvvbERnBMDuk5POmOSVi6g="
+    },
+    "snakeyaml-engine-2.9.pom": {
+      "url": "https://plugins.gradle.org/m2/org/snakeyaml/snakeyaml-engine/2.9/snakeyaml-engine-2.9.pom",
+      "hash": "sha256-9toG5chpkBVwSG0VOlKn/y1iHc93AIG5MkUxCEUl9to="
+    }
+  },
   "org.sonatype.oss:oss-parent:9": {
     "oss-parent-9.pom": {
       "url": "https://plugins.gradle.org/m2/org/sonatype/oss/oss-parent/9/oss-parent-9.pom",
@@ -3743,6 +4519,34 @@
       "hash": "sha256-rLw1KNOuP5WarFF4E7O8OfLwphpUQYhECRzyzpTj5ZE="
     }
   },
+  "org.springframework.boot:spring-boot-actuator:3.5.0": {
+    "spring-boot-actuator-3.5.0.jar": {
+      "url": "https://plugins.gradle.org/m2/org/springframework/boot/spring-boot-actuator/3.5.0/spring-boot-actuator-3.5.0.jar",
+      "hash": "sha256-psZumSFuoiV4LFwpaB86BVIArrDkkb4CkRBLzYDb2ok="
+    },
+    "spring-boot-actuator-3.5.0.module": {
+      "url": "https://plugins.gradle.org/m2/org/springframework/boot/spring-boot-actuator/3.5.0/spring-boot-actuator-3.5.0.module",
+      "hash": "sha256-wF4Qs4Mt46JaKwC26Gzikqf0nGoY7sKsaybu7eVgMP8="
+    },
+    "spring-boot-actuator-3.5.0.pom": {
+      "url": "https://plugins.gradle.org/m2/org/springframework/boot/spring-boot-actuator/3.5.0/spring-boot-actuator-3.5.0.pom",
+      "hash": "sha256-MBWSdzvhCIK5rrCYAXSedL/j+IP0GgfloxUlzijRe64="
+    }
+  },
+  "org.springframework.boot:spring-boot-actuator-autoconfigure:3.5.0": {
+    "spring-boot-actuator-autoconfigure-3.5.0.jar": {
+      "url": "https://plugins.gradle.org/m2/org/springframework/boot/spring-boot-actuator-autoconfigure/3.5.0/spring-boot-actuator-autoconfigure-3.5.0.jar",
+      "hash": "sha256-S3YiHRBwop4FsTAZvPZWJZa0SG/z/KY3R2yzYfCCtYk="
+    },
+    "spring-boot-actuator-autoconfigure-3.5.0.module": {
+      "url": "https://plugins.gradle.org/m2/org/springframework/boot/spring-boot-actuator-autoconfigure/3.5.0/spring-boot-actuator-autoconfigure-3.5.0.module",
+      "hash": "sha256-LStusbAeVWB1N3L78H17DxiG7MgxSgxljWPmaFz9GwA="
+    },
+    "spring-boot-actuator-autoconfigure-3.5.0.pom": {
+      "url": "https://plugins.gradle.org/m2/org/springframework/boot/spring-boot-actuator-autoconfigure/3.5.0/spring-boot-actuator-autoconfigure-3.5.0.pom",
+      "hash": "sha256-MH6LumowLh1dGDA6Lex/WqtysC4v2titRLW5y3WQ+1I="
+    }
+  },
   "org.springframework.boot:spring-boot-autoconfigure:3.5.0": {
     "spring-boot-autoconfigure-3.5.0.jar": {
       "url": "https://plugins.gradle.org/m2/org/springframework/boot/spring-boot-autoconfigure/3.5.0/spring-boot-autoconfigure-3.5.0.jar",
@@ -3817,6 +4621,30 @@
     "spring-boot-starter-3.5.0.pom": {
       "url": "https://plugins.gradle.org/m2/org/springframework/boot/spring-boot-starter/3.5.0/spring-boot-starter-3.5.0.pom",
       "hash": "sha256-fO2dmQGPJjY4uDT26RxuTEKzhZqstYqWq0obWY43G7M="
+    }
+  },
+  "org.springframework.boot:spring-boot-starter-actuator:3.5.3": {
+    "spring-boot-starter-actuator-3.5.3.jar": {
+      "url": "https://plugins.gradle.org/m2/org/springframework/boot/spring-boot-starter-actuator/3.5.3/spring-boot-starter-actuator-3.5.3.jar",
+      "hash": "sha256-lRW7FdSaV/eFgKKGVXDaHCBudofOeblymK/rSwkyYQA="
+    },
+    "spring-boot-starter-actuator-3.5.3.module": {
+      "url": "https://plugins.gradle.org/m2/org/springframework/boot/spring-boot-starter-actuator/3.5.3/spring-boot-starter-actuator-3.5.3.module",
+      "hash": "sha256-ZTeVvwmfHOUBkoS3uQsTbEkSuz20NxYDeJKLxL+Nefs="
+    },
+    "spring-boot-starter-actuator-3.5.3.pom": {
+      "url": "https://plugins.gradle.org/m2/org/springframework/boot/spring-boot-starter-actuator/3.5.3/spring-boot-starter-actuator-3.5.3.pom",
+      "hash": "sha256-ZbRQdl2y908AvzYJDAkfpzhP3NzA1T1HDJyI1IwQdLA="
+    }
+  },
+  "org.springframework.boot:spring-boot-starter-actuator:3.5.0": {
+    "spring-boot-starter-actuator-3.5.0.module": {
+      "url": "https://plugins.gradle.org/m2/org/springframework/boot/spring-boot-starter-actuator/3.5.0/spring-boot-starter-actuator-3.5.0.module",
+      "hash": "sha256-7WqIGbq5R0sQj06xqXCSWqFgUGOZb4gAHhItoixCWTk="
+    },
+    "spring-boot-starter-actuator-3.5.0.pom": {
+      "url": "https://plugins.gradle.org/m2/org/springframework/boot/spring-boot-starter-actuator/3.5.0/spring-boot-starter-actuator-3.5.0.pom",
+      "hash": "sha256-J2SSR5UHF2Xwbyzc6aitok/X9xwiQQNQ0xCHMhmAWTo="
     }
   },
   "org.springframework.boot:spring-boot-starter-json:3.5.0": {

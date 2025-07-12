@@ -2,6 +2,7 @@ package com.nixops.embeddingbridge.services
 
 import com.nixops.embeddingbridge.EmbeddingCandidate
 import com.nixops.embeddingbridge.mapper.StudyProgramMapper
+import com.nixops.embeddingbridge.metrics.EmbeddingMetrics
 import com.nixops.openapi.genai.api.EmbeddingApi
 import com.nixops.openapi.genai.model.StudyProgram
 import com.nixops.openapi.scraper.api.DefaultApi
@@ -17,20 +18,21 @@ private val logger = KotlinLogging.logger {}
 class EmbeddingBridgeService(
     private val embeddingApiClient: EmbeddingApi,
     private val scraperApiClient: DefaultApi,
-    private val studyProgramMapper: StudyProgramMapper
+    private val studyProgramMapper: StudyProgramMapper,
+    //
+    private val embeddingMetrics: EmbeddingMetrics
 ) {
   fun fetchEmbeddingCandidates(): List<EmbeddingCandidate> {
     val finishedStudyPrograms =
         try {
-
           scraperApiClient.getFinishedStudyPrograms()
         } catch (e: ConnectException) {
           logger.error(e) { "Failed to connect to Scraper" }
           return listOf()
         }
+
     val embeddedStudyPrograms =
         try {
-
           embeddingApiClient.fetchStudyPrograms()
         } catch (e: ConnectException) {
           logger.error(e) { "Failed to connect to GenAI" }
@@ -97,8 +99,14 @@ class EmbeddingBridgeService(
   }
 
   fun embed(studyProgram: StudyProgram) {
-    embeddingApiClient.createStudyProgram(studyProgram)
-    waitForEmbedding(studyProgram)
+    val studyId = studyProgram.studyId ?: return
+    val programName = studyProgram.programName ?: return
+    val degreeTypeName = studyProgram.degreeTypeName ?: return
+
+    embeddingMetrics.recordEmbedding(studyId, programName, degreeTypeName) {
+      embeddingApiClient.createStudyProgram(studyProgram)
+      waitForEmbedding(studyProgram)
+    }
   }
 
   fun checkEmbedding(studyProgram: StudyProgram): Boolean {

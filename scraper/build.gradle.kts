@@ -44,6 +44,11 @@ dependencies {
   implementation("io.swagger.core.v3:swagger-annotations:2.2.20")
   implementation("jakarta.validation:jakarta.validation-api:3.0.2")
   implementation("org.hibernate.validator:hibernate-validator:8.0.0.Final")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
+
+  // OpenTelemetry
+  implementation("io.opentelemetry.instrumentation:opentelemetry-spring-boot-starter:2.17.1")
+  implementation("org.springframework.boot:spring-boot-starter-actuator:3.5.3")
 
   // Testing
   testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -52,9 +57,6 @@ dependencies {
   testImplementation("io.kotest:kotest-runner-junit5:5.7.2")
   testImplementation("io.kotest:kotest-assertions-core:5.7.2")
   testImplementation("io.kotest:kotest-framework-engine:5.7.2")
-  testImplementation("org.mockito:mockito-core:5.18.0")
-  testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
-  mockitoAgent("org.mockito:mockito-core:5.18.0") { isTransitive = false }
   testImplementation("io.mockk:mockk:1.14.4")
   testImplementation("com.h2database:h2:2.2.224")
 }
@@ -93,14 +95,10 @@ tasks.openApiGenerate {
 
 tasks.named("compileKotlin") { dependsOn("openApiGenerate") }
 
-tasks.test {
-  useJUnitPlatform { excludeTags("remoteApi") }
-  jvmArgs("-javaagent:${mockitoAgent.asPath}")
-}
+tasks.test { useJUnitPlatform { excludeTags("remoteApi") } }
 
 tasks.register<Test>("remoteApiTest") {
   useJUnitPlatform { includeTags("remoteApi") }
   testClassesDirs = sourceSets.test.get().output.classesDirs
   classpath = sourceSets.test.get().runtimeClasspath
-  jvmArgs("-javaagent:${mockitoAgent.asPath}")
 }
