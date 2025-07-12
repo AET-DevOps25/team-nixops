@@ -57,12 +57,6 @@ sourceSets {
     kotlin {
       srcDir(
           project.layout.buildDirectory
-              .dir("generated/openapi-genai/src/main/kotlin")
-              .get()
-              .asFile
-              .path)
-      srcDir(
-          project.layout.buildDirectory
               .dir("generated/openapi-scraper/src/main/kotlin")
               .get()
               .asFile
@@ -76,38 +70,6 @@ sourceSets {
     }
   }
 }
-
-tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>(
-    "openApiGenerateGenAI") {
-      generatorName.set("kotlin")
-
-      val externalSpec = project.rootDir.resolve("../genai/openapi.yml")
-      val internalSpec = project.file("genai/openapi.yml")
-
-      val inputSpecPath =
-          if (externalSpec.exists()) {
-            externalSpec.absolutePath
-          } else if (internalSpec.exists()) {
-            internalSpec.absolutePath
-          } else {
-            throw GradleException(
-                "Could not find openapi.yml in either external or internal locations.")
-          }
-
-      inputSpec.set(inputSpecPath)
-
-      outputDir.set(project.layout.buildDirectory.dir("generated/openapi-genai").get().asFile.path)
-      packageName.set("com.nixops.openapi.genai")
-      apiPackage.set("com.nixops.openapi.genai.api")
-      modelPackage.set("com.nixops.openapi.genai.model")
-      configOptions.set(
-          mapOf(
-              "library" to "jvm-okhttp4",
-              "dateLibrary" to "java8",
-              "serializationLibrary" to "jackson",
-              "testFramework" to "kotest",
-              "modelMutable" to "true"))
-    }
 
 tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>(
     "openApiGenerateScraper") {
@@ -163,5 +125,5 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>(
     }
 
 tasks.named("compileKotlin") {
-  dependsOn("openApiGenerateGenAI", "openApiGenerateScraper", "openApiGenerateScheduleManager")
+  dependsOn("openApiGenerateScraper", "openApiGenerateScheduleManager")
 }

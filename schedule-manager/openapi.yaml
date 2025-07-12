@@ -11,6 +11,39 @@ servers:
     description: Local server
 
 paths:
+  /schedule/{schedule_id}/init:
+    post:
+      summary: Initialize a schedule with given studyId and semester
+      operationId: initSchedule
+      parameters:
+        - name: schedule_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - studyId
+                - semester
+              properties:
+                studyId:
+                  type: integer
+                  format: int64
+                  example: 123456
+                semester:
+                  type: string
+                  example: "2025S"
+      responses:
+        '204':
+          description: Schedule initialized
+        '400':
+          description: Invalid input
+
   /schedule/{schedule_id}/modules:
     get:
       summary: Get all module codes in a schedule
@@ -105,9 +138,9 @@ components:
     Appointment:
       type: object
       properties:
-        appointment_id:
-          type: integer
-          example: 1
+        appointmentType:
+          type: string
+          enum: ["lecture", "tutorial"]
         moduleCode:
           type: string
           example: "mod-abc-123"

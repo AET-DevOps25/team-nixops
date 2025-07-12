@@ -87,6 +87,9 @@
           embedding-bridge = pkgs.callPackage ./embedding-bridge {
             inherit (inputs) gradle2nix;
           };
+          schedule-manager = pkgs.callPackage ./schedule-manager {
+            inherit (inputs) gradle2nix;
+          };
         in {
           checks = let
             nixosMachines = import ./nix/checks {inherit pkgs self;};
@@ -103,6 +106,7 @@
             client = pkgs.callPackage ./client {};
             scraper = scraper.packages.scraper;
             embedding-bridge = embedding-bridge.packages.embedding-bridge;
+            schedule-manager = schedule-manager.packages.schedule-manager;
           };
         };
       }
