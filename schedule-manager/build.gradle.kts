@@ -135,4 +135,26 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>(
               "modelMutable" to "true"))
     }
 
-tasks.named("compileKotlin") { dependsOn("openApiGenerateGenAI", "openApiGenerateScraper") }
+tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>(
+    "openApiGenerateScheduleManager") {
+      generatorName.set("kotlin-spring")
+      inputSpec.set(project.layout.projectDirectory.file("openapi.yaml").asFile.path)
+      outputDir.set(
+          project.layout.buildDirectory.dir("generated/schedule-manager").get().asFile.path)
+      packageName.set("com.nixops.openapi.schedulemanager")
+      apiPackage.set("com.nixops.openapi.schedulemanager.api")
+      modelPackage.set("com.nixops.openapi.schedulemanager.model")
+      configOptions.set(
+          mapOf(
+              "interfaceOnly" to "true",
+              "library" to "spring-boot",
+              "useSpringBoot3" to "true",
+              "dateLibrary" to "java8",
+              "serializationLibrary" to "jackson",
+              "testFramework" to "kotest",
+          ))
+    }
+
+tasks.named("compileKotlin") {
+  dependsOn("openApiGenerateGenAI", "openApiGenerateScraper", "openApiGenerateScheduleManager")
+}
