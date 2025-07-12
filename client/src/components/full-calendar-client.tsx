@@ -11,11 +11,11 @@ type Appointment = {
   appointmentType: string;
   moduleCode: string;
   moduleTitle: string;
-  seriesBeginDate: string; // e.g. "2024-03-01"
-  seriesEndDate: string;   // e.g. "2024-07-01"
-  beginTime: string;       // e.g. "08:00"
-  endTime: string;         // e.g. "10:00"
-  weekdays: string[];      // e.g. ["Mo", "Di"]
+  seriesBeginDate: string;
+  seriesEndDate: string;
+  beginTime: string;
+  endTime: string;
+  weekdays: string[];
 };
 
 type CalendarEvent = {
@@ -41,6 +41,8 @@ export default function FullCalendarClient({ conversationId }) {
   const scheduleId = conversationId;
 
   useEffect(() => {
+    let isMounted = true; // to avoid setting state if unmounted
+
     const fetchAppointments = async () => {
       try {
         const res = await fetch(`/api/appointments?scheduleId=${scheduleId}`);
@@ -82,13 +84,20 @@ export default function FullCalendarClient({ conversationId }) {
           }
         });
 
-        setCalendarEvents(events);
+        if (isMounted) setCalendarEvents(events);
       } catch (err) {
         console.error("Error loading schedule:", err);
       }
     };
 
     fetchAppointments();
+
+    const intervalId = setInterval(fetchAppointments,  1000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
   }, [scheduleId]);
 
   return (
