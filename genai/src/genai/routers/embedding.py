@@ -87,7 +87,7 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
                         continue
 
                     desc = (
-                        str(mod.id)
+                        str(mod.code)
                         + "\n\n"
                         + (mod.content or "")
                         + "\n\n"
@@ -103,6 +103,7 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
                     courses = json.dumps(mod.courses.to_dict(), cls=datetime_encoder)
                     data = {
                         "id": mod.id,
+                        "code": mod.code,
                         "name": mod.title[:256],
                         "description": desc,
                         "description_vec": embed_text(desc),

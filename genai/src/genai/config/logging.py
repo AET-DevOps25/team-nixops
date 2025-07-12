@@ -49,5 +49,15 @@ LOGGING_CONFIG = {
             "level": "TRACE",
             "propagate": False,
         },
+        "sqlalchemy": {
+            "handlers": [],
+            "level": "WARNING",
+            "propagate": False,
+        },
+        "sqlalchemy.engine": {
+            "handlers": [],
+            "level": "WARNING",
+            "propagate": False,
+        },
     },
 }
