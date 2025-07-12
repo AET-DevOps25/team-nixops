@@ -87,7 +87,17 @@ class CourseScraper(
             for (weekday in campusAppointment.weekdays) {
               Weekday.new {
                 this.appointment = appointment
-                this.name = weekday.key.lowercase().trimEnd('.')
+                this.name =
+                    when (weekday.key.lowercase().trimEnd('.')) {
+                      "mo" -> "Mo"
+                      "di" -> "Di"
+                      "mi" -> "Mi"
+                      "do" -> "Do"
+                      "fr" -> "Fr"
+                      "sa" -> "Sa"
+                      "so" -> "So"
+                      else -> "Mo"
+                    }
               }
             }
           }

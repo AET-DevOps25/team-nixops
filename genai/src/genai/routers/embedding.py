@@ -16,6 +16,7 @@ from ..db.vector_db import create_collection, embed_text, milvus_client
 from datetime import datetime, date
 from openapi_server.models.study_program_selector_item import StudyProgramSelectorItem
 import json
+import asyncio
 
 # NOTE: https://milvus.io/docs/use-async-milvus-client-with-asyncio.md#Create-index
 
@@ -33,7 +34,17 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
         super().__init_subclass__(**kwargs)
         BaseEmbeddingApi.subclasses = BaseEmbeddingApi.subclasses + (cls,)
 
-    def create_study_program(
+    async def create_study_program(
+        self,
+        study_program: StudyProgram,
+    ) -> None:
+
+        loop = asyncio.get_running_loop()
+        loop.run_in_executor(None, self.embed_study_program, study_program)
+
+        return {"detail": "Embedding started in background"}
+
+    def embed_study_program(
         self,
         study_program: StudyProgram,
     ) -> None:
@@ -53,8 +64,28 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
                 collection_name = f"_{study_program.study_id}_{s.name}"
                 create_collection(collection_name)
                 milvus_client.load_collection(collection_name)
+
+                try:
+                    existing_records = milvus_client.query(
+                        collection_name=collection_name,
+                        filter="id != 0",
+                        output_fields=["id"],
+                    )
+                    existing_ids = {record["id"] for record in existing_records}
+                except Exception as e:
+                    print(
+                        f"Warning: failed to query existing records in {collection_name}: {e}"
+                    )
+                    existing_ids = set()
+
                 modules = study_program.semesters[s.name]
                 for n, mod in enumerate(modules):
+                    if mod.id in existing_ids:
+                        print(
+                            f"Skipping duplicate module {mod.id} in {collection_name}"
+                        )
+                        continue
+
                     desc = (
                         str(mod.id)
                         + "\n\n"
@@ -86,25 +117,14 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
 
             print("Finished embedding")
 
-            sp = session.query(SqlStudyProgram).get(study_program.study_id)
-
-            if sp:
-                # Update existing fields
-                sp.name = study_program.program_name
-                sp.degree_program_name = study_program.degree_program_name
-                sp.degree_type_name = study_program.degree_type_name
-                sp.semesters = sem
-            else:
-                # Create new object if not exists
-                sp = SqlStudyProgram(
-                    id=study_program.study_id,
-                    name=study_program.program_name,
-                    degree_program_name=study_program.degree_program_name,
-                    degree_type_name=study_program.degree_type_name,
-                    semesters=sem,
-                )
-                session.add(sp)
-
+            sp = SqlStudyProgram(
+                id=study_program.study_id,
+                name=study_program.program_name,
+                degree_program_name=study_program.degree_program_name,
+                degree_type_name=study_program.degree_type_name,
+                semesters=sem,
+            )
+            session.merge(sp)
             session.commit()
 
     async def fetch_study_programs(
