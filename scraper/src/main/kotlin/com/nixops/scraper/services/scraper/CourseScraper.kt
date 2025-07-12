@@ -71,6 +71,7 @@ class CourseScraper(
               Groups.genericUpsert(Group) {
                 it[Groups.id] = campusGroup.id
                 it[Groups.name] = campusGroup.name
+                it[Groups.courseId] = course.id
               }
 
           for (campusAppointment in campusGroup.appointments) {
