@@ -20,6 +20,7 @@ from fastapi import (  # noqa: F401
     Response,
     Security,
     status,
+    BackgroundTasks,
 )
 
 from openapi_server.models.extra_models import TokenModel  # noqa: F401
@@ -48,12 +49,19 @@ for _, name, _ in pkgutil.iter_modules(ns_pkg.__path__, ns_pkg.__name__ + "."):
     response_model_by_alias=True,
 )
 async def create_study_program(
+    background_tasks: BackgroundTasks,
     study_program: StudyProgram = Body(None, description=""),
 ) -> None:
     """Create a new study program and embed the modules."""
     if not BaseEmbeddingApi.subclasses:
         raise HTTPException(status_code=500, detail="Not implemented")
-    return await BaseEmbeddingApi.subclasses[0]().create_study_program(study_program)
+
+    background_tasks.add_task(
+        BaseEmbeddingApi.subclasses[0]().create_study_program,
+        study_program,
+    )
+
+    return {"detail": "Embedding started in background"}
 
 
 @router.get(

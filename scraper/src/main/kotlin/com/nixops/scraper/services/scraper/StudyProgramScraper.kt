@@ -1,11 +1,11 @@
 package com.nixops.scraper.services.scraper
 
-import com.nixops.scraper.extensions.genericUpsert
 import com.nixops.scraper.model.*
 import com.nixops.scraper.tum_api.nat.api.NatProgramApiClient
 import mu.KotlinLogging
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.upsert
 import org.springframework.stereotype.Service
 
 private val logger = KotlinLogging.logger {}
@@ -22,7 +22,7 @@ class StudyProgramScraper(
           .map { studyProgram ->
             logger.debug("Saving study program with name: ${studyProgram.degreeProgramName}")
 
-            StudyPrograms.genericUpsert(StudyProgram) {
+            StudyPrograms.upsert(StudyPrograms.studyId, StudyPrograms.spoVersion) {
               it[StudyPrograms.studyId] = studyProgram.studyId
               it[StudyPrograms.orgId] = studyProgram.orgId
               it[StudyPrograms.spoVersion] = studyProgram.spoVersion

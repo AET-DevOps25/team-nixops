@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scraper
+  namespace: "{{ .Values.ServiceNamespace }}"
+spec:
+  replicas: {{ .Values.scraper.replicaCount }}
+  selector:
+    matchLabels:
+      app: scraper-selector
+  template:
+    metadata:
+      labels:
+        app: scraper-selector
+    spec:
+      initContainers:
+        - name: init-container
+          image: busybox:1.28
+          command: ['sh', '-c','sed -e "s/{hostname}/$NODE_NAME/" -e "s/{podname}/$POD_NAME/" -e "s/{podip}/$POD_IP/"  /tmp/alloy/scraper_config_template.alloy > /shared/config.alloy']
+          env:
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name        
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          volumeMounts:
+              - name: alloy-config
+                mountPath: /tmp/alloy
+              - name: shared-alloy-config
+                mountPath: /shared
+      containers:
+        - name: scraper
+          image: "{{ .Values.scraper.image.repository }}:{{ .Values.scraper.image.tag }}"
+          imagePullPolicy: {{ .Values.scraper.image.pullPolicy }}
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://scraper-db-service:5432/scraper_db
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: scraper-postgres
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: scraper-postgres
+                  key: password
+            - name: SCRAPER_EMBEDDING_ENDPOINT
+              value: "http://genai-service:{{ .Values.genai.service.targetPort }}"
+            - name: LOGGING_FILE_NAME
+              value: "/app/logs/scraper.log"
+          ports:
+            - containerPort: {{ .Values.scraper.service.targetPort }}
+              name: scraper-api
+          volumeMounts:
+           - name: shared-alloy-logs # shared space monitored with alloy
+             mountPath: /app/logs
+        - name: alloy
+          image: grafana/alloy:v1.9.1
+          ports:
+            - containerPort: 12345
+              name: alloy-web
+          args: 
+            - "run"
+            - "--storage.path=/var/lib/alloy/data"
+            - "--server.http.listen-addr=0.0.0.0:12345"
+            - "/etc/alloy/config.alloy"
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+          volumeMounts:
+            - name: shared-alloy-logs # shared space
+              mountPath: /app/logs
+            - name: shared-alloy-config # shared space
+              mountPath: /etc/alloy
+      volumes:
+        - name: alloy-config
+          configMap:
+            name: scraper-configmap
+        - name: shared-alloy-logs  # shared space monitored with alloy
+          emptyDir: 
+            sizeLimit: 500Mi
+        - name: shared-alloy-config # use config prepared by init container
+          emptyDir: 
+            sizeLimit: 500Mi

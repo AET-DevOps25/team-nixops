@@ -15,7 +15,7 @@ class BaseEmbeddingApi:
         super().__init_subclass__(**kwargs)
         BaseEmbeddingApi.subclasses = BaseEmbeddingApi.subclasses + (cls,)
 
-    async def create_study_program(
+    def create_study_program(
         self,
         study_program: StudyProgram,
     ) -> None:

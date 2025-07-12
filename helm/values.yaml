@@ -1,0 +1,51 @@
+ServiceNamespace: nixops-default
+MonitoringNamespace: nixops-monitoring
+
+##################################################################################################################
+# No changes needed below this line
+namespace:
+  create: false
+
+genai:
+  image:
+    repository: ghcr.io/aet-devops25/nixops-genai
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 8000
+    targetPort: 8000
+  replicaCount: 1
+  # env:
+  #   - name: SPRING_PROFILES_ACTIVE
+  #     value: docker
+
+client:
+  image:
+    repository: ghcr.io/aet-devops25/nixops-client
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 3000
+    targetPort: 3000
+  replicaCount: 1
+
+scraper:
+  image:
+    repository: ghcr.io/aet-devops25/nixops-scraper
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: 8080
+  replicaCount: 1
+
+ingress:
+  enabled: true
+  className: "nginx"
+  tls: true
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod" # use staging when regularly nuking entire namespace
+    # cert-manager.io/cluster-issuer: "letsencrypt-staging" 

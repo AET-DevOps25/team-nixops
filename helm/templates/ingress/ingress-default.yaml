@@ -1,0 +1,58 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: "nixops-ingress"
+  namespace: "{{ .Values.ServiceNamespace }}"
+  {{- $annotations := .Values.ingress.annotations | default dict }}
+  {{- if $annotations }}
+  annotations:
+    {{- toYaml $annotations | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.tls }}
+  tls:
+    - hosts:
+        - "nixops-devops25.student.k8s.aet.cit.tum.de"
+        - "api.nixops-devops25.student.k8s.aet.cit.tum.de"
+      secretName: "nixops-devops25-tls"
+  {{- end }}
+  rules:
+    - host: "nixops-devops25.student.k8s.aet.cit.tum.de"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: client-service
+                port:
+                  number: {{ .Values.client.service.port }}
+    - host: "api.nixops-devops25.student.k8s.aet.cit.tum.de"
+      http:
+        paths:
+          - path: /chat # only expose chatting endpoint to the public
+            pathType: Prefix
+            backend:
+              service:
+                name: genai-service
+                port:
+                  number: {{ .Values.genai.service.port }}
+          - path: /embed/studyPrograms
+            pathType: Prefix
+            backend:
+              service:
+                name: genai-service
+                port:
+                  number: {{ .Values.genai.service.port }}
+    - host: "scraper.nixops-devops25.student.k8s.aet.cit.tum.de"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: scraper-service
+                port:
+                  number: {{ .Values.scraper.service.port }}
+{{- end }}

@@ -1,0 +1,119 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genai
+  namespace: "{{ .Values.ServiceNamespace }}"
+spec:
+  replicas: {{ .Values.genai.replicaCount }}
+  selector:
+    matchLabels:
+      app: genai-selector
+  template:
+    metadata:
+      labels:
+        app: genai-selector
+    spec:
+      initContainers:
+        - name: init-container
+          image: busybox:1.28
+          command: ['sh', '-c','sed -e "s/{hostname}/$NODE_NAME/" -e "s/{podname}/$POD_NAME/" -e "s/{podip}/$POD_IP/"  /tmp/alloy/genai_config_template.alloy > /shared/config.alloy']
+          env:
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name        
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          volumeMounts:
+              - name: alloy-config
+                mountPath: /tmp/alloy
+              - name: shared-alloy-config
+                mountPath: /shared
+      containers:
+        - name: genai
+          image: "{{ .Values.genai.image.repository }}:{{ .Values.genai.image.tag }}"
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "2Gi"
+            requests:
+              cpu: "200m"
+              memory: "512Mi"
+          env:
+            - name: LLM_API_URL
+              value: "https://gpu.aet.cit.tum.de/ollama"
+            - name: LLM_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: genai
+                  key: llm_api_key
+            - name: LLM_CHAT_MODEL
+              value: "llama3.3:latest"
+            - name: LLM_EMBEDDING_MODEL
+              value: "deepseek-r1:70b"
+            - name: LLM_CHAT_TEMP
+              value: "0.3"
+            - name: CORS_ORIGINS
+              value: "https://nixops-devops25.student.k8s.aet.cit.tum.de, http://localhost:3000"
+            - name: LOGGING_FILENAME
+              value: "/app/logs/genai.log"
+            - name: MILVUS_URI
+              value: http://genai-db-service:19530
+            - name: POSTGRES_HOST
+              value: genai-db-service:5432
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: genai-postgres
+                  key: username
+            - name: POSTGRES_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: genai-postgres
+                  key: password
+            - name: POSTGRES_NAME
+              value: genai_db
+          ports:
+            - containerPort: {{ .Values.genai.service.targetPort }}
+              name: genai-api
+          volumeMounts:
+           - name: shared-alloy-logs # shared space monitored with alloy
+             mountPath: /app/logs
+        - name: alloy
+          image: grafana/alloy:v1.9.1
+          ports:
+            - containerPort: 12345
+              name: alloy-web
+          args: 
+            - "run"
+            - "--storage.path=/var/lib/alloy/data"
+            - "--server.http.listen-addr=0.0.0.0:12345"
+            - "/etc/alloy/config.alloy"
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+          volumeMounts:
+            - name: shared-alloy-logs # shared space
+              mountPath: /app/logs
+            - name: shared-alloy-config # shared space
+              mountPath: /etc/alloy
+      volumes:
+        - name: alloy-config
+          configMap:
+            name: genai-configmap
+        - name: shared-alloy-logs  # shared space monitored with alloy
+          emptyDir: 
+            sizeLimit: 500Mi
+        - name: shared-alloy-config # use config prepared by init container
+          emptyDir: 
+            sizeLimit: 500Mi

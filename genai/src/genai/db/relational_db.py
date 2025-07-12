@@ -8,6 +8,8 @@ from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 
+from ..config import env
+
 
 class Base(DeclarativeBase):
     pass
@@ -53,7 +55,9 @@ class Semester(Base):
         return f"Semester(id={self.id!r}, name={self.name!r})"
 
 
-engine = create_engine("postgresql://pguser:pgpass@localhost:5432/nixops", echo=True)
+database_uri = f"postgresql://{env.db_user}:{env.db_pass}@{env.db_host}/{env.db_name}"
+
+engine = create_engine(database_uri, echo=True)
 
 
 def create_db_and_tables():

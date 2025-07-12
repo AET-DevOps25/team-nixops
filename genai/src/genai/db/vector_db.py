@@ -1,18 +1,13 @@
-from decouple import config
 from ollama import Client
 
 from pymilvus import IndexType, MilvusClient, DataType
 
-milvus_client = MilvusClient(uri="http://localhost:19530", token="root:Milvus")
+from ..config import env
 
-llm_api_url = config("LLM_API_URL", default="https://gpu.aet.cit.tum.de/ollama")
-llm_api_key = config("LLM_API_KEY")
-# mxbai-embed-large performs really well, but not available
-# deepseek is the best of the available ones
-llm_embedding_model = config("LLM_EMBEDDING_MODEL", default="deepseek-r1:70b")
+milvus_client = MilvusClient(uri=env.milvus_uri, token=env.milvus_token)
 
 ollama_client = Client(
-    host=llm_api_url, headers={"Authorization": f"Bearer {llm_api_key}"}
+    host=env.llm_api_url, headers={"Authorization": f"Bearer {env.llm_api_key}"}
 )
 
 
@@ -26,7 +21,7 @@ def create_index(collection_name):
 
 def embed_text(text):
     response = ollama_client.embeddings(
-        model=llm_embedding_model,
+        model=env.llm_embedding_model,
         prompt=text,
     )
     return response["embedding"]
@@ -40,11 +35,9 @@ schema = MilvusClient.create_schema(
     auto_id=False,
 )
 # each row is a module
-schema.add_field(
-    field_name="id", datatype=DataType.VARCHAR, max_length=16, is_primary=True
-)
-schema.add_field(field_name="name", datatype=DataType.VARCHAR, max_length=128)
-schema.add_field(field_name="description", datatype=DataType.VARCHAR, max_length=8096)
+schema.add_field(field_name="id", datatype=DataType.INT64, is_primary=True)
+schema.add_field(field_name="name", datatype=DataType.VARCHAR, max_length=256)
+schema.add_field(field_name="description", datatype=DataType.VARCHAR, max_length=16192)
 schema.add_field(
     field_name="description_vec", datatype=DataType.FLOAT_VECTOR, dim=embedding_len()
 )

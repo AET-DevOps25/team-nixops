@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monitoring
+  namespace: "{{ .Values.MonitoringNamespace }}"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: monitoring-selector
+  template:
+    metadata:
+      labels:
+        app: monitoring-selector
+    spec:
+      initContainers:
+        - name: init-permissions
+          image: busybox
+          command:
+            - "sh"
+            - "-c"
+            - |
+              chown -R 472:472 /var/lib/grafana &&
+              chmod -R 755 /var/lib/grafana &&
+              chown -R 472:472 /var/lib/prometheus &&
+              chmod -R 755 /var/lib/prometheus &&
+              chmod -R o+rw /var/lib/prometheus &&
+              echo done setting permissions
+          volumeMounts:
+            - name: grafana-storage
+              mountPath: /var/lib/grafana
+            - name: prometheus-storage
+              mountPath: /var/lib/prometheus
+      containers:
+        - name: grafana
+          image: grafana/grafana-oss:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: GF_SECURITY_ADMIN_USER
+              value: "admin"
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              value: "admin"
+            - name: GF_USERS_ALLOW_SIGN_UP
+              value: "false"
+            - name: GF_FEATURE_TOGGLES_ENABLE
+              value: "logsInExplore"
+            - name: GF_LOG_CONSOLECOLORS
+              value: "true"
+          volumeMounts:
+            - name: grafana-storage
+              mountPath: /var/lib/grafana
+            - name: grafana-datasources
+              mountPath: /etc/grafana/provisioning/datasources/
+        - name: loki
+          image: grafana/loki:2.9.0
+          args: ["-config.file=/etc/loki/loki-config.yml"]
+          ports:
+            - containerPort: 3100
+          volumeMounts:
+            - name: monitoring-config
+              mountPath: /etc/loki
+        - name: prometheus
+          image: prom/prometheus:v2.52.0
+          ports:
+            - containerPort: 9090
+          volumeMounts:
+            - name: monitoring-config
+              mountPath: /etc/prometheus
+            - name: prometheus-storage
+              mountPath: /prometheus
+          args:
+            - "--config.file=/etc/prometheus/prometheus-config.yml"
+            - "--storage.tsdb.path=/prometheus"
+            - "--web.console.libraries=/etc/prometheus/console_libraries"
+            - "--web.console.templates=/etc/prometheus/consoles"
+            - "--web.enable-lifecycle"
+            - "--web.enable-remote-write-receiver"
+        - name: ntfy
+          image: binwiederhier/ntfy
+          args:
+            - serve
+          env:
+            - name: TZ
+              value: "Europe/Berlin"
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - "wget -q --tries=1 http://localhost:80/v1/health -O - | grep -Eo '\"healthy\"\\s*:\\s*true' || exit 1"
+            initialDelaySeconds: 40
+            periodSeconds: 60
+            timeoutSeconds: 10
+            failureThreshold: 3
+      volumes:
+        - name: monitoring-config
+          configMap:
+            name: monitoring-configmap
+        - name: prometheus-storage
+          persistentVolumeClaim:
+            claimName: nixops-monitoring-prometheus
+        - name: grafana-storage
+          persistentVolumeClaim:
+            claimName: nixops-monitoring-grafana
+        - name: grafana-datasources
+          configMap:
+            name: grafana-datasources

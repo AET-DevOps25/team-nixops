@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scraper-db
+  namespace: "{{ .Values.ServiceNamespace }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scraper-db
+  template:
+    metadata:
+      labels:
+        app: scraper-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:15
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: scraper-postgres
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: scraper-postgres
+                  key: password
+            - name: POSTGRES_DB
+              value: scraper_db
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql
+              name: scraper-db-storage
+      volumes:
+        - name: scraper-db-storage
+          persistentVolumeClaim:
+            claimName: nixops-scraper-postgres

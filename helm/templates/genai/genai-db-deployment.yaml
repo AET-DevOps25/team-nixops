@@ -1,0 +1,202 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genai-db
+  namespace: "{{ .Values.ServiceNamespace }}"
+spec:
+  replicas: 1
+  strategy: 
+    type: Recreate
+  selector:
+    matchLabels:
+      app: genai-db-selector
+  template:
+    metadata:
+      labels:
+        app: genai-db-selector
+    spec:
+      initContainers:
+        - name: init-container
+          image: busybox:1.28
+          command: ['sh', '-c','sed -e "s/{hostname}/$NODE_NAME/" -e "s/{podname}/$POD_NAME/" -e "s/{podip}/$POD_IP/"  /tmp/alloy/genai-db_config_template.alloy > /shared/config.alloy']
+          env:
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name        
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          volumeMounts:
+              - name: alloy-config
+                mountPath: /tmp/alloy
+              - name: shared-alloy-config
+                mountPath: /shared
+      containers:
+        - name: etcd
+          image: "quay.io/coreos/etcd:v3.5.18"
+          command: ["etcd"]
+          args: ["-advertise-client-urls=http://localhost:2379",  "-listen-client-urls", "http://0.0.0.0:2379",  "--data-dir", "/etcd"]
+          imagePullPolicy: {{ .Values.genai.image.pullPolicy }}
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+          env:
+            - name: ETCD_AUTO_COMPACTION_MODE
+              value: "revision"
+            - name: ETCD_AUTO_COMPACTION_RETENTION
+              value: "1000"
+            - name: ETCD_QUOTA_BACKEND_BYTES
+              value: "4294967296"
+            - name: ETCD_SNAPSHOT_COUNT
+              value: "50000"
+          volumeMounts:
+            - name: etcd-data
+              mountPath: /etcd
+        - name: minio
+          image: "minio/minio:RELEASE.2023-03-20T20-16-18Z"
+          command: ["minio"]
+          args: ["server", "/minio_data", "--console-address", ":9001"]
+          imagePullPolicy: {{ .Values.genai.image.pullPolicy }}
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+          env:
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: minio
+                  key: username
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: minio
+                  key: password
+          ports:
+            - containerPort: 9000
+              name: minio-api
+            - containerPort: 9001
+              name: minio-dash
+          volumeMounts:
+            - name: minio-data
+              mountPath: /minio_data
+        - name: milvus
+          image: "milvusdb/milvus:v2.5.12"
+          command: ["milvus"]
+          args: [ "run", "standalone" ]
+          imagePullPolicy: {{ .Values.genai.image.pullPolicy }}
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+          env:
+            - name: MINIO_REGION
+              value: "us-east-1"
+            - name: ETCD_ENDPOINTS
+              value: "localhost:2379"
+            - name: MINIO_ADDRESS
+              value: "localhost:9000"
+            - name: LOG_FILE_ROOTPATH
+              value: "/milvus/logs"
+            - name: MINIO_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: minio
+                  key: username
+            - name: MINIO_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio
+                  key: password
+          ports:
+            - containerPort: 19530
+              name: milvus-api
+            - containerPort: 9091
+              name: milvus-dash
+          volumeMounts:
+            - name: milvus-data
+              mountPath: /var/lib/milvus
+            - name: shared-alloy-logs
+              mountPath: /milvus/logs
+        - name: alloy
+          image: grafana/alloy:v1.9.1
+          ports:
+            - containerPort: 12345
+              name: alloy-web
+          args: 
+            - "run"
+            - "--storage.path=/var/lib/alloy/data"
+            - "--server.http.listen-addr=0.0.0.0:12345"
+            - "/etc/alloy/config.alloy"
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+          volumeMounts:
+            - name: shared-alloy-logs # shared space
+              mountPath: /app/logs
+            - name: shared-alloy-config # shared space
+              mountPath: /etc/alloy
+        - name: postgres
+          image: postgres:15
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: genai-postgres
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: genai-postgres
+                  key: password
+            - name: POSTGRES_DB
+              value: genai_db
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-storage
+      volumes:
+      - name: milvus-data
+        persistentVolumeClaim:
+          claimName: nixops-genai-milvus
+      - name: minio-data
+        persistentVolumeClaim:
+          claimName: nixops-genai-minio
+      - name: etcd-data
+        persistentVolumeClaim:
+          claimName: nixops-genai-etcd
+      - name: alloy-config
+        configMap:
+         name: genai-configmap
+      - name: shared-alloy-logs  # shared space monitored with alloy
+        emptyDir: 
+         sizeLimit: 500Mi
+      - name: shared-alloy-config # use config prepared by init container
+        emptyDir: 
+         sizeLimit: 500Mi
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: nixops-genai-postgres
