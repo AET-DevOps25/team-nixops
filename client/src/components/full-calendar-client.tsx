@@ -36,9 +36,9 @@ const weekdayMap: Record<string, number> = {
   So: 0,
 };
 
-export default function FullCalendarClient() {
+export default function FullCalendarClient({ conversationId }) {
   const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>([]);
-  const scheduleId = "42";
+  const scheduleId = conversationId;
 
   useEffect(() => {
     const fetchAppointments = async () => {

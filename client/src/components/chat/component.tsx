@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 
 export default function Chat({
+  conversationId,
   studyProgramId,
   semester,
 }: {

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { SSE } from "sse.js";
-import { v4 as uuidv4 } from "uuid";
 
 type Message = {
   id: number;
@@ -8,10 +7,9 @@ type Message = {
   content: string;
 };
 
-function useChat(api: string, studyProgramId: number, semester: string) {
+function useChat(conversationId: String, api: string, studyProgramId: number, semester: string) {
   const [currentQuestion, setCurrentQuestion] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
-  const [conversationId, _] = useState(uuidv4());
   const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
