@@ -12,7 +12,7 @@ class OkHttpClientConfig {
   fun okHttpClient(): OkHttpClient {
     return OkHttpClient.Builder()
         .connectTimeout(10, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(1, TimeUnit.HOURS)
         .build()
   }
 }
