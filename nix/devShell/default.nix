@@ -17,7 +17,10 @@
         ];
         cachix = {
           enable = true;
-          pull = ["pre-commit-hooks" "nix-community"];
+          pull = [
+            "pre-commit-hooks"
+            "nix-community"
+          ];
           push = "team-nixops";
         };
         git-hooks.hooks = {
@@ -33,12 +36,24 @@
         scripts = {
           generate-sops = {
             exec = builtins.readFile ./scripts/generate-sops.py;
-            package = pkgs.python3.withPackages (p: with p; [jinja2 pyyaml]);
+            package = pkgs.python3.withPackages (
+              p:
+                with p; [
+                  jinja2
+                  pyyaml
+                ]
+            );
             description = "Generate .sops.yaml";
           };
           provision-certificates = {
             exec = builtins.readFile ./scripts/provision-certificates.py;
-            package = pkgs.python3.withPackages (p: with p; [cryptography ruamel-yaml]);
+            package = pkgs.python3.withPackages (
+              p:
+                with p; [
+                  cryptography
+                  ruamel-yaml
+                ]
+            );
             description = "Generate .sops.yaml";
           };
         };
@@ -96,6 +111,17 @@
         enterShell = ''
           export REPO_ROOT=$(git rev-parse --show-toplevel)
         '';
+      };
+      helm-dev = {
+        imports = [default];
+
+        packages = with pkgs; [
+          jq
+          age
+          sops
+          kubectl
+          kubernetes-helm
+        ];
       };
     };
   };
