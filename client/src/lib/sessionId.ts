@@ -1,17 +1,28 @@
-import { useState, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid'; // make sure you run: npm install uuid
+import { useState, useEffect, useCallback } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 export function useSessionId() {
   const [sessionId, setSessionId] = useState(null);
 
+  const generateNewSessionId = useCallback(() => {
+    const newId = uuidv4();
+    sessionStorage.setItem('sessionId', newId);
+    setSessionId(newId);
+  }, []);
+
   useEffect(() => {
     let id = sessionStorage.getItem('sessionId');
     if (!id) {
-      id = uuidv4();
-      sessionStorage.setItem('sessionId', id);
+      generateNewSessionId();
+    } else {
+      setSessionId(id);
     }
-    setSessionId(id);
-  }, []);
+  }, [generateNewSessionId]);
 
-  return sessionId;
+  const resetSession = () => {
+    sessionStorage.removeItem('sessionId');
+    generateNewSessionId();
+  };
+
+  return { sessionId, resetSession };
 }

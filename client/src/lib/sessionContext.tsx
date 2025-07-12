@@ -1,23 +1,31 @@
 import React, { createContext, useContext, ReactNode } from 'react';
 import { useSessionId } from './sessionId';
 
-const SessionContext = createContext<string | null>(null);
+interface SessionContextType {
+  sessionId: string | null;
+  resetSession: () => void;
+}
+
+const SessionContext = createContext<SessionContextType | undefined>(undefined);
 
 interface SessionProviderProps {
   children: ReactNode;
 }
 
 export function SessionProvider({ children }: SessionProviderProps) {
-  const sessionId = useSessionId();
+  const { sessionId, resetSession } = useSessionId();
 
   return (
-    <SessionContext.Provider value={sessionId}>
+    <SessionContext.Provider value={{ sessionId, resetSession }}>
       {children}
     </SessionContext.Provider>
   );
 }
 
 export function useSession() {
-  return useContext(SessionContext);
+  const context = useContext(SessionContext);
+  if (!context) {
+    throw new Error('useSession must be used within a SessionProvider');
+  }
+  return context;
 }
-

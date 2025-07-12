@@ -13,7 +13,7 @@ import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 import { Copy, CornerDownLeft } from "lucide-react";
 import useChat from "./lib";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useSession } from '@/lib/sessionContext';
 
@@ -27,7 +27,7 @@ export default function Chat({
   const [apiUrl, setApiUrl] = useState(null);
   const [loadingApiUrl, setLoadingApiUrl] = useState(true);
 
-  const sessionId = useSession();
+  const { sessionId, resetSession } = useSession();
 
   // fetch api url dynamically via api route since NEXT_PUBLIC is statically baked in during build-time
   useEffect(() => {
@@ -45,6 +45,24 @@ export default function Chat({
 
     fetchData();
   }, []);
+
+ const prevStudyProgramId = useRef<number | null>(null);
+  const prevSemester = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (
+      prevStudyProgramId.current !== null &&
+      prevSemester.current !== null &&
+      (prevStudyProgramId.current !== studyProgramId ||
+        prevSemester.current !== semester)
+    ) {
+      console.log("Program or semester changed — resetting session");
+      resetSession();
+    }
+
+    prevStudyProgramId.current = studyProgramId;
+    prevSemester.current = semester;
+  }, [studyProgramId, semester, resetSession]);
 
   useEffect(() => {
     const doInit = async () => {
@@ -70,6 +88,7 @@ export default function Chat({
 
   let api = (!loadingApiUrl && apiUrl) || "http://localhost:8000";
   const { messages, sendMessage, isGenerating } = useChat(
+    sessionId,
     api,
     studyProgramId,
     semester,
