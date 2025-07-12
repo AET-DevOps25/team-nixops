@@ -1,0 +1,85 @@
+#calendar {
+  margin: 40px auto;
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+a.fc-event.fc-daygrid-event[href] {
+  color: #c90064;
+}
+
+a.fc-event.fc-daygrid-event[href]:visited {
+  color: #9c3dd3;
+}
+
+.fc .fc-daygrid-day.fc-day-other {
+  background: var(--fc-neutral-bg-color);
+}
+
+.fc .fc-scrollgrid-section-sticky>* {
+  background: unset;
+  position: sticky;
+  z-index: 3;
+}
+
+:not(td[aria-labelledby])>.fc-daygrid-day-frame {
+  background: var(--fc-neutral-bg-color);
+}
+
+.fc .fc-scrollgrid-section-body {
+  background: var(--fc-page-bg-color);
+}
+
+.fc .fc-timegrid-slot-label,
+.fc .fc-timegrid-axis-frame {
+  background-color: var(--main-page-bg-color);
+}
+
+:root {
+  --main-page-bg-color: #211e21;
+  --fc-small-font-size: .85em;
+  --fc-page-bg-color: #3e2f3f;
+  --fc-neutral-bg-color: #2c000631;
+  --fc-neutral-text-color: #808080;
+  --fc-border-color: #464646;
+
+  --fc-button-text-color: #fff;
+  --fc-button-bg-color: #2e807d;
+  --fc-button-border-color: #2e807d;
+  --fc-button-hover-bg-color: #256b69;
+  --fc-button-hover-border-color: #184746;
+  --fc-button-active-bg-color: #184746;
+  --fc-button-active-border-color: #142b2a;
+
+  --fc-button-text-color: var(--primary-foreground);
+
+  --fc-button-bg-color: var(--primary);
+  --fc-button-border-color: var(--primary-border);
+
+  --fc-button-hover-bg-color: var(--muted-foreground);
+  --fc-button-hover-border-color: var(--muted);
+
+  --fc-button-active-bg-color: var(--muted-foreground);
+  --fc-button-active-border-color: var(--muted);
+
+  --fc-button-border-radius: calc(var(--radius) - 2px);
+
+  --fc-event-bg-color: #007e79;
+  --fc-event-border-color: #007e79;
+  --fc-event-text-color: #fff;
+  --fc-event-selected-overlay-color: rgba(0, 0, 0, 0.25);
+
+  --fc-more-link-bg-color: #d0d0d0;
+  --fc-more-link-text-color: inherit;
+
+  --fc-event-resizer-thickness: 8px;
+  --fc-event-resizer-dot-total-width: 8px;
+  --fc-event-resizer-dot-border-width: 1px;
+
+  --fc-non-business-color: rgba(215, 215, 215, 0.3);
+  --fc-bg-event-color: rgb(143, 223, 130);
+  --fc-bg-event-opacity: 0.3;
+  --fc-highlight-color: rgba(188, 232, 241, 0.3);
+  --fc-today-bg-color: #c9006425;
+  --fc-now-indicator-color: red;
+}

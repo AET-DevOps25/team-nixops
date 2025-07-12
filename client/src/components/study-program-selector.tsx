@@ -53,7 +53,7 @@ export function StudyProgramSelector({
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://api.nixops-devops25.student.k8s.aet.cit.tum.de/embed/studyPrograms",
+          "http://localhost:8000/embed/studyPrograms",
         );
         const result = await response.json();
         setStudyPrograms(result);
