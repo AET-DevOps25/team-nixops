@@ -38,6 +38,12 @@ scraper:
     targetPort: 8080
   replicaCount: 1
 
+embedding_bridge:
+  image:
+    repository: ghcr.io/aet-devops25/nixops-embedding-bridge
+    pullPolicy: Always
+  replicaCount: 1
+
 ingress:
   enabled: true
   className: "nginx"
