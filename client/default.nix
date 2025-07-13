@@ -28,7 +28,7 @@
         lib="$out/lib/node_modules/${pname}/.next"
         cp -r ./.next "$lib"
         cat > "$exe" <<EOF
-      #${lib.getExe pkgs.bash}
+      #!${lib.getExe pkgs.bash}
       cd "$lib/.."
       ${pkgs.nodejs}/bin/npm run start
       EOF
