@@ -44,22 +44,30 @@ class State(TypedDict):
 
 @tool(parse_docstring=True)
 def retrieve_modules(
-    query: str, state: Annotated[State, InjectedState]
+    keywords: List[str], state: Annotated[State, InjectedState]
 ) -> List[Document]:
     """Search and return information about courses and modules available at Munich's technical university TUM.
 
     Args:
-        query: Search query for the lookup
+        keywords: A list of keywords to search for in the course and module descriptions (e.g., "["programming","not languages", "IN0001", "CIT000323"]")
     """
-    print("retrieve modules:", query)
+
+    print("retrieve modules:", keywords)
+
+    # Combine keywords into a single search string
+    combined_query = " ".join(keywords)
 
     results = milvus_client.search(
         collection_name=f"_{str(state['study_program_id'])}_{state['semester']}",
-        data=[embed_text(query)],
+        data=[embed_text(combined_query)],
         anns_field="description_vec",  # only one anns field can exist
         limit=3,
         output_fields=["name", "id", "code", "description", "courses"],
     )
+
+    for doc in results[0]:
+        print("found:", doc["entity"]["id"], doc["entity"]["name"])
+
     docs = [
         Document(
             "Name:"
@@ -99,7 +107,7 @@ reasoning_llm = ChatOllama(
 
 TOOL_SELECTION_PROMPT = (
     "You are a highly intelligent assistant. Before you decide to execute any tools, "
-    "analyze the user's request: '{}'"
+    "analyze the user's request: '{request}'"
     "If you do not believe executing a tool is necessary, end your statement without further action."
 )
 
@@ -109,7 +117,10 @@ def generate_query_or_respond(state: State):
     the question, it will decide to retrieve using the retriever tool, or simply respond to the user.
     """
 
-    print("call model")
+    schedule_id = state["user_id"]
+    semester = state["semester"]
+
+    print("call model:", schedule_id, semester)
 
     response = reasoning_llm.bind_tools(
         [
@@ -119,7 +130,7 @@ def generate_query_or_respond(state: State):
             remove_module_from_schedule,
             get_schedule,
         ]
-    ).invoke(TOOL_SELECTION_PROMPT.format(state["messages"]))
+    ).invoke(TOOL_SELECTION_PROMPT.format(request=state["messages"]))
     return {"messages": [response]}
 
 
