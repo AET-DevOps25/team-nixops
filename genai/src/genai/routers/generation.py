@@ -300,7 +300,7 @@ def add_module_to_schedule(
     semester = state["semester"]
 
     response = requests.post(
-        f"${env.schedule_manager_base_url}/schedule/{schedule_id}/modules?semester={semester}",
+        f"{env.schedule_manager_base_url}/schedule/{schedule_id}/modules?semester={semester}",
         json=module_code,
         headers={"Content-Type": "application/json"},
     )
@@ -336,7 +336,7 @@ def remove_module_from_schedule(
     semester = state["semester"]
 
     response = requests.delete(
-        f"${env.schedule_manager_base_url}/schedule/{schedule_id}/modules?semester={semester}",
+        f"{env.schedule_manager_base_url}/schedule/{schedule_id}/modules?semester={semester}",
         json=module_code,
         headers={"Content-Type": "application/json"},
     )
