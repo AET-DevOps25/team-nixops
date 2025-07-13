@@ -474,8 +474,15 @@ async def stream_response(prompt: str, convId: str, studyProgramId: int, semeste
                 yield f"data: {msg.content}\n\n"
                 await sleep(0.04)  # simply for chat output smoothing
 
-    res = StreamingResponse(
-        generate(prompt, convId, studyProgramId, semester),
-        media_type="text/event-stream",
-    )
-    return res
+    try:
+        res = StreamingResponse(
+            generate(prompt, convId, studyProgramId, semester),
+            media_type="text/event-stream",
+        )
+        return res
+    except Exception as e:
+        print("Error in route handler:", e)
+        return StreamingResponse(
+            iter([f"data: Fatal error occurred: {str(e)}\n\n"]),
+            media_type="text/event-stream",
+        )
