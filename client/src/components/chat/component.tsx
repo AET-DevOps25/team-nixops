@@ -64,28 +64,6 @@ export default function Chat({
     prevSemester.current = semester;
   }, [studyProgramId, semester, resetSession]);
 
-  useEffect(() => {
-    const doInit = async () => {
-      if (!sessionId) return;
-      if (!studyProgramId) return;
-      if (!semester) return;
-      
-      try {
-        const res = await fetch(`/api/schedule/init?=${sessionId}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ studyId: studyProgramId, semester }),
-        });
-        if (!res.ok) {
-          console.error("Failed to initialize schedule", res.status);
-        }
-      } catch (error) {
-        console.error("Error initializing schedule", error);
-      }
-    };
-    doInit();
-  }, [sessionId, studyProgramId, semester]);
-
   let api = (!loadingApiUrl && apiUrl) || "http://localhost:8000";
   const { messages, sendMessage, isGenerating } = useChat(
     sessionId,
