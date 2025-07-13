@@ -1,3 +1,12 @@
+.fc {
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.fc table {
+  border-radius: var(--radius);
+}
+
 a.fc-event.fc-daygrid-event[href] {
   color: #c90064;
 }
@@ -44,7 +53,7 @@ a.fc-event.fc-daygrid-event[href]:visited {
   --fc-button-hover-border-color: var(--muted);
   --fc-button-active-bg-color: var(--muted-foreground);
   --fc-button-active-border-color: var(--muted);
-  --fc-button-border-radius: calc(var(--radius) - 2px);
+  --fc-button-border-radius: var(--radius);
 
   --fc-event-bg-color: #007e79;
   --fc-event-border-color: #007e79;
