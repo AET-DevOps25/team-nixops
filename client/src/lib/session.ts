@@ -43,21 +43,11 @@ export function useSessionData() {
     }
   }, [semester, studyId, generateNewSessionId]);
 
-  const resetSession = () => {
-    sessionStorage.removeItem('sessionId');
-    sessionStorage.removeItem('semester');
-    sessionStorage.removeItem('studyId');
-    setSemester(null);
-    setStudyId(null);
-    generateNewSessionId();
-  };
-
   return {
     sessionId,
     semester,
     studyId,
     updateSemester,
     updateStudyId,
-    resetSession,
   };
 }

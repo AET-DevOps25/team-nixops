@@ -5,7 +5,6 @@ interface SessionContextType {
   sessionId: string | null;
   studyId: number | null;
   semester: string | null;
-  resetSession: () => void;
   updateSemester: (newSemester: string) => void;
   updateStudyId: (newStudyId: string) => void;
 }
@@ -21,7 +20,6 @@ export function SessionProvider({ children }: SessionProviderProps) {
     sessionId,
     semester,
     studyId: rawStudyId,
-    resetSession,
     updateSemester,
     updateStudyId,
   } = useSessionData();
@@ -34,7 +32,6 @@ export function SessionProvider({ children }: SessionProviderProps) {
         sessionId,
         semester,
         studyId,
-        resetSession,
         updateSemester,
         updateStudyId,
       }}
