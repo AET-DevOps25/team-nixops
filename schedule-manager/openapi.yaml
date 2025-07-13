@@ -106,12 +106,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: semester
-          in: query
-          required: true
-          schema:
-            type: string
-            example: "2025s"
       responses:
         '200':
           description: List of appointments for all modules

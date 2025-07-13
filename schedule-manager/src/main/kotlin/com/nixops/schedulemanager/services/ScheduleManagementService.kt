@@ -34,6 +34,10 @@ class ScheduleManagementService(
               })
           .build()
 
+  fun getSchedule(scheduleId: String): Schedule? {
+    return scheduleCache.getIfPresent(scheduleId)
+  }
+
   fun getOrCreateSchedule(scheduleId: String, semester: String): Schedule {
     val schedule = scheduleCache.getIfPresent(scheduleId)
     return if (schedule == null) {
