@@ -113,7 +113,6 @@ TOOL_SELECTION_PROMPT = (
     "You are a highly intelligent assistant. Before you decide to execute any tools, "
     "analyze the user's request: '{request}'"
     "If you do not believe executing a tool is necessary, end your statement without further action."
-    "Before answering questions about modules always get them using the retrieval tool"
 )
 
 
