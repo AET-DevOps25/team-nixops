@@ -1,3 +1,5 @@
+import { config } from "@/lib/config";
+
 export async function GET() {
-  return Response.json({ url: process.env.API_URL })
+  return Response.json({ url: config.apiBaseUrl })
 }

@@ -40,6 +40,8 @@ import { useEffect, useState } from "react";
 
 import { useSession } from '@/lib/sessionContext';
 
+import { config } from "@/lib/config";
+
 export function StudyProgramSelector({
   setIsDialogOpen,
 }:{
@@ -63,7 +65,7 @@ export function StudyProgramSelector({
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8000/embed/studyPrograms",
+          `${config.genaiBaseUrl}/embed/studyPrograms`,
         );
         const result = await response.json();
         setStudyPrograms(result);

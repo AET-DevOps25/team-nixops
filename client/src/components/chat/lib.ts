@@ -7,13 +7,13 @@ type Message = {
   content: string;
 };
 
-function useChat(conversationId: string | null, api: string, studyId: number | null, semester: string | null) {
+function useChat(conversationId: string | null, api: string | null, studyId: number | null, semester: string | null) {
   const [currentQuestion, setCurrentQuestion] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
-    if (currentQuestion !== "" && conversationId !== null && studyId !== null) {
+    if (currentQuestion !== "" && conversationId !== null && studyId !== null && api !== null) {
       const source = new SSE(
         api +
           "/chat?prompt=" +
@@ -34,7 +34,7 @@ function useChat(conversationId: string | null, api: string, studyId: number | n
             ...newMessages[currentMessageIndex],
             content: newMessages[currentMessageIndex].content + e.data,
           };
-          return newMessages; // Return the new state
+          return newMessages;
         });
       });
       source.addEventListener("readystatechange", (e: any) => {
@@ -47,7 +47,7 @@ function useChat(conversationId: string | null, api: string, studyId: number | n
 
       return () => source.close();
     }
-  }, [currentQuestion]);
+  }, [currentQuestion, conversationId, studyId, api]);
 
   const sendMessage = useCallback(
     async (msg: string) => {

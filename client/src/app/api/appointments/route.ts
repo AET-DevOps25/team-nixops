@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { config } from "@/lib/config";
+
 export async function GET(req: NextRequest) {
   const scheduleId = req.nextUrl.searchParams.get("scheduleId");
   const semester = req.nextUrl.searchParams.get("semester");
@@ -12,7 +14,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Missing semester" }, { status: 400 });
   }
 
-  const backendUrl = `http://localhost:8042/schedule/${scheduleId}/appointments?semester=${semester}`;
+  const backendUrl = `${config.scheduleManagerBaseUrl}/schedule/${scheduleId}/appointments?semester=${semester}`;
 
   try {
     const response = await fetch(backendUrl);

@@ -17,6 +17,8 @@ import { useEffect, useRef, useState } from "react";
 
 import { useSession } from '@/lib/sessionContext';
 
+import { config } from "@/lib/config";
+
 export default function Chat() {
   const [apiUrl, setApiUrl] = useState(null);
   const [loadingApiUrl, setLoadingApiUrl] = useState(true);
@@ -43,10 +45,9 @@ export default function Chat() {
  const prevStudyId = useRef<number | null>(null);
   const prevSemester = useRef<string | null>(null);
 
-  let api = (!loadingApiUrl && apiUrl) || "http://localhost:8000";
   const { messages, sendMessage, isGenerating } = useChat(
     sessionId,
-    api,
+    apiUrl,
     studyId,
     semester,
   );
