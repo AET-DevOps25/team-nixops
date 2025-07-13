@@ -57,8 +57,12 @@ def retrieve_modules(
     # Combine keywords into a single search string
     combined_query = " ".join(keywords)
 
+    collection_name = f"_{str(state['study_program_id'])}_{state['semester']}"
+
+    print("collection_name:", collection_name)
+
     results = milvus_client.search(
-        collection_name=f"_{str(state['study_program_id'])}_{state['semester']}",
+        collection_name=collection_name,
         data=[embed_text(combined_query)],
         anns_field="description_vec",  # only one anns field can exist
         limit=3,
@@ -66,7 +70,7 @@ def retrieve_modules(
     )
 
     for doc in results[0]:
-        print("found:", doc["entity"]["id"], doc["entity"]["name"])
+        print("found:", doc["entity"]["code"], doc["entity"]["name"])
 
     docs = [
         Document(
@@ -109,6 +113,7 @@ TOOL_SELECTION_PROMPT = (
     "You are a highly intelligent assistant. Before you decide to execute any tools, "
     "analyze the user's request: '{request}'"
     "If you do not believe executing a tool is necessary, end your statement without further action."
+    "Before answering questions about modules always get them using the retrieval tool"
 )
 
 
@@ -408,24 +413,25 @@ workflow.add_conditional_edges(
 )
 
 
-def route_tool_output(state: State) -> Literal["grade_documents", "generate_answer"]:
-    tool_calls = getattr(state["messages"][-1], "tool_calls", None)
-    if not tool_calls:
-        return "generate_answer"
-
-    # Tool name called by the LLM
-    tool_name = tool_calls[0]["name"]
-    if tool_name == "retrieve_modules":
-        return "grade_documents"
+def route_tool_output(state: State) -> Literal["post_retrieval", "generate_answer"]:
+    if state["messages"][-1].name == "retrieve_modules":
+        return "post_retrieval"
     else:
         return "generate_answer"
 
+
+def post_retrieval(state: State) -> dict:
+    print("Running grade_documents node...")
+    return state
+
+
+workflow.add_node("post_retrieval", post_retrieval)
 
 workflow.add_conditional_edges(
     "tools",
     route_tool_output,
     {
-        "grade_documents": "grade_documents",
+        "post_retrieval": "post_retrieval",
         "generate_answer": "generate_answer",
     },
 )
@@ -433,7 +439,7 @@ workflow.add_conditional_edges(
 workflow.add_node("grade_documents", grade_documents)
 
 workflow.add_conditional_edges(
-    "grade_documents",
+    "post_retrieval",
     grade_documents,
     {
         "generate_answer": "generate_answer",
