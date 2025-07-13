@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React from "react";
 import { Moon, Sun, SunMoon, CodeXml, Menu } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState } from "react";
@@ -31,6 +31,11 @@ export function MenuOverlay({
   setSemester,
   studyProgramId,
   semester,
+}:{
+  setStudyProgramId: any;
+  setSemester: any;
+  studyProgramId: any;
+  semester: any;
 }) {
   const { setTheme } = useTheme();
   const [isDialogOpen, setIsDialogOpen] = useState(true);

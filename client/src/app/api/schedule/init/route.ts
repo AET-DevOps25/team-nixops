@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(req: NextRequest, context: { params: { schedule_id: string } }) {
-  const { params } = await context;
-  const { schedule_id } = await params;
+export async function POST(req: NextRequest) {
+  const schedule_id = req.nextUrl.searchParams.get("scheduleId");
 
   if (!schedule_id) {
     return NextResponse.json({ error: 'Missing schedule_id' }, { status: 400 });

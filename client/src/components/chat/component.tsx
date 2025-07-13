@@ -71,7 +71,7 @@ export default function Chat({
       if (!semester) return;
       
       try {
-        const res = await fetch(`/api/schedule/${sessionId}/init`, {
+        const res = await fetch(`/api/schedule/init?=${sessionId}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ studyId: studyProgramId, semester }),

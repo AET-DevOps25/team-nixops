@@ -13,6 +13,8 @@ export default function Page() {
       <MenuOverlay
         setStudyProgramId={setStudyProgramId}
         setSemester={setSemester}
+        studyProgramId={studyProgramId}
+        semester={semester}
       />
     </>
   );

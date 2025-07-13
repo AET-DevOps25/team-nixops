@@ -42,11 +42,21 @@ export function StudyProgramSelector({
   setStudyProgramId,
   setSemester,
   setIsDialogOpen,
+}:{
+  setStudyProgramId: any;
+  setSemester: any;
+  setIsDialogOpen: any;
 }) {
+  interface StudyProgram {
+    id: string;
+    title: string;
+    semesters: string[];
+  }
+  
   const [open, setOpen] = useState(false);
   const [sem, setSem] = useState("");
-  const [studyPrograms, setStudyPrograms] = useState([]);
-  const [localSemesters, setLocalSemesters] = useState([]);
+  const [studyPrograms, setStudyPrograms] = useState<StudyProgram[]>([]);
+  const [localSemesters, setLocalSemesters] = useState<string[]>([]);
   const { register, handleSubmit, reset, getValues, setValue } = useForm();
 
   useEffect(() => {
@@ -136,11 +146,13 @@ export function StudyProgramSelector({
                           .map((p) => p.semesters)
                           .at(0);
 
-                        setSem(semesters[0]);
-                        setValue("semester", semesters[0]);
-                        setLocalSemesters(semesters);
-                        setValue("studyProgram", currentValue);
-                        setOpen(false);
+                        if (semesters) {
+                          setSem(semesters[0]);
+                          setValue("semester", semesters[0]);
+                          setLocalSemesters(semesters);
+                          setValue("studyProgram", currentValue);
+                          setOpen(false);
+                        }
                       }}
                     >
                       <p className="truncate">{studyProgram.title}</p>
