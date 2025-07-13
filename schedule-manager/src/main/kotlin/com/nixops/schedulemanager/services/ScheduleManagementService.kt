@@ -24,7 +24,7 @@ class ScheduleManagementService(
 ) {
   private val scheduleCache: Cache<String, Schedule> =
       Caffeine.newBuilder()
-          .expireAfterAccess(1, TimeUnit.SECONDS)
+          .expireAfterAccess(1, TimeUnit.HOURS)
           .removalListener(
               RemovalListener<String, Schedule> { key, _, cause ->
                 logger.info("Schedule removed: $key, $cause")
