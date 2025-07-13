@@ -2,12 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const scheduleId = req.nextUrl.searchParams.get("scheduleId");
+  const semester = req.nextUrl.searchParams.get("semester");
 
   if (!scheduleId) {
     return NextResponse.json({ error: "Missing scheduleId" }, { status: 400 });
   }
 
-  const backendUrl = `http://localhost:8042/schedule/${scheduleId}/appointments`;
+  if (!semester) {
+    return NextResponse.json({ error: "Missing semester" }, { status: 400 });
+  }
+
+  const backendUrl = `http://localhost:8042/schedule/${scheduleId}/appointments?semester=${semester}`;
 
   try {
     const response = await fetch(backendUrl);

@@ -80,11 +80,14 @@ export function StudyProgramSelector({
     console.log(data);
     if (data.studyProgram && data.semester) {
       updateSemester(data.semester);
-      updateStudyId(
-        studyPrograms.find(
+
+      const newStudyId = studyPrograms.find(
           (studyProgram) => studyProgram.title === data.studyProgram,
-        )?.id,
-      );
+      )?.id
+
+      if (newStudyId) {
+        updateStudyId(newStudyId);
+      }
       setIsDialogOpen(false);
     }
   };

@@ -3,7 +3,7 @@ import { useSessionData } from './session';
 
 interface SessionContextType {
   sessionId: string | null;
-  studyProgram: number | null;
+  studyId: number | null;
   semester: string | null;
   resetSession: () => void;
   updateSemester: (newSemester: string) => void;

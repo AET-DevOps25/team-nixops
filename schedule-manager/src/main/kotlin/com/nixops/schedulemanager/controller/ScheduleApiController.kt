@@ -39,10 +39,9 @@ class ScheduleApiController(
 
   override fun getAppointments(
       scheduleId: String,
+      semester: String
   ): ResponseEntity<List<Appointment>> {
-    val schedule =
-        scheduleManagementService.getSchedule(scheduleId)
-            ?: return ResponseEntity.notFound().build()
+    val schedule = scheduleManagementService.getOrCreateSchedule(scheduleId, semester)
 
     val appointments = mutableListOf<Appointment>()
 
