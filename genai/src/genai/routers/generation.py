@@ -300,7 +300,7 @@ def add_module_to_schedule(
     semester = state["semester"]
 
     response = requests.post(
-        f"http://localhost:8042/schedule/{schedule_id}/modules?semester={semester}",
+        f"${env.schedule_manager_base_url}/schedule/{schedule_id}/modules?semester={semester}",
         json=module_code,
         headers={"Content-Type": "application/json"},
     )
@@ -336,7 +336,7 @@ def remove_module_from_schedule(
     semester = state["semester"]
 
     response = requests.delete(
-        f"http://localhost:8042/schedule/{schedule_id}/modules?semester={semester}",
+        f"${env.schedule_manager_base_url}/schedule/{schedule_id}/modules?semester={semester}",
         json=module_code,
         headers={"Content-Type": "application/json"},
     )
@@ -367,7 +367,7 @@ def get_schedule(state: Annotated[State, InjectedState]) -> List[Document]:
     semester = state["semester"]
 
     response = requests.get(
-        f"http://localhost:8042/schedule/{schedule_id}/modules?semester={semester}"
+        f"${env.schedule_manager_base_url}/schedule/{schedule_id}/modules?semester={semester}"
     )
 
     if response.status_code == 200:
