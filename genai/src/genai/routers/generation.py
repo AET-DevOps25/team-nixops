@@ -44,22 +44,34 @@ class State(TypedDict):
 
 @tool(parse_docstring=True)
 def retrieve_modules(
-    query: str, state: Annotated[State, InjectedState]
+    keywords: List[str], state: Annotated[State, InjectedState]
 ) -> List[Document]:
     """Search and return information about courses and modules available at Munich's technical university TUM.
 
     Args:
-        query: Search query for the lookup
+        keywords: A list of keywords to search for in the course and module descriptions (e.g., "["programming","not languages", "IN0001", "CIT000323"]")
     """
-    print("retrieve modules:", query)
+
+    print("retrieve modules:", keywords)
+
+    # Combine keywords into a single search string
+    combined_query = " ".join(keywords)
+
+    collection_name = f"_{str(state['study_program_id'])}_{state['semester']}"
+
+    print("collection_name:", collection_name)
 
     results = milvus_client.search(
-        collection_name=f"_{str(state['study_program_id'])}_{state['semester']}",
-        data=[embed_text(query)],
+        collection_name=collection_name,
+        data=[embed_text(combined_query)],
         anns_field="description_vec",  # only one anns field can exist
         limit=3,
         output_fields=["name", "id", "code", "description", "courses"],
     )
+
+    for doc in results[0]:
+        print("found:", doc["entity"]["code"], doc["entity"]["name"])
+
     docs = [
         Document(
             "Name:"
@@ -99,7 +111,7 @@ reasoning_llm = ChatOllama(
 
 TOOL_SELECTION_PROMPT = (
     "You are a highly intelligent assistant. Before you decide to execute any tools, "
-    "analyze the user's request: '{}'"
+    "analyze the user's request: '{request}'"
     "If you do not believe executing a tool is necessary, end your statement without further action."
 )
 
@@ -109,11 +121,20 @@ def generate_query_or_respond(state: State):
     the question, it will decide to retrieve using the retriever tool, or simply respond to the user.
     """
 
-    print("call model")
+    schedule_id = state["user_id"]
+    semester = state["semester"]
+
+    print("call model:", schedule_id, semester)
 
     response = reasoning_llm.bind_tools(
-        [retrieve_modules, generate_schedule, add_module_to_schedule, get_schedule]
-    ).invoke(TOOL_SELECTION_PROMPT.format(state["messages"]))
+        [
+            retrieve_modules,
+            generate_schedule,
+            add_module_to_schedule,
+            remove_module_from_schedule,
+            get_schedule,
+        ]
+    ).invoke(TOOL_SELECTION_PROMPT.format(request=state["messages"]))
     return {"messages": [response]}
 
 
@@ -273,14 +294,61 @@ def add_module_to_schedule(
 
     print("add module to schedule:", module_code)
 
-    print("user_id:", state["user_id"])
+    import requests
 
-    state["modules"].append(module_code)
+    schedule_id = state["user_id"]
+    semester = state["semester"]
 
-    mock_schedule = [
-        Document(f"Module {module_code} added"),
-    ]
-    return mock_schedule
+    response = requests.post(
+        f"http://localhost:8042/schedule/{schedule_id}/modules?semester={semester}",
+        json=module_code,
+        headers={"Content-Type": "application/json"},
+    )
+
+    if response.status_code == 200:
+        return Document(f"Module {module_code} added")
+    elif response.status_code == 400:
+        return Document("Invalid module code.")
+    else:
+        return Document(
+            f"Unexpected response: {response.status_code} - {response.text}"
+        )
+
+
+@tool(parse_docstring=True)
+def remove_module_from_schedule(
+    module_code: str,
+    state: Annotated[State, InjectedState],
+    config: RunnableConfig = None,
+) -> List[Document]:
+    """
+    Remove a module from the schedule
+
+    Args:
+        module_code: The code of  amodule (e.g., "IN0001")
+    """
+
+    print("remove module from schedule:", module_code)
+
+    import requests
+
+    schedule_id = state["user_id"]
+    semester = state["semester"]
+
+    response = requests.delete(
+        f"http://localhost:8042/schedule/{schedule_id}/modules?semester={semester}",
+        json=module_code,
+        headers={"Content-Type": "application/json"},
+    )
+
+    if response.status_code == 204:
+        return Document(f"Module {module_code} removed")
+    elif response.status_code == 404:
+        return Document("Module or schedule not found.")
+    else:
+        return Document(
+            f"Unexpected response: {response.status_code} - {response.text}"
+        )
 
 
 @tool(parse_docstring=True)
@@ -293,10 +361,27 @@ def get_schedule(state: Annotated[State, InjectedState]) -> List[Document]:
 
     print("get schedule")
 
-    mock_schedule = [
-        Document(f"Module: {code} Data: todo") for code in state["modules"]
-    ]
-    return mock_schedule
+    import requests
+
+    schedule_id = state["user_id"]
+    semester = state["semester"]
+
+    response = requests.get(
+        f"http://localhost:8042/schedule/{schedule_id}/modules?semester={semester}"
+    )
+
+    if response.status_code == 200:
+        module_list = response.json()
+        if module_list:
+            return Document("Modules in schedule:\n" + "\n".join(module_list))
+        else:
+            return Document("No modules in schedule.")
+    elif response.status_code == 404:
+        return Document("Schedule not found.")
+    else:
+        return Document(
+            f"Unexpected response: {response.status_code} - {response.text}"
+        )
 
 
 checkpointer = InMemorySaver()
@@ -304,7 +389,13 @@ workflow = StateGraph(State)
 workflow.add_node(generate_query_or_respond)
 
 tool_node = ToolNode(
-    [retrieve_modules, generate_schedule, add_module_to_schedule, get_schedule]
+    [
+        retrieve_modules,
+        generate_schedule,
+        add_module_to_schedule,
+        remove_module_from_schedule,
+        get_schedule,
+    ]
 )
 workflow.add_node("tools", tool_node)
 
@@ -321,24 +412,25 @@ workflow.add_conditional_edges(
 )
 
 
-def route_tool_output(state: State) -> Literal["grade_documents", "generate_answer"]:
-    tool_calls = getattr(state["messages"][-1], "tool_calls", None)
-    if not tool_calls:
-        return "generate_answer"
-
-    # Tool name called by the LLM
-    tool_name = tool_calls[0]["name"]
-    if tool_name == "retrieve_modules":
-        return "grade_documents"
+def route_tool_output(state: State) -> Literal["post_retrieval", "generate_answer"]:
+    if state["messages"][-1].name == "retrieve_modules":
+        return "post_retrieval"
     else:
         return "generate_answer"
 
+
+def post_retrieval(state: State) -> dict:
+    print("Running grade_documents node...")
+    return state
+
+
+workflow.add_node("post_retrieval", post_retrieval)
 
 workflow.add_conditional_edges(
     "tools",
     route_tool_output,
     {
-        "grade_documents": "grade_documents",
+        "post_retrieval": "post_retrieval",
         "generate_answer": "generate_answer",
     },
 )
@@ -346,7 +438,7 @@ workflow.add_conditional_edges(
 workflow.add_node("grade_documents", grade_documents)
 
 workflow.add_conditional_edges(
-    "grade_documents",
+    "post_retrieval",
     grade_documents,
     {
         "generate_answer": "generate_answer",

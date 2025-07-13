@@ -2,7 +2,6 @@ package com.nixops.schedulemanager.controller
 
 import com.nixops.openapi.schedulemanager.api.ScheduleApi
 import com.nixops.openapi.schedulemanager.model.Appointment
-import com.nixops.openapi.schedulemanager.model.InitScheduleRequest
 import com.nixops.schedulemanager.metrics.ScheduleMetrics
 import com.nixops.schedulemanager.services.ScheduleManagementService
 import mu.KotlinLogging
@@ -17,35 +16,32 @@ class ScheduleApiController(
     //
     private val scheduleMetrics: ScheduleMetrics,
 ) : ScheduleApi {
+  override fun addModule(scheduleId: String, semester: String, body: String): ResponseEntity<Unit> {
+    val trimmedModuleCode = body.trim().trim('"')
+    scheduleManagementService.addModule(scheduleId, trimmedModuleCode, semester)
+    return ResponseEntity.ok().build()
+  }
 
-  override fun initSchedule(
+  override fun removeModule(
       scheduleId: String,
-      initScheduleRequest: InitScheduleRequest
+      semester: String,
+      body: String
   ): ResponseEntity<Unit> {
-    scheduleManagementService.createSchedule(
-        scheduleId, initScheduleRequest.studyId, initScheduleRequest.semester)
+    val trimmedModuleCode = body.trim().trim('"')
+    scheduleManagementService.removeModule(scheduleId, trimmedModuleCode, semester)
     return ResponseEntity.ok().build()
   }
 
-  override fun addModule(scheduleId: String, body: String): ResponseEntity<Unit> {
-    scheduleManagementService.addModule(scheduleId, body)
-    return ResponseEntity.ok().build()
-  }
-
-  override fun removeModule(scheduleId: String, body: String): ResponseEntity<Unit> {
-    scheduleManagementService.removeModule(scheduleId, body)
-    return ResponseEntity.ok().build()
-  }
-
-  override fun getModules(scheduleId: String): ResponseEntity<List<String>> {
-    val schedule = scheduleManagementService.getModuleCodes(scheduleId).toList()
+  override fun getModules(scheduleId: String, semester: String): ResponseEntity<List<String>> {
+    val schedule = scheduleManagementService.getModuleCodes(scheduleId, semester).toList()
     return ResponseEntity.ok(schedule)
   }
 
-  override fun getAppointments(scheduleId: String): ResponseEntity<List<Appointment>> {
-    val schedule =
-        scheduleManagementService.getSchedule(scheduleId)
-            ?: return ResponseEntity.notFound().build()
+  override fun getAppointments(
+      scheduleId: String,
+      semester: String
+  ): ResponseEntity<List<Appointment>> {
+    val schedule = scheduleManagementService.getOrCreateSchedule(scheduleId, semester)
 
     val appointments = mutableListOf<Appointment>()
 

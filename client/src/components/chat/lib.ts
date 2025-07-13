@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { SSE } from "sse.js";
-import { v4 as uuidv4 } from "uuid";
 
 type Message = {
   id: number;
@@ -8,16 +7,23 @@ type Message = {
   content: string;
 };
 
-function useChat(api: string) {
+function useChat(conversationId: string | null, api: string | null, studyId: number | null, semester: string | null) {
   const [currentQuestion, setCurrentQuestion] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
-  const [conversationId, _] = useState(uuidv4());
   const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
-    if (currentQuestion !== "") {
+    if (currentQuestion !== "" && conversationId !== null && studyId !== null && api !== null) {
       const source = new SSE(
-        api + "/chat?prompt=" + currentQuestion + "&id=" + conversationId,
+        api +
+          "/chat?prompt=" +
+          currentQuestion +
+          "&convId=" +
+          conversationId +
+          "&studyProgramId=" +
+          studyId +
+          "&semester=" +
+          semester,
       );
 
       source.addEventListener("message", (e: any) => {
@@ -28,7 +34,7 @@ function useChat(api: string) {
             ...newMessages[currentMessageIndex],
             content: newMessages[currentMessageIndex].content + e.data,
           };
-          return newMessages; // Return the new state
+          return newMessages;
         });
       });
       source.addEventListener("readystatechange", (e: any) => {
@@ -41,7 +47,7 @@ function useChat(api: string) {
 
       return () => source.close();
     }
-  }, [currentQuestion]);
+  }, [currentQuestion, conversationId, studyId, api]);
 
   const sendMessage = useCallback(
     async (msg: string) => {

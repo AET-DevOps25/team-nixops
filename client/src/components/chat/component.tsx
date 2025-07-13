@@ -13,11 +13,17 @@ import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 import { Copy, CornerDownLeft } from "lucide-react";
 import useChat from "./lib";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import { useSession } from '@/lib/sessionContext';
+
+import { config } from "@/lib/config";
 
 export default function Chat() {
   const [apiUrl, setApiUrl] = useState(null);
   const [loadingApiUrl, setLoadingApiUrl] = useState(true);
+
+  const { sessionId, studyId, semester } = useSession();
 
   // fetch api url dynamically via api route since NEXT_PUBLIC is statically baked in during build-time
   useEffect(() => {
@@ -36,8 +42,15 @@ export default function Chat() {
     fetchData();
   }, []);
 
-  let api = (!loadingApiUrl && apiUrl) || "http://localhost:8000";
-  const { messages, sendMessage, isGenerating } = useChat(api);
+ const prevStudyId = useRef<number | null>(null);
+  const prevSemester = useRef<string | null>(null);
+
+  const { messages, sendMessage, isGenerating } = useChat(
+    sessionId,
+    apiUrl,
+    studyId,
+    semester,
+  );
   const { register, handleSubmit, reset, getValues } = useForm();
 
   const submit = (data: string) => {
