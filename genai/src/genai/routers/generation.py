@@ -367,7 +367,7 @@ def get_schedule(state: Annotated[State, InjectedState]) -> List[Document]:
     semester = state["semester"]
 
     response = requests.get(
-        f"${env.schedule_manager_base_url}/schedule/{schedule_id}/modules?semester={semester}"
+        f"{env.schedule_manager_base_url}/schedule/{schedule_id}/modules?semester={semester}"
     )
 
     if response.status_code == 200:
