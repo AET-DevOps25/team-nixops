@@ -61,8 +61,11 @@ class ScheduleManagementService(
       return
     }
     val module = fetchModule(moduleCode, schedule.semester)
-    if (module != null && schedule.modules.add(module)) {
-      scheduleMetrics.recordModuleAdded(scheduleId, moduleCode)
+    if (module != null) {
+      if (schedule.modules.add(module)) {
+        logger.info("Added module ${module.module.code} to schedule $scheduleId")
+        scheduleMetrics.recordModuleAdded(scheduleId, moduleCode)
+      }
     }
   }
 
