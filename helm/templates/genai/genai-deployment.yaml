@@ -81,7 +81,7 @@ spec:
             - name: POSTGRES_NAME
               value: genai_db
             - name: SCHEDULE_MANAGER_BASE_URL
-              value: http://service-manager-service:8042
+              value: http://schedule-manager-service:8042
           ports:
             - containerPort: {{ .Values.genai.service.targetPort }}
               name: genai-api
