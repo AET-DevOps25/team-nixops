@@ -112,7 +112,13 @@ def generate_query_or_respond(state: State):
     print("call model")
 
     response = reasoning_llm.bind_tools(
-        [retrieve_modules, generate_schedule, add_module_to_schedule, get_schedule]
+        [
+            retrieve_modules,
+            generate_schedule,
+            add_module_to_schedule,
+            remove_module_from_schedule,
+            get_schedule,
+        ]
     ).invoke(TOOL_SELECTION_PROMPT.format(state["messages"]))
     return {"messages": [response]}
 
@@ -273,14 +279,57 @@ def add_module_to_schedule(
 
     print("add module to schedule:", module_code)
 
-    print("user_id:", state["user_id"])
+    import requests
 
-    state["modules"].append(module_code)
+    schedule_id = state["user_id"]
+    response = requests.post(
+        f"http://localhost:8042/schedule/{schedule_id}/modules",
+        json=module_code,
+        headers={"Content-Type": "application/json"},
+    )
 
-    mock_schedule = [
-        Document(f"Module {module_code} added"),
-    ]
-    return mock_schedule
+    if response.status_code == 200:
+        return Document(f"Module {module_code} added")
+    elif response.status_code == 400:
+        return Document("Invalid module code.")
+    else:
+        return Document(
+            f"Unexpected response: {response.status_code} - {response.text}"
+        )
+
+
+@tool(parse_docstring=True)
+def remove_module_from_schedule(
+    module_code: str,
+    state: Annotated[State, InjectedState],
+    config: RunnableConfig = None,
+) -> List[Document]:
+    """
+    Remove a module from the schedule
+
+    Args:
+        module_code: The code of  amodule (e.g., "IN0001")
+    """
+
+    print("remove module from schedule:", module_code)
+
+    import requests
+
+    schedule_id = state["user_id"]
+    response = requests.delete(
+        f"http://localhost:8042/schedule/{schedule_id}/modules",
+        json=module_code,
+        headers={"Content-Type": "application/json"},
+    )
+
+    if response.status_code == 204:
+        return Document(f"Module {module_code} removed")
+    elif response.status_code == 404:
+        return Document("Module or schedule not found.")
+    else:
+        return Document(
+            f"Unexpected response: {response.status_code} - {response.text}"
+        )
 
 
 @tool(parse_docstring=True)
@@ -293,10 +342,23 @@ def get_schedule(state: Annotated[State, InjectedState]) -> List[Document]:
 
     print("get schedule")
 
-    mock_schedule = [
-        Document(f"Module: {code} Data: todo") for code in state["modules"]
-    ]
-    return mock_schedule
+    import requests
+
+    schedule_id = state["user_id"]
+    response = requests.get(f"http://localhost:8042/schedule/{schedule_id}/modules")
+
+    if response.status_code == 200:
+        module_list = response.json()
+        if module_list:
+            return Document("Modules in schedule:\n" + "\n".join(module_list))
+        else:
+            return Document("No modules in schedule.")
+    elif response.status_code == 404:
+        return Document("Schedule not found.")
+    else:
+        return Document(
+            f"Unexpected response: {response.status_code} - {response.text}"
+        )
 
 
 checkpointer = InMemorySaver()
@@ -304,7 +366,13 @@ workflow = StateGraph(State)
 workflow.add_node(generate_query_or_respond)
 
 tool_node = ToolNode(
-    [retrieve_modules, generate_schedule, add_module_to_schedule, get_schedule]
+    [
+        retrieve_modules,
+        generate_schedule,
+        add_module_to_schedule,
+        remove_module_from_schedule,
+        get_schedule,
+    ]
 )
 workflow.add_node("tools", tool_node)
 

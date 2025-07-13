@@ -28,12 +28,14 @@ class ScheduleApiController(
   }
 
   override fun addModule(scheduleId: String, body: String): ResponseEntity<Unit> {
-    scheduleManagementService.addModule(scheduleId, body)
+    val trimmedModuleCode = body.trim().trim('"')
+    scheduleManagementService.addModule(scheduleId, trimmedModuleCode)
     return ResponseEntity.ok().build()
   }
 
   override fun removeModule(scheduleId: String, body: String): ResponseEntity<Unit> {
-    scheduleManagementService.removeModule(scheduleId, body)
+    val trimmedModuleCode = body.trim().trim('"')
+    scheduleManagementService.removeModule(scheduleId, trimmedModuleCode)
     return ResponseEntity.ok().build()
   }
 
