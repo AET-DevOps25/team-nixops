@@ -3,8 +3,10 @@
   box-sizing: border-box;
 }
 
-.fc table {
+.fc table.fc-scrollgrid {
   border-radius: var(--radius);
+  border: 1px solid color-mix(in oklab, var(--ring) 30%, transparent);
+  overflow: hidden;
 }
 
 a.fc-event.fc-daygrid-event[href] {
