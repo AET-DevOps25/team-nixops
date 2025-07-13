@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class ScraperApiClientConfig(private val okHttpClient: OkHttpClient) {
-  @Value("\${embedding-bridge.scraper.base-url}") lateinit var baseUrl: String
+  @Value("\${schedule-manager.scraper.base-url}") lateinit var baseUrl: String
 
   @Bean
   fun scraperClient(): DefaultApi {

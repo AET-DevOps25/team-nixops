@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: schedule-manager-service
+  namespace: "{{ .Values.ServiceNamespace }}"
+spec:
+  selector:
+    app: schedule-manager-selector
+  ports:
+    - port: {{ .Values.schedule_manager.service.port }}
+      targetPort: {{ .Values.schedule_manager.service.targetPort }}
+      protocol: TCP
+  type: {{ .Values.schedule_manager.service.type }}
