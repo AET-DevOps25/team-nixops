@@ -38,6 +38,7 @@ spec:
       containers:
         - name: genai
           image: "{{ .Values.genai.image.repository }}:{{ .Values.genai.image.tag }}"
+          imagePullPolicy: {{ .Values.genai.image.pullPolicy }}
           resources:
             limits:
               cpu: "500m"
