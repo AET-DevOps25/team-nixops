@@ -27,6 +27,10 @@ spec:
           env:
             - name: API_URL
               value: "https://api.nixops-devops25.student.k8s.aet.cit.tum.de"
+            - name: SCHEDULE_MANAGER_BASE_URL
+              value: "http://schedule-manager-service:{{ .Values.schedule_manager.service.targetPort }}"
+            - name: GENAI_BASE_URL
+              value: "http://genai-service:{{ .Values.genai.service.targetPort }}"
           ports:
             - containerPort: {{ .Values.client.service.targetPort }}
               name: client-webui

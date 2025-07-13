@@ -65,7 +65,7 @@ export function StudyProgramSelector({
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `${config.genaiBaseUrl}/embed/studyPrograms`,
+          `${config.apiBaseUrl}/embed/studyPrograms`,
         );
         const result = await response.json();
         setStudyPrograms(result);
