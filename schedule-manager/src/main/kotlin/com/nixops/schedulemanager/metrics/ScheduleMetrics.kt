@@ -8,16 +8,9 @@ import org.springframework.stereotype.Component
 @Component
 class ScheduleMetrics(private val meterRegistry: MeterRegistry) {
 
-  fun recordScheduleCreated(scheduleId: String, studyId: Long, semester: String) {
+  fun recordScheduleCreated(scheduleId: String, semester: String) {
     meterRegistry
-        .counter(
-            "schedule.created",
-            "scheduleId",
-            scheduleId,
-            "studyId",
-            studyId.toString(),
-            "semester",
-            semester)
+        .counter("schedule.created", "scheduleId", scheduleId, "semester", semester)
         .increment()
   }
 
