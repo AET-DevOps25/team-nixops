@@ -1,9 +1,13 @@
 import React, { createContext, useContext, ReactNode } from 'react';
-import { useSessionId } from './sessionId';
+import { useSessionData } from './session';
 
 interface SessionContextType {
   sessionId: string | null;
+  studyProgram: number | null;
+  semester: string | null;
   resetSession: () => void;
+  updateSemester: (newSemester: string) => void;
+  updateStudyId: (newStudyId: string) => void;
 }
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
@@ -13,10 +17,28 @@ interface SessionProviderProps {
 }
 
 export function SessionProvider({ children }: SessionProviderProps) {
-  const { sessionId, resetSession } = useSessionId();
+  const {
+    sessionId,
+    semester,
+    studyId: rawStudyId,
+    resetSession,
+    updateSemester,
+    updateStudyId,
+  } = useSessionData();
+
+  const studyId = rawStudyId ? Number(rawStudyId) : null;
 
   return (
-    <SessionContext.Provider value={{ sessionId, resetSession }}>
+    <SessionContext.Provider
+      value={{
+        sessionId,
+        semester,
+        studyId,
+        resetSession,
+        updateSemester,
+        updateStudyId,
+      }}
+    >
       {children}
     </SessionContext.Provider>
   );

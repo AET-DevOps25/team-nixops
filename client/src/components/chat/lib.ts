@@ -7,13 +7,13 @@ type Message = {
   content: string;
 };
 
-function useChat(conversationId: String | null, api: string, studyProgramId: number, semester: string) {
+function useChat(conversationId: string | null, api: string, studyId: number | null, semester: string | null) {
   const [currentQuestion, setCurrentQuestion] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
-    if (currentQuestion !== "" && conversationId !== null) {
+    if (currentQuestion !== "" && conversationId !== null && studyId !== null) {
       const source = new SSE(
         api +
           "/chat?prompt=" +
@@ -21,7 +21,7 @@ function useChat(conversationId: String | null, api: string, studyProgramId: num
           "&convId=" +
           conversationId +
           "&studyProgramId=" +
-          studyProgramId +
+          studyId +
           "&semester=" +
           semester,
       );

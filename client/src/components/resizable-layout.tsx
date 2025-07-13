@@ -3,7 +3,6 @@
 import React, { useState, useRef, useEffect } from "react"
 
 import { SessionProvider } from '@/lib/sessionContext';
-import { useSession } from '@/lib/sessionContext';
 
 import FullCalendarClient from "@/components/full-calendar-client"
 

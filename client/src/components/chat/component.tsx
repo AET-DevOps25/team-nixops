@@ -17,17 +17,11 @@ import { useEffect, useRef, useState } from "react";
 
 import { useSession } from '@/lib/sessionContext';
 
-export default function Chat({
-  studyProgramId,
-  semester,
-}: {
-  studyProgramId: number;
-  semester: string;
-}) {
+export default function Chat() {
   const [apiUrl, setApiUrl] = useState(null);
   const [loadingApiUrl, setLoadingApiUrl] = useState(true);
 
-  const { sessionId, resetSession } = useSession();
+  const { sessionId, resetSession, studyId, semester } = useSession();
 
   // fetch api url dynamically via api route since NEXT_PUBLIC is statically baked in during build-time
   useEffect(() => {
@@ -46,29 +40,29 @@ export default function Chat({
     fetchData();
   }, []);
 
- const prevStudyProgramId = useRef<number | null>(null);
+ const prevStudyId = useRef<number | null>(null);
   const prevSemester = useRef<string | null>(null);
 
   useEffect(() => {
     if (
-      prevStudyProgramId.current !== null &&
+      prevStudyId.current !== null &&
       prevSemester.current !== null &&
-      (prevStudyProgramId.current !== studyProgramId ||
+      (prevStudyId.current !== studyId ||
         prevSemester.current !== semester)
     ) {
       console.log("Program or semester changed — resetting session");
       resetSession();
     }
 
-    prevStudyProgramId.current = studyProgramId;
+    prevStudyId.current = studyId;
     prevSemester.current = semester;
-  }, [studyProgramId, semester, resetSession]);
+  }, [studyId, semester, resetSession]);
 
   let api = (!loadingApiUrl && apiUrl) || "http://localhost:8000";
   const { messages, sendMessage, isGenerating } = useChat(
     sessionId,
     api,
-    studyProgramId,
+    studyId,
     semester,
   );
   const { register, handleSubmit, reset, getValues } = useForm();

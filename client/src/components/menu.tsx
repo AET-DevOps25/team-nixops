@@ -24,35 +24,27 @@ import { Dialog } from "@/components/ui/dialog";
 import pkg from "../../package.json";
 import { StudyProgramSelector } from "./study-program-selector";
 
+import { useSession } from '@/lib/sessionContext';
+
 const version = pkg.version;
 
-export function MenuOverlay({
-  setStudyProgramId,
-  setSemester,
-  studyProgramId,
-  semester,
-}:{
-  setStudyProgramId: any;
-  setSemester: any;
-  studyProgramId: any;
-  semester: any;
-}) {
+export function MenuOverlay() {
   const { setTheme } = useTheme();
   const [isDialogOpen, setIsDialogOpen] = useState(true);
+
+  const { studyId, semester } = useSession();
 
   return (
     <div className="fixed top-4 left-4 z-30">
       <Dialog
         open={isDialogOpen}
         onOpenChange={(state) => {
-          if (semester && studyProgramId) {
+          if (semester && studyId) {
             setIsDialogOpen(state);
           }
         }}
       >
         <StudyProgramSelector
-          setStudyProgramId={setStudyProgramId}
-          setSemester={setSemester}
           setIsDialogOpen={setIsDialogOpen}
         />
         <DropdownMenu>

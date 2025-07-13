@@ -41,14 +41,14 @@ const weekdayMap: Record<string, number> = {
 export default function FullCalendarClient() {
   const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>([]);
 
-  const { sessionId } = useSession();
+  const { sessionId, semester } = useSession();
 
   useEffect(() => {
     let isMounted = true; // to avoid setting state if unmounted
 
     const fetchAppointments = async () => {
       try {
-        const res = await fetch(`/api/appointments?scheduleId=${sessionId}`);
+        const res = await fetch(`/api/appointments?scheduleId=${sessionId}&semester=${semester}`);
         if (!res.ok) throw new Error("Failed to fetch appointments");
         const appointments: Appointment[] = await res.json();
 

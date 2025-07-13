@@ -38,13 +38,11 @@ import {
 } from "@/components/ui/popover";
 import { useEffect, useState } from "react";
 
+import { useSession } from '@/lib/sessionContext';
+
 export function StudyProgramSelector({
-  setStudyProgramId,
-  setSemester,
   setIsDialogOpen,
 }:{
-  setStudyProgramId: any;
-  setSemester: any;
   setIsDialogOpen: any;
 }) {
   interface StudyProgram {
@@ -52,6 +50,8 @@ export function StudyProgramSelector({
     title: string;
     semesters: string[];
   }
+
+  const { updateStudyId, updateSemester } = useSession();
   
   const [open, setOpen] = useState(false);
   const [sem, setSem] = useState("");
@@ -79,8 +79,8 @@ export function StudyProgramSelector({
   const onSubmit = (data: any) => {
     console.log(data);
     if (data.studyProgram && data.semester) {
-      setSemester(data.semester);
-      setStudyProgramId(
+      updateSemester(data.semester);
+      updateStudyId(
         studyPrograms.find(
           (studyProgram) => studyProgram.title === data.studyProgram,
         )?.id,
