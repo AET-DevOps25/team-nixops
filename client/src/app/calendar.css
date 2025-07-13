@@ -40,6 +40,10 @@ a.fc-event.fc-daygrid-event[href]:visited {
   background-color: var(--main-page-bg-color);
 }
 
+.fc .fc-button {
+  border-radius: var(--radius);
+}
+
 :root {
   --main-page-bg-color: var(--background);
   --fc-small-font-size: .85em;
@@ -51,11 +55,11 @@ a.fc-event.fc-daygrid-event[href]:visited {
   --fc-button-text-color: var(--primary-foreground);
   --fc-button-bg-color: var(--primary);
   --fc-button-border-color: var(--primary-border);
-  --fc-button-hover-bg-color: var(--muted-foreground);
+  --fc-button-hover-bg-color: color-mix(in oklab, var(--primary) 90%, transparent);
   --fc-button-hover-border-color: var(--muted);
   --fc-button-active-bg-color: var(--muted-foreground);
   --fc-button-active-border-color: var(--muted);
-  --fc-button-border-radius: var(--radius);
+  --fc-button-border-radius: calc(var(--radius) + 4px);
 
   --fc-event-bg-color: #007e79;
   --fc-event-border-color: #007e79;
