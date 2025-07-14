@@ -49,6 +49,11 @@ spec:
           env:
             - name: SCHEDULE_MANAGER_SCRAPER_BASE_URL
               value: "http://scraper-service:{{ .Values.scraper.service.targetPort }}"
+            - name: LOGGING_FILE_NAME
+              value: "/app/logs/schedule-manager.log"
+          volumeMounts:
+           - name: shared-alloy-logs # shared space monitored with alloy
+             mountPath: /app/logs
         - name: alloy
           image: grafana/alloy:v1.9.1
           ports:

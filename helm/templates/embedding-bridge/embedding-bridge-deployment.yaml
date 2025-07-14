@@ -53,6 +53,11 @@ spec:
               value: "http://genai-service:{{ .Values.genai.service.targetPort }}"
             - name: EMBEDDING_BRIDGE_INTERVAL
               value: "10s"
+            - name: LOGGING_FILE_NAME
+              value: "/app/logs/embedding-bridge.log"
+          volumeMounts:
+           - name: shared-alloy-logs # shared space monitored with alloy
+             mountPath: /app/logs
         - name: alloy
           image: grafana/alloy:v1.9.1
           ports:
