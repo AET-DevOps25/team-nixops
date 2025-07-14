@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: embedding-bridge
+  name: schedule-manager
   namespace: "{{ .Values.ServiceNamespace }}"
 spec:
-  replicas: {{ .Values.embedding_bridge.replicaCount }}
+  replicas: {{ .Values.schedule_manager.replicaCount }}
   selector:
     matchLabels:
-      app: embedding-bridge-selector
+      app: schedule-manager-selector
   template:
     metadata:
       labels:
-        app: embedding-bridge-selector
+        app: schedule-manager-selector
     spec:
       initContainers:
         - name: init-container
           image: busybox:1.28
-          command: ['sh', '-c','sed -e "s/{hostname}/$NODE_NAME/" -e "s/{podname}/$POD_NAME/" -e "s/{podip}/$POD_IP/"  /tmp/alloy/embedding-bridge_config_template.alloy > /shared/config.alloy']
+          command: ['sh', '-c','sed -e "s/{hostname}/$NODE_NAME/" -e "s/{podname}/$POD_NAME/" -e "s/{podip}/$POD_IP/"  /tmp/alloy/schedule-manager_config_template.alloy > /shared/config.alloy']
           env:
           - name: NODE_NAME
             valueFrom:
@@ -36,9 +36,9 @@ spec:
               - name: shared-alloy-config
                 mountPath: /shared
       containers:
-        - name: embedding-bridge
-          image: "{{ .Values.embedding_bridge.image.repository }}:{{ .Values.embedding_bridge.image.tag }}"
-          imagePullPolicy: {{ .Values.embedding_bridge.image.pullPolicy }}
+        - name: schedule-manager
+          image: "{{ .Values.schedule_manager.image.repository }}:{{ .Values.schedule_manager.image.tag }}"
+          imagePullPolicy: {{ .Values.schedule_manager.image.pullPolicy }}
           resources:
             limits:
               cpu: "500m"
@@ -47,14 +47,10 @@ spec:
               cpu: "200m"
               memory: "256Mi"
           env:
-            - name: EMBEDDING_BRIDGE_SCRAPER_BASE_URL
+            - name: SCHEDULE_MANAGER_SCRAPER_BASE_URL
               value: "http://scraper-service:{{ .Values.scraper.service.targetPort }}"
-            - name: EMBEDDING_BRIDGE_EMBEDDING_BASE_URL
-              value: "http://genai-service:{{ .Values.genai.service.targetPort }}"
-            - name: EMBEDDING_BRIDGE_INTERVAL
-              value: "10s"
             - name: LOGGING_FILE_NAME
-              value: "/app/logs/embedding-bridge.log"
+              value: "/app/logs/schedule-manager.log"
           volumeMounts:
            - name: shared-alloy-logs # shared space monitored with alloy
              mountPath: /app/logs
@@ -83,7 +79,7 @@ spec:
       volumes:
         - name: alloy-config
           configMap:
-            name: embedding-bridge-configmap
+            name: schedule-manager-configmap
         - name: shared-alloy-logs  # shared space monitored with alloy
           emptyDir: 
             sizeLimit: 500Mi

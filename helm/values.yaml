@@ -49,6 +49,17 @@ embedding_bridge:
     pullPolicy: Always
   replicaCount: 1
 
+schedule_manager:
+  image:
+    repository: ghcr.io/aet-devops25/nixops-schedule-manager
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 8042
+    targetPort: 8042
+  replicaCount: 1
+
 ingress:
   enabled: true
   className: "nginx"

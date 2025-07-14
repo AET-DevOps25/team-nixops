@@ -22,3 +22,8 @@ db_name = config("POSTGRES_NAME", default="nixops")
 
 milvus_uri = config("MILVUS_URI", default="http://localhost:19530")
 milvus_token = config("MILVUS_TOKEN", default="root:Milvus")
+
+# Schedule-Manager
+schedule_manager_base_url = config(
+    "SCHEDULE_MANAGER_BASE_URL", default="http://localhost:8042"
+)

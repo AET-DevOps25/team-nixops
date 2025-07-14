@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: schedule-manager-configmap
+  namespace: "{{ .Values.ServiceNamespace }}"
+data:
+  "schedule-manager_config_template.alloy": |
+    livedebugging {
+      enabled = true
+    }
+    local.file_match "files" {
+    	path_targets = [{
+    		__address__ = "localhost",
+    		__path__    = "/app/logs/*.log",
+    		app         = "schedule-manager",
+    		environment = "{podname}",
+    	}]
+    }
+    
+    loki.source.file "files" {
+    	targets               = local.file_match.files.targets
+    	forward_to            = [loki.write.default.receiver]
+    	legacy_positions_file = "/tmp/positions.yaml"
+    }
+    
+    loki.write "default" {
+    	endpoint {
+    		url = "http://monitoring-service.nixops-monitoring.svc.cluster.local:3100/loki/api/v1/push"
+    	}
+    	external_labels = {}
+    }
+    prometheus.remote_write "default" {
+      endpoint {
+    		url = "http://monitoring-service.nixops-monitoring.svc.cluster.local:9090/api/v1/write"
+      }
+    	external_labels = {
+        environment = "{podname}",
+      }
+    }
+    prometheus.scrape "default" {
+      targets = [{
+        __address__ = "127.0.0.1:8040",
+      }]
+      metrics_path    = "/metrics"
+      forward_to = [prometheus.remote_write.default.receiver]
+    }
+
