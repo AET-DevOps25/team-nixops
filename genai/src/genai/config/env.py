@@ -1,12 +1,5 @@
 from decouple import config
 
-# LLM
-llm_api_url = config("LLM_API_URL", default="https://gpu.aet.cit.tum.de/ollama")
-llm_api_key = config("LLM_API_KEY")
-llm_chat_model = config("LLM_CHAT_MODEL", default="llama3.3:latest")
-llm_embedding_model = config("LLM_EMBEDDING_MODEL", default="deepseek-r1:70b")
-llm_chat_temp = config("LLM_CHAT_TEMP", default=0.5, cast=float)
-
 # Web
 cors_origins = config(
     "CORS_ORIGINS",
@@ -27,3 +20,38 @@ milvus_token = config("MILVUS_TOKEN", default="root:Milvus")
 schedule_manager_base_url = config(
     "SCHEDULE_MANAGER_BASE_URL", default="http://localhost:8042"
 )
+
+# Chat
+chat_ai_provider = config("CHAT_AI_PROVIDER", "openai")
+chat_model = config("CHAT_OPENAPI_MODEL", "gpt-4.1-mini")
+chat_api_key = config("CHAT_API_KEY")
+
+## Chat - OpenAI
+chat_ollama_base_url = config("CHAT_OLLAMA_BASE_URL", "")
+
+## Chat - Ollama
+chat_openai_org = config("CHAT_OPENAI_ORG", "")
+
+
+# Reasoning
+reasoning_ai_provider = config("REASONING_AI_PROVIDER", "openai")
+reasoning_model = config("REASONING_OPENAPI_MODEL", "gpt-4.1-mini")
+reasoning_api_key = config("REASONING_API_KEY")
+
+## Reasoning - OpenAI
+reasoning_ollama_base_url = config("REASONING_OLLAMA_BASE_URL", "")
+
+## Reasoning - Ollama
+reasoning_openai_org = config("REASONING_OPENAI_ORG", "")
+
+
+# Embedding
+embedding_ai_provider = config("EMBEDDING_AI_PROVIDER", "openai")
+embedding_model = config("EMBEDDING_OPENAPI_MODEL", "text-embedding-3-small")
+embedding_api_key = config("EMBEDDING_API_KEY")
+
+## Embedding - OpenAI
+embedding_ollama_base_url = config("EMBEDDING_OLLAMA_BASE_URL", "")
+
+## Embedding - Ollama
+embedding_openai_org = config("EMBEDDING_OPENAI_ORG", "")

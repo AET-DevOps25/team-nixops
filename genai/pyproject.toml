@@ -12,6 +12,7 @@ dependencies = [
     "langchain-ollama>=0.3.3",
     "langchain-openai>=0.3.18",
     "langchain[ollama]>=0.3.25",
+    "langchain-community>=0.3.25",
     "langgraph>=0.4.7",
     "openapi_server",
     "pymilvus>=2.5.10",

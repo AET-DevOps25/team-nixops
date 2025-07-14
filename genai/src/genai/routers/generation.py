@@ -5,33 +5,22 @@ from typing_extensions import TypedDict
 from fastapi.responses import StreamingResponse
 from fastapi import APIRouter
 
-from langgraph.graph import StateGraph, START
 from langgraph.graph.message import add_messages
-from langchain_ollama.chat_models import ChatOllama
 from langgraph.checkpoint.memory import InMemorySaver
 from typing import Literal
-from langchain_core.messages import HumanMessage
-from langchain_openai.chat_models import ChatOpenAI
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_openai.embeddings import OpenAIEmbeddings
 from langchain_core.tools import tool
-from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import InjectedState, ToolNode
-from ..db.vector_db import create_collection, embed_text, milvus_client
+from ..db.vector_db import embed_text, milvus_client
 
-from langchain.tools.retriever import create_retriever_tool
-from langchain_core.callbacks import CallbackManagerForRetrieverRun
 from langchain_core.documents import Document
-from langchain_core.retrievers import BaseRetriever
 from langchain_core.runnables.config import RunnableConfig
 from typing import List
 from pydantic import BaseModel, Field
-from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import tools_condition
-from langchain_core.runnables.utils import ConfigurableField
 
 from ..config import env
+from ..clients import chat_client, reasoning_client
 
 
 class State(TypedDict):
@@ -93,22 +82,6 @@ def retrieve_modules(
 
 router = APIRouter()
 
-chat_llm = ChatOllama(
-    model=env.llm_chat_model,
-    temperature=env.llm_chat_temp,
-    base_url=env.llm_api_url,
-    tags=["chatting", "chat"],
-    client_kwargs={"headers": {"Authorization": f"Bearer {env.llm_api_key}"}},
-)
-
-reasoning_llm = ChatOllama(
-    model=env.llm_chat_model,
-    temperature=0,
-    base_url=env.llm_api_url,
-    tags=["reasoning", "system"],
-    client_kwargs={"headers": {"Authorization": f"Bearer {env.llm_api_key}"}},
-)
-
 TOOL_SELECTION_PROMPT = (
     "You are a highly intelligent assistant. Before you decide to execute any tools, "
     "analyze the user's request: '{request}'"
@@ -126,7 +99,7 @@ def generate_query_or_respond(state: State):
 
     print("call model:", schedule_id, semester)
 
-    response = reasoning_llm.bind_tools(
+    response = reasoning_client.bind_tools(
         [
             retrieve_modules,
             generate_schedule,
@@ -177,10 +150,10 @@ def grade_documents(
 
     prompt = GRADE_PROMPT.format(question=question, context=context)
     print(prompt)
-    response = (
-        reasoning_llm.with_structured_output(  # TODO: use separate model with temp zero
-            GradeDocuments
-        ).invoke([{"role": "user", "content": prompt}])
+    response = reasoning_client.with_structured_output(  # TODO: use separate model with temp zero
+        GradeDocuments
+    ).invoke(
+        [{"role": "user", "content": prompt}]
     )
     score = response.binary_score
 
@@ -217,7 +190,7 @@ def rewrite_question(state: State):
             break
 
     prompt = REWRITE_PROMPT.format(question=question)
-    response = reasoning_llm.invoke([{"role": "user", "content": prompt}])
+    response = reasoning_client.invoke([{"role": "user", "content": prompt}])
     return {"messages": [{"role": "user", "content": response.content}]}
 
 
@@ -254,7 +227,7 @@ def generate_answer(state: State):
     prompt = GENERATE_PROMPT.format(
         question=question, context=context, messages=messages
     )
-    response = chat_llm.invoke([{"role": "user", "content": prompt}])
+    response = chat_client.invoke([{"role": "user", "content": prompt}])
     return {"messages": [response]}
 
 
