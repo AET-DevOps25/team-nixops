@@ -178,6 +178,23 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: postgres-storage
+        - name: redis
+          image: redis/redis-stack-server:latest
+          ports:
+            - containerPort: 6379
+              name: redis
+          resources:
+            limits:
+              cpu: "300m"
+              memory: "512Mi"
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+          readinessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 10
+            periodSeconds: 10
       volumes:
       - name: milvus-data
         persistentVolumeClaim:
