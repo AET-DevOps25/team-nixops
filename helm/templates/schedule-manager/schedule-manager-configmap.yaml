@@ -39,7 +39,7 @@ data:
     }
     prometheus.scrape "default" {
       targets = [{
-        __address__ = "127.0.0.1:8040",
+        __address__ = "127.0.0.1:8042",
       }]
       metrics_path    = "/metrics"
       forward_to = [prometheus.remote_write.default.receiver]
