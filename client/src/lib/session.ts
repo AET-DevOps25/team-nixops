@@ -27,21 +27,21 @@ export function useSessionData() {
     }
   }, [generateNewSessionId]);
 
-  const updateSemester = (newSemester: string) => {
-    sessionStorage.setItem('semester', newSemester);
-    setSemester(newSemester);
-  };
-
   const updateStudyId = (newStudyId: string) => {
-    sessionStorage.setItem('studyId', newStudyId);
-    setStudyId(newStudyId);
-  };
-
-  useEffect(() => {
-    if (semester !== null && studyId !== null) {
+    if (studyId !== null && newStudyId !== studyId) {
+      sessionStorage.setItem('studyId', newStudyId);
+      setStudyId(newStudyId);
       generateNewSessionId();
     }
-  }, [semester, studyId, generateNewSessionId]);
+  };
+
+  const updateSemester = (newSemester: string) => {
+    if (semester !== null && newSemester !== semester) {
+      sessionStorage.setItem('semester', newSemester);
+      setSemester(newSemester);
+      generateNewSessionId();
+    }
+  };
 
   return {
     sessionId,

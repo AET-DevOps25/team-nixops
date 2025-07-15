@@ -63,7 +63,7 @@ a.fc-event.fc-daygrid-event[href]:visited {
 
   --fc-event-bg-color: #007e79;
   --fc-event-border-color: #007e79;
-  --fc-event-text-color: #fff;
+  --fc-event-text-color: var(--secondary-foreground);
   --fc-event-selected-overlay-color: rgba(0, 0, 0, 0.25);
 
   --fc-more-link-bg-color: #d0d0d0;
