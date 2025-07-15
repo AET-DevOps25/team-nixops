@@ -391,7 +391,7 @@ def post_retrieval(state: State) -> dict:
 
 
 async def build_graph():
-    valkey_client = AsyncRedis(host="localhost", port=6379, decode_responses=True)
+    valkey_client = AsyncRedis.from_url(env.redis_uri, decode_responses=True)
     checkpointer = TTLRedisSaver(
         ttl_seconds=2 * 60 * 60,
         redis_client=valkey_client,
