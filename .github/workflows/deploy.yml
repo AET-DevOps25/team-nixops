@@ -1,7 +1,12 @@
 name: "Deploy"
 on:
   workflow_run:
-    workflows: ["Build and Release GenAI Docker Image", "Build and Release Scraper Docker Image"]
+    workflows: 
+      - "Build and Release GenAI Docker Image"
+      - "Build and Release Client Docker Image"
+      - "Build and Release Scraper Docker Image"
+      - "Build and Release Embedding-Bridge Docker Image"
+      - "Build and Release Schedule-Manager Docker Image"
     branches: [main]
     types: 
       - completed
@@ -16,7 +21,6 @@ jobs:
     - uses: cachix/cachix-action@v14
       with:
         name: team-nixops
-        # If you chose API tokens for write access OR if you have a private cache
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
     - uses: azure/setup-helm@v4.3.0
     - name: Deploy
@@ -27,11 +31,26 @@ jobs:
 
         GENAI_VERSION="$(nix eval --raw .#genai.version)"
         CLIENT_VERSION="$(nix eval --raw .#client.version)"
-        VAR_FLAGS="--values ./helm/values.ci.yaml --set genai.image.tag=$GENAI_VERSION --set client.image.tag=$CLIENT_VERSION"
+        SCRAPER_VERSION="$(nix eval --raw .#scraper.version)"
+        EMBEDDING_BRIDGE_VERSION="$(nix eval --raw .#embedding-bridge.version)"
+        SCHEDULE_MANAGER_VERSION="$(nix eval --raw .#schedule-manager.version)"
+
+        VAR_FLAGS="--values ./helm/values.ci.yaml \
+          --set genai.image.tag=$GENAI_VERSION \
+          --set client.image.tag=$CLIENT_VERSION \
+          --set scraper.image.tag=$SCRAPER_VERSION \
+          --set embeddingBridge.image.tag=$EMBEDDING_BRIDGE_VERSION \
+          --set scheduleManager.image.tag=$SCHEDULE_MANAGER_VERSION"
+
         echo "Using GenAI version: $GENAI_VERSION"
         echo "Using Client version: $CLIENT_VERSION"
+        echo "Using Scraper version: $SCRAPER_VERSION"
+        echo "Using Embedding-Bridge version: $EMBEDDING_BRIDGE_VERSION"
+        echo "Using Schedule-Manager version: $SCHEDULE_MANAGER_VERSION"
 
         TEMP_KUBECONFIG=$(mktemp)
         echo '${{ secrets.KUBECONFIG }}' > "$TEMP_KUBECONFIG" 
  
         helm upgrade --kubeconfig "$TEMP_KUBECONFIG"  "$RELEASE_NAME" "$CHART_NAME" -n "$NAMESPACE" --install $VAR_FLAGS
+
+        rm -f "$TEMP_KUBECONFIG"
