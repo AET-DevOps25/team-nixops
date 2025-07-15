@@ -28,6 +28,11 @@ type CalendarEvent = {
   allDay?: boolean;
 };
 
+const appointmentTypeColors: Record<string, string> = {
+  lecture: "color-mix(in srgb, var(--chart-1) 70%, gray 30%)",
+  tutorial: "color-mix(in srgb, var(--chart-2) 70%, gray 30%)"
+};
+
 const weekdayMap: Record<string, number> = {
   Mo: 1,
   Di: 2,
@@ -79,9 +84,10 @@ export default function FullCalendarClient() {
 
               events.push({
                 id: `${appt.moduleCode}-${index}-${start.toISOString()}`,
-                title: `${appt.moduleTitle} (${appt.appointmentType})`,
+                title: `[${appt.moduleCode}] ${appt.moduleTitle} (${appt.appointmentType})`,
                 start: start.toISOString(),
                 end: end.toISOString(),
+                color: appointmentTypeColors[appt.appointmentType] || "#3b82f6",
               });
             }
           }

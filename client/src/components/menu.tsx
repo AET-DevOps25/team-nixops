@@ -3,7 +3,7 @@
 import React from "react";
 import { Moon, Sun, SunMoon, CodeXml, Menu } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useState } from "react";
+import { useState, useEffect} from "react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
