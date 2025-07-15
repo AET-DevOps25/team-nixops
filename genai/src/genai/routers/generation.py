@@ -1,26 +1,41 @@
 from asyncio import sleep
+import asyncio
 from typing import Annotated
 from typing_extensions import TypedDict
+from typing import List
+from typing import Literal
 
 from fastapi.responses import StreamingResponse
 from fastapi import APIRouter
 
 from langgraph.graph.message import add_messages
 from langgraph.checkpoint.memory import InMemorySaver
-from typing import Literal
 from langchain_core.tools import tool
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import InjectedState, ToolNode
-from ..db.vector_db import embed_text, milvus_client
-
 from langchain_core.documents import Document
 from langchain_core.runnables.config import RunnableConfig
-from typing import List
 from pydantic import BaseModel, Field
 from langgraph.prebuilt import tools_condition
 
+from langgraph.checkpoint.redis import AsyncRedisSaver
+from redis.asyncio import Redis as AsyncRedis
+
+from ..db.vector_db import embed_text, milvus_client
 from ..config import env
 from ..clients import chat_client, reasoning_client
+
+
+class TTLRedisSaver(AsyncRedisSaver):
+    def __init__(self, *args, ttl_seconds=600, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ttl_seconds = ttl_seconds
+
+    async def awrite(self, config, state):
+        result = await super().awrite(config, state)
+        key = self._get_key(config)
+        await self.client.expire(key, self.ttl_seconds)
+        return result
 
 
 class State(TypedDict):
@@ -83,9 +98,10 @@ def retrieve_modules(
 router = APIRouter()
 
 TOOL_SELECTION_PROMPT = (
-    "You are a highly intelligent assistant. Before you decide to execute any tools, "
-    "analyze the user's request: '{request}'"
-    "If you do not believe executing a tool is necessary, end your statement without further action."
+    "You are a university assistant that helps students manage their semester schedules, choose suitable modules, "
+    "and understand module details. Carefully analyze the user's request: '{request}'. "
+    "Use tools whenever they help you retrieve information, manage the schedule, or improve your response. "
+    "If a tool is not needed to fulfill the request effectively, respond directly instead."
 )
 
 
@@ -149,7 +165,6 @@ def grade_documents(
             break
 
     prompt = GRADE_PROMPT.format(question=question, context=context)
-    print(prompt)
     response = reasoning_client.with_structured_output(  # TODO: use separate model with temp zero
         GradeDocuments
     ).invoke(
@@ -198,7 +213,8 @@ GENERATE_PROMPT = (
     "You are an assistant for question-answering tasks. "
     "Use the following pieces of retrieved context to answer the question. "
     "If you don't know the answer, just say that you don't know. "
-    "Use three sentences maximum and keep the answer concise.\n"
+    "Use three sentences maximum and keep the answer concise."
+    "If you just edited the schedule, do not recap module contents unless asked to do so\n"
     "Question: {question} \n"
     "Context: {context} \n"
     "Previous messages: {messages}"
@@ -357,7 +373,13 @@ def get_schedule(state: Annotated[State, InjectedState]) -> List[Document]:
         )
 
 
-checkpointer = InMemorySaver()
+valkey_client = AsyncRedis(host="localhost", port=6379, decode_responses=True)
+
+checkpointer = checkpointer = TTLRedisSaver(
+    ttl_seconds=2 * 60 * 60,
+    redis_client=valkey_client,
+)
+
 workflow = StateGraph(State)
 workflow.add_node(generate_query_or_respond)
 
@@ -428,6 +450,8 @@ graph = workflow.compile(checkpointer=checkpointer)
 
 @router.get("/chat")
 async def stream_response(prompt: str, convId: str, studyProgramId: int, semester: str):
+    await checkpointer.asetup()
+
     async def generate(
         user_input: str, user_id: str, study_program: int, semester: str
     ):
