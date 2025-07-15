@@ -72,7 +72,7 @@ spec:
             - name: SCHEDULE_MANAGER_BASE_URL
               value: http://schedule-manager-service:8042
 
-            - name: REDIS_URL
+            - name: REDIS_URI
               value: "redis://genai-db-service:6379"
 
             - name: DEFAULT_AI_PROVIDER
