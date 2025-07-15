@@ -21,37 +21,37 @@ schedule_manager_base_url = config(
     "SCHEDULE_MANAGER_BASE_URL", default="http://localhost:8042"
 )
 
-# Chat
-chat_ai_provider = config("CHAT_AI_PROVIDER", "openai")
-chat_model = config("CHAT_OPENAPI_MODEL", "gpt-4.1-mini")
-chat_api_key = config("CHAT_API_KEY")
+# === Defaults ===
+default_ai_provider = config("DEFAULT_AI_PROVIDER", default="openai")
+default_model = config("DEFAULT_MODEL", default="gpt-4.1-mini")
+default_embedding_model = config(
+    "DEFAULT_EMBEDDING_MODEL", default="text-embedding-3-small"
+)
+default_api_key = config("DEFAULT_API_KEY", default="")
+default_ollama_base_url = config("DEFAULT_OLLAMA_BASE_URL", default="")
+default_openai_org = config("DEFAULT_OPENAI_ORG", default="")
 
-## Chat - OpenAI
-chat_ollama_base_url = config("CHAT_OLLAMA_BASE_URL", "")
+# === Chat ===
+chat_ai_provider = config("CHAT_AI_PROVIDER", default=default_ai_provider)
+chat_model = config("CHAT_MODEL", default=default_model)
+chat_api_key = config("CHAT_API_KEY", default=default_api_key)
+chat_ollama_base_url = config("CHAT_OLLAMA_BASE_URL", default=default_ollama_base_url)
+chat_openai_org = config("CHAT_OPENAI_ORG", default=default_openai_org)
 
-## Chat - Ollama
-chat_openai_org = config("CHAT_OPENAI_ORG", "")
+# === Reasoning ===
+reasoning_ai_provider = config("REASONING_AI_PROVIDER", default=chat_ai_provider)
+reasoning_model = config("REASONING_MODEL", default=chat_model)
+reasoning_api_key = config("REASONING_API_KEY", default=chat_api_key)
+reasoning_ollama_base_url = config(
+    "REASONING_OLLAMA_BASE_URL", default=chat_ollama_base_url
+)
+reasoning_openai_org = config("REASONING_OPENAI_ORG", default=chat_openai_org)
 
-
-# Reasoning
-reasoning_ai_provider = config("REASONING_AI_PROVIDER", "openai")
-reasoning_model = config("REASONING_OPENAPI_MODEL", "gpt-4.1-mini")
-reasoning_api_key = config("REASONING_API_KEY")
-
-## Reasoning - OpenAI
-reasoning_ollama_base_url = config("REASONING_OLLAMA_BASE_URL", "")
-
-## Reasoning - Ollama
-reasoning_openai_org = config("REASONING_OPENAI_ORG", "")
-
-
-# Embedding
-embedding_ai_provider = config("EMBEDDING_AI_PROVIDER", "openai")
-embedding_model = config("EMBEDDING_OPENAPI_MODEL", "text-embedding-3-small")
-embedding_api_key = config("EMBEDDING_API_KEY")
-
-## Embedding - OpenAI
-embedding_ollama_base_url = config("EMBEDDING_OLLAMA_BASE_URL", "")
-
-## Embedding - Ollama
-embedding_openai_org = config("EMBEDDING_OPENAI_ORG", "")
+# === Embedding ===
+embedding_ai_provider = config("EMBEDDING_AI_PROVIDER", default=default_ai_provider)
+embedding_model = config("EMBEDDING_MODEL", default=default_embedding_model)
+embedding_api_key = config("EMBEDDING_API_KEY", default=chat_api_key)
+embedding_ollama_base_url = config(
+    "EMBEDDING_OLLAMA_BASE_URL", default=chat_ollama_base_url
+)
+embedding_openai_org = config("EMBEDDING_OPENAI_ORG", default=chat_openai_org)
