@@ -1,11 +1,14 @@
 from typing import List
 from typing import Optional
+
 from sqlalchemy import Column, ForeignKey, Table
 from sqlalchemy import String
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Session
+from sqlalchemy.exc import NoResultFound
 from sqlalchemy import create_engine
 
 from ..config import env
@@ -62,3 +65,25 @@ engine = create_engine(database_uri, echo=True)
 
 def create_db_and_tables():
     Base.metadata.create_all(engine)
+
+
+def get_study_program_id_by_name(name: str) -> Optional[int]:
+    with Session(engine) as session:
+        try:
+            program = (
+                session.query(StudyProgram).filter(StudyProgram.name == name).one()
+            )
+            return program.id
+        except NoResultFound:
+            return None
+
+
+def get_study_program_name_by_id(program_id: int) -> Optional[str]:
+    with Session(engine) as session:
+        try:
+            program = (
+                session.query(StudyProgram).filter(StudyProgram.id == program_id).one()
+            )
+            return program.name
+        except NoResultFound:
+            return None

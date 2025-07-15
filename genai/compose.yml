@@ -77,6 +77,17 @@ services:
       timeout: 10s
       retries: 5
 
+  redis:
+    container_name: redis-stack
+    image: redis/redis-stack-server:latest
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
 volumes:
   minio:
   milvus:

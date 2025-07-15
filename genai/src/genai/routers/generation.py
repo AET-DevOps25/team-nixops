@@ -1,45 +1,50 @@
 from asyncio import sleep
+import asyncio
 from typing import Annotated
 from typing_extensions import TypedDict
+from typing import List
+from typing import Literal
 
 from fastapi.responses import StreamingResponse
 from fastapi import APIRouter
 
-from langgraph.graph import StateGraph, START
 from langgraph.graph.message import add_messages
-from langchain_ollama.chat_models import ChatOllama
 from langgraph.checkpoint.memory import InMemorySaver
-from typing import Literal
-from langchain_core.messages import HumanMessage
-from langchain_openai.chat_models import ChatOpenAI
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_openai.embeddings import OpenAIEmbeddings
 from langchain_core.tools import tool
-from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import InjectedState, ToolNode
-from ..db.vector_db import create_collection, embed_text, milvus_client
-
-from langchain.tools.retriever import create_retriever_tool
-from langchain_core.callbacks import CallbackManagerForRetrieverRun
 from langchain_core.documents import Document
-from langchain_core.retrievers import BaseRetriever
 from langchain_core.runnables.config import RunnableConfig
-from typing import List
 from pydantic import BaseModel, Field
-from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import tools_condition
-from langchain_core.runnables.utils import ConfigurableField
 
+from langgraph.checkpoint.redis import AsyncRedisSaver
+from redis.asyncio import Redis as AsyncRedis
+
+from ..db.vector_db import embed_text, milvus_client
+from ..db.relational_db import get_study_program_name_by_id
 from ..config import env
+from ..clients import chat_client, reasoning_client
+
+
+class TTLRedisSaver(AsyncRedisSaver):
+    def __init__(self, *args, ttl_seconds=600, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ttl_seconds = ttl_seconds
+
+    async def awrite(self, config, state):
+        result = await super().awrite(config, state)
+        key = self._get_key(config)
+        await self.client.expire(key, self.ttl_seconds)
+        return result
 
 
 class State(TypedDict):
     messages: Annotated[list, add_messages]
     study_program_id: int
+    study_program_name: str
     semester: str
     user_id: str
-    modules: List[str]
 
 
 @tool(parse_docstring=True)
@@ -93,26 +98,11 @@ def retrieve_modules(
 
 router = APIRouter()
 
-chat_llm = ChatOllama(
-    model=env.llm_chat_model,
-    temperature=env.llm_chat_temp,
-    base_url=env.llm_api_url,
-    tags=["chatting", "chat"],
-    client_kwargs={"headers": {"Authorization": f"Bearer {env.llm_api_key}"}},
-)
-
-reasoning_llm = ChatOllama(
-    model=env.llm_chat_model,
-    temperature=0,
-    base_url=env.llm_api_url,
-    tags=["reasoning", "system"],
-    client_kwargs={"headers": {"Authorization": f"Bearer {env.llm_api_key}"}},
-)
-
 TOOL_SELECTION_PROMPT = (
-    "You are a highly intelligent assistant. Before you decide to execute any tools, "
-    "analyze the user's request: '{request}'"
-    "If you do not believe executing a tool is necessary, end your statement without further action."
+    "You are a university assistant that helps students helping students in the study program '{study_program_name}' manage their semester schedules, choose suitable modules, "
+    "and understand module details. Carefully analyze the user's request: '{request}'. "
+    "Use tools whenever they help you retrieve information, manage the schedule, or improve your response. "
+    "If a tool is not needed to fulfill the request effectively, respond directly instead."
 )
 
 
@@ -126,7 +116,7 @@ def generate_query_or_respond(state: State):
 
     print("call model:", schedule_id, semester)
 
-    response = reasoning_llm.bind_tools(
+    response = reasoning_client.bind_tools(
         [
             retrieve_modules,
             generate_schedule,
@@ -134,7 +124,11 @@ def generate_query_or_respond(state: State):
             remove_module_from_schedule,
             get_schedule,
         ]
-    ).invoke(TOOL_SELECTION_PROMPT.format(request=state["messages"]))
+    ).invoke(
+        TOOL_SELECTION_PROMPT.format(
+            request=state["messages"], study_program_name=state["study_program_name"]
+        )
+    )
     return {"messages": [response]}
 
 
@@ -176,11 +170,10 @@ def grade_documents(
             break
 
     prompt = GRADE_PROMPT.format(question=question, context=context)
-    print(prompt)
-    response = (
-        reasoning_llm.with_structured_output(  # TODO: use separate model with temp zero
-            GradeDocuments
-        ).invoke([{"role": "user", "content": prompt}])
+    response = reasoning_client.with_structured_output(  # TODO: use separate model with temp zero
+        GradeDocuments
+    ).invoke(
+        [{"role": "user", "content": prompt}]
     )
     score = response.binary_score
 
@@ -217,7 +210,7 @@ def rewrite_question(state: State):
             break
 
     prompt = REWRITE_PROMPT.format(question=question)
-    response = reasoning_llm.invoke([{"role": "user", "content": prompt}])
+    response = reasoning_client.invoke([{"role": "user", "content": prompt}])
     return {"messages": [{"role": "user", "content": response.content}]}
 
 
@@ -225,7 +218,8 @@ GENERATE_PROMPT = (
     "You are an assistant for question-answering tasks. "
     "Use the following pieces of retrieved context to answer the question. "
     "If you don't know the answer, just say that you don't know. "
-    "Use three sentences maximum and keep the answer concise.\n"
+    "Use three sentences maximum and keep the answer concise."
+    "If you just edited the schedule, do not recap module contents unless asked to do so\n"
     "Question: {question} \n"
     "Context: {context} \n"
     "Previous messages: {messages}"
@@ -254,7 +248,7 @@ def generate_answer(state: State):
     prompt = GENERATE_PROMPT.format(
         question=question, context=context, messages=messages
     )
-    response = chat_llm.invoke([{"role": "user", "content": prompt}])
+    response = chat_client.invoke([{"role": "user", "content": prompt}])
     return {"messages": [response]}
 
 
@@ -384,34 +378,6 @@ def get_schedule(state: Annotated[State, InjectedState]) -> List[Document]:
         )
 
 
-checkpointer = InMemorySaver()
-workflow = StateGraph(State)
-workflow.add_node(generate_query_or_respond)
-
-tool_node = ToolNode(
-    [
-        retrieve_modules,
-        generate_schedule,
-        add_module_to_schedule,
-        remove_module_from_schedule,
-        get_schedule,
-    ]
-)
-workflow.add_node("tools", tool_node)
-
-workflow.add_edge(START, "generate_query_or_respond")
-
-# Decide whether to retrieve
-workflow.add_conditional_edges(
-    "generate_query_or_respond",
-    tools_condition,
-    {
-        "tools": "tools",
-        END: "generate_answer",
-    },
-)
-
-
 def route_tool_output(state: State) -> Literal["post_retrieval", "generate_answer"]:
     if state["messages"][-1].name == "retrieve_modules":
         return "post_retrieval"
@@ -424,37 +390,78 @@ def post_retrieval(state: State) -> dict:
     return state
 
 
-workflow.add_node("post_retrieval", post_retrieval)
+async def build_graph():
+    valkey_client = AsyncRedis.from_url(env.redis_uri, decode_responses=True)
+    checkpointer = TTLRedisSaver(
+        ttl_seconds=2 * 60 * 60,
+        redis_client=valkey_client,
+    )
+    await checkpointer.asetup()
 
-workflow.add_conditional_edges(
-    "tools",
-    route_tool_output,
-    {
-        "post_retrieval": "post_retrieval",
-        "generate_answer": "generate_answer",
-    },
-)
+    workflow = StateGraph(State)
+    workflow.add_node(generate_query_or_respond)
 
-workflow.add_node("grade_documents", grade_documents)
+    tool_node = ToolNode(
+        [
+            retrieve_modules,
+            generate_schedule,
+            add_module_to_schedule,
+            remove_module_from_schedule,
+            get_schedule,
+        ]
+    )
+    workflow.add_node("tools", tool_node)
 
-workflow.add_conditional_edges(
-    "post_retrieval",
-    grade_documents,
-    {
-        "generate_answer": "generate_answer",
-        "rewrite_question": "rewrite_question",
-    },
-)
+    workflow.add_edge(START, "generate_query_or_respond")
 
-workflow.add_node(rewrite_question)
-workflow.add_node(generate_answer)
-workflow.add_edge("generate_answer", END)
-workflow.add_edge("rewrite_question", "generate_query_or_respond")
-graph = workflow.compile(checkpointer=checkpointer)
+    # Decide whether to retrieve
+    workflow.add_conditional_edges(
+        "generate_query_or_respond",
+        tools_condition,
+        {
+            "tools": "tools",
+            END: "generate_answer",
+        },
+    )
+
+    workflow.add_node("post_retrieval", post_retrieval)
+
+    workflow.add_conditional_edges(
+        "tools",
+        route_tool_output,
+        {
+            "post_retrieval": "post_retrieval",
+            "generate_answer": "generate_answer",
+        },
+    )
+
+    workflow.add_node("grade_documents", grade_documents)
+
+    workflow.add_conditional_edges(
+        "post_retrieval",
+        grade_documents,
+        {
+            "generate_answer": "generate_answer",
+            "rewrite_question": "rewrite_question",
+        },
+    )
+
+    workflow.add_node(rewrite_question)
+    workflow.add_node(generate_answer)
+    workflow.add_edge("generate_answer", END)
+    workflow.add_edge("rewrite_question", "generate_query_or_respond")
+    return workflow.compile(checkpointer=checkpointer)
 
 
 @router.get("/chat")
 async def stream_response(prompt: str, convId: str, studyProgramId: int, semester: str):
+    study_program_name = get_study_program_name_by_id(studyProgramId)
+
+    if study_program_name is None:
+        return {"error": f"No study program found with ID '{studyProgramId}'"}
+
+    graph = await build_graph()
+
     async def generate(
         user_input: str, user_id: str, study_program: int, semester: str
     ):
@@ -463,9 +470,9 @@ async def stream_response(prompt: str, convId: str, studyProgramId: int, semeste
             {
                 "messages": [("user", user_input)],
                 "study_program_id": study_program,
+                "study_program_name": study_program_name,
                 "semester": semester,
                 "user_id": user_id,
-                "modules": [],
             },
             config=config,
             stream_mode="messages",
