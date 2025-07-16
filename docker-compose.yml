@@ -1,0 +1,168 @@
+services:
+  # Client application
+  client:
+    image: ghcr.io/aet-devops25/nixops-client:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - API_URL=http://genai:8000
+      - SCHEDULE_MANAGER_BASE_URL=http://schedule-manager:8042
+      - GENAI_BASE_URL=http://genai:8000
+
+  # GenAI service
+  genai:
+    image: ghcr.io/aet-devops25/nixops-genai:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - CORS_ORIGINS=http://localhost:3000
+      - MILVUS_URI=http://milvus:19530
+      - POSTGRES_HOST=postgres
+      - POSTGRES_USER=${GENAI_POSTGRES_USER:-pguser}
+      - POSTGRES_PASS=${GENAI_POSTGRES_PASSWORD:-pgpass}
+      - POSTGRES_NAME=genai_db
+      - SCHEDULE_MANAGER_BASE_URL=http://schedule-manager:8042
+      - REDIS_URI=redis://redis:6379
+      - DEFAULT_AI_PROVIDER=openai
+      - DEFAULT_MODEL=gpt-4.1-mini
+      - DEFAULT_EMBEDDING_MODEL=text-embedding-3-small
+      - DEFAULT_API_KEY=${GENAI_API_KEY}
+      - DEFAULT_OPENAI_ORG=${GENAI_OPENAI_ORG}
+      - DEFAULT_OLLAMA_BASE_URL=${GENAI_OLLAMA_BASE_URL}
+      - LOGGING_FILENAME=/dev/null
+    depends_on:
+      - milvus
+      - postgres
+      - redis
+
+  # Milvus stack
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.18
+    environment:
+      - ETCD_AUTO_COMPACTION_MODE=revision
+      - ETCD_AUTO_COMPACTION_RETENTION=1000
+      - ETCD_QUOTA_BACKEND_BYTES=4294967296
+      - ETCD_SNAPSHOT_COUNT=50000
+    command: etcd -advertise-client-urls=http://etcd:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+    # volumes:
+    #   - etcd-data:/etcd
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  minio:
+    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
+    environment:
+      - MINIO_ROOT_USER=${MINIO_USER:-minioadmin}
+      - MINIO_ROOT_PASSWORD=${MINIO_PASSWORD:-minioadmin}
+    ports:
+      - "9001:9001"
+      - "9000:9000"
+    command: minio server /minio_data --console-address ":9001"
+    # volumes:
+    #   - minio-data:/minio_data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  milvus:
+    image: milvusdb/milvus:v2.5.13
+    command: ["milvus", "run", "standalone"]
+    environment:
+      - MINIO_REGION=us-east-1
+      - ETCD_ENDPOINTS=etcd:2379
+      - MINIO_ADDRESS=minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_USER:-minioadmin}
+      - MINIO_SECRET_ACCESS_KEY=${MINIO_PASSWORD:-minioadmin}
+    ports:
+      - "19530:19530"
+      - "9091:9091"
+    # volumes:
+    #   - milvus-data:/var/lib/milvus
+    depends_on:
+      - etcd
+      - minio
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      start_period: 90s
+      timeout: 20s
+      retries: 3
+
+  # Database services
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=${GENAI_POSTGRES_USER:-pguser}
+      - POSTGRES_PASSWORD=${GENAI_POSTGRES_PASSWORD:-pgpass}
+      - POSTGRES_DB=genai_db
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${GENAI_POSTGRES_USER:-pguser}" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  redis:
+    image: redis/redis-stack-server:latest
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Scraper service
+  scraper:
+    image: ghcr.io/aet-devops25/nixops-scraper:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://scraper-db:5432/scraper_db
+      - SPRING_DATASOURCE_USERNAME=${SCRAPER_POSTGRES_USER:-scraperuser}
+      - SPRING_DATASOURCE_PASSWORD=${SCRAPER_POSTGRES_PASSWORD:-scraperpass}
+      - SCRAPER_EMBEDDING_ENDPOINT=http://genai:8000
+    depends_on:
+      - scraper-db
+
+  scraper-db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=${SCRAPER_POSTGRES_USER:-scraperuser}
+      - POSTGRES_PASSWORD=${SCRAPER_POSTGRES_PASSWORD:-scraperpass}
+      - POSTGRES_DB=scraper_db
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - scraper-db-data:/var/lib/postgresql/data
+
+  # Schedule manager
+  schedule-manager:
+    image: ghcr.io/aet-devops25/nixops-schedule-manager:latest
+    ports:
+      - "8042:8042"
+    environment:
+      - SCHEDULE_MANAGER_SCRAPER_BASE_URL=http://scraper:8080
+
+  # Embedding bridge
+  embedding-bridge:
+    image: ghcr.io/aet-devops25/nixops-embedding-bridge:latest
+    environment:
+      - EMBEDDING_BRIDGE_SCRAPER_BASE_URL=http://scraper:8080
+      - EMBEDDING_BRIDGE_EMBEDDING_BASE_URL=http://genai:8000
+      - EMBEDDING_BRIDGE_INTERVAL=10s
+
+volumes:
+  milvus-data:
+  minio-data:
+  etcd-data:
+  postgres-data:
+  scraper-db-data:

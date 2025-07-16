@@ -15,6 +15,7 @@ spec:
     - hosts:
         - "nixops-devops25.student.k8s.aet.cit.tum.de"
         - "api.nixops-devops25.student.k8s.aet.cit.tum.de"
+        - "scraper.nixops-devops25.student.k8s.aet.cit.tum.de"
       secretName: "nixops-devops25-tls"
   {{- end }}
   rules:
