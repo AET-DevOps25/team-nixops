@@ -25,7 +25,7 @@ from ..db.relational_db import get_study_program_name_by_id
 
 from ..config import env
 from ..clients import chat_client, reasoning_client
-from ..config.telemetry import vecdb_query_counter, vecdb_rephrase_query_counter
+from ..config import telemetry
 
 
 class TTLRedisSaver(AsyncRedisSaver):
@@ -58,7 +58,7 @@ def retrieve_modules(
         keywords: A list of keywords to search for in the course and module descriptions (e.g., "["programming","not languages", "IN0001", "CIT000323"]")
     """
     info(f"retrieve modules: {keywords}")
-    vecdb_query_counter.add(1)
+    telemetry.vecdb_query_counter.add(1)
 
     # Combine keywords into a single search string
     combined_query = " ".join(keywords)
@@ -199,7 +199,7 @@ def rewrite_question(state: State):
     """Rewrite the original user question."""
 
     info("rewrite question")
-    vecdb_rephrase_query_counter.add(1)
+    telemetry.vecdb_rephrase_query_counter.add(1)
 
     messages = state["messages"]
     question = messages[-2].content

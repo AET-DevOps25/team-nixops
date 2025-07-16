@@ -16,25 +16,27 @@ def init_telemetry(app: FastAPI):
     reader = PrometheusMetricReader()
     provider = MeterProvider(resource=resource, metric_readers=[reader])
     metrics.set_meter_provider(provider)
-    meter = metrics.get_meter(__name__)
-    genai_release_version_metric = meter.create_counter(
-        "genai_release_version",
-        description="Counter for GenAI release version",
-    )
-
-    version = importlib.metadata.version("genai")
-    genai_release_version_metric.add(1, {"version": version})
-
-    vecdb_query_counter = meter.create_counter(
-        name="vecdb_query",
-        unit="1",
-        description="The number of vector db tool calls",
-    )
-    vecdb_rephrase_query_counter = meter.create_counter(
-        name="rephrase_vecdb_query",
-        unit="1",
-        description="The number of rephrases during a vector db tool call",
-    )
 
     metrics_app = make_asgi_app()
     app.mount("/metrics", metrics_app)
+
+
+meter = metrics.get_meter(__name__)
+genai_release_version_metric = meter.create_counter(
+    "genai_release_version",
+    description="Counter for GenAI release version",
+)
+
+version = importlib.metadata.version("genai")
+genai_release_version_metric.add(1, {"version": version})
+
+vecdb_query_counter = meter.create_counter(
+    name="vecdb_query",
+    unit="1",
+    description="The number of vector db tool calls",
+)
+vecdb_rephrase_query_counter = meter.create_counter(
+    name="rephrase_vecdb_query",
+    unit="1",
+    description="The number of rephrases during a vector db tool call",
+)
