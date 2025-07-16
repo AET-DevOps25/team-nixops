@@ -15,6 +15,8 @@ optimize, and refine their semester plans with ease.
 Leveraging GenAI, the tool offers personalized course recommendations,
 conflict-free scheduling, and an interactive planning experience tailored to user preferences, academic goals, and interests.
 
+![](./resources/demo.jpeg)
+
 ##  Microservice Architecture
 
 ### client
