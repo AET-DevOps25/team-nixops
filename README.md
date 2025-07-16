@@ -1,5 +1,12 @@
 # TUM Scheduler – AI-Powered Semester Planner
-[![Deploy](https://github.com/AET-DevOps25/team-nixops/actions/workflows/deploy.yml/badge.svg)](https://github.com/AET-DevOps25/team-nixops/actions/workflows/deploy.yml)
+[![Build Client](https://img.shields.io/badge/Build_Client-passing-brightgreen)](https://github.com/AET-DevOps25/team-nixops/actions/workflows/client-dev.yml)
+[![Build Embedding-Bridge](https://img.shields.io/badge/Build_Embedding_Bridge-passing-brightgreen)](https://github.com/AET-DevOps25/team-nixops/actions/workflows/embedding-bridge-dev.yml)
+[![Build GenAI](https://img.shields.io/badge/Build_GenAI-passing-brightgreen)](https://github.com/AET-DevOps25/team-nixops/actions/workflows/genai-dev.yml)
+[![Build Schedule Manager](https://img.shields.io/badge/Build_Schedule_Manager-passing-brightgreen)](https://github.com/AET-DevOps25/team-nixops/actions/workflows/schedule-manager-dev.yml)
+[![Build Scraper](https://img.shields.io/badge/Build_Scraper-passing-brightgreen)](https://github.com/AET-DevOps25/team-nixops/actions/workflows/scraper-dev.yml)
+
+[![Deploy](https://img.shields.io/badge/Deploy-passing-brightgreen)](https://github.com/AET-DevOps25/team-nixops/actions/workflows/deploy.yml)
+[![Build Infrastructure](https://img.shields.io/badge/Build_Infrastructure-passing-brightgreen)](https://github.com/AET-DevOps25/team-nixops/actions/workflows/infra.yml)
 
 
 TUM Scheduler is an intelligent course scheduling tool designed to help students at the [Technical University of Munich (TUM)](https://www.tum.de/) create,
