@@ -28,7 +28,8 @@ export function useSessionData() {
   }, [generateNewSessionId]);
 
   const updateStudyId = (newStudyId: string) => {
-    if (studyId !== null && newStudyId !== studyId) {
+    const oldStudyId = sessionStorage.getItem('studyId');
+    if (oldStudyId !== newStudyId) {
       sessionStorage.setItem('studyId', newStudyId);
       setStudyId(newStudyId);
       generateNewSessionId();
@@ -36,7 +37,8 @@ export function useSessionData() {
   };
 
   const updateSemester = (newSemester: string) => {
-    if (semester !== null && newSemester !== semester) {
+    const oldSemester = sessionStorage.getItem('semester');
+    if (oldSemester !== newSemester) {
       sessionStorage.setItem('semester', newSemester);
       setSemester(newSemester);
       generateNewSessionId();

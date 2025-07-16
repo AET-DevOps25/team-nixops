@@ -81,24 +81,24 @@ class CampusCourseApiClient(
 
   fun getCourseGroups(courseId: Int): List<CampusGroup>? {
     val url = "$baseUrl/slc.tm.cp/student/courseGroups/firstGroups/$courseId"
-
     val request = Request.Builder().url(url).addHeader("Accept", "application/json").build()
 
-    val response = client.newCall(request).execute()
+    client.newCall(request).execute().use { response ->
+      if (response.code == 404 || response.code == 500) return null
 
-    if (response.code == 404) return null
+      if (!response.isSuccessful) {
+        throw IOException("Unexpected response: $response")
+      }
 
-    if (!response.isSuccessful) {
-      throw IOException("Unexpected response: $response")
+      val body =
+          response.body?.string()
+              ?: throw IOException("Empty response body for groups for courseId: $courseId")
+
+      val node = mapper.readTree(body)
+      val courseGroups =
+          node["courseGroupDtos"] ?: throw Exception("Missing 'courseGroupDtos' node")
+
+      return mapper.readValue(courseGroups.toString())
     }
-
-    val body =
-        response.body?.string()
-            ?: throw IOException("Empty response body for groups for courseId: $courseId")
-
-    val node = mapper.readTree(body)
-    val courseGroups = node["courseGroupDtos"] ?: throw Exception("Missing 'courseGroupDtos' node")
-
-    return mapper.readValue(courseGroups.toString())
   }
 }

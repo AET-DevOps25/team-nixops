@@ -19,15 +19,15 @@ class CampusCurriculumApiClient(
     val url = "$baseUrl/slc.cm.cs.student/curricula/$semesterId"
     val request = Request.Builder().url(url).addHeader("Accept", "application/json").build()
 
-    val response = client.newCall(request).execute()
+    client.newCall(request).execute().use { response ->
+      if (!response.isSuccessful) throw Exception("Unexpected code $response")
 
-    if (!response.isSuccessful) throw Exception("Unexpected code $response")
+      val body = response.body?.string() ?: throw Exception("Empty response body")
 
-    val body = response.body?.string() ?: throw Exception("Empty response body")
+      val node = mapper.readTree(body)
+      val resourceNode = node["resource"] ?: throw Exception("Missing 'resource' node")
 
-    val node = mapper.readTree(body)
-    val resourceNode = node["resource"] ?: throw Exception("Missing 'resource' node")
-
-    return mapper.readValue(resourceNode.toString())
+      return mapper.readValue(resourceNode.toString())
+    }
   }
 }

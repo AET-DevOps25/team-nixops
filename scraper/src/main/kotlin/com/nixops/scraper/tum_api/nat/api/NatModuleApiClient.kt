@@ -26,22 +26,20 @@ class NatModuleApiClient(
 
     do {
       val urlBuilder = StringBuilder("$baseUrl/mhb/module?")
-
       orgId?.let { urlBuilder.append("org_id=$it&") }
       nextOffset?.let { urlBuilder.append("offset=$it&") }
 
       val request = Request.Builder().url(urlBuilder.toString().removeSuffix("&")).build()
 
-      val response = client.newCall(request).execute()
+      client.newCall(request).execute().use { response ->
+        if (!response.isSuccessful) throw IOException("Unexpected code $response")
 
-      if (!response.isSuccessful) throw IOException("Unexpected code $response")
+        val page: PagedResponse<NatModule> = mapper.readValue(response.body!!.string())
+        natModules.addAll(page.hits)
 
-      val page: PagedResponse<NatModule> = mapper.readValue(response.body!!.string())
-      natModules.addAll(page.hits)
-
-      logger.trace("Fetched ${natModules.size}/${page.totalCount} modules")
-
-      nextOffset = page.nextOffset
+        logger.trace("Fetched ${natModules.size}/${page.totalCount} modules")
+        nextOffset = page.nextOffset
+      }
     } while (nextOffset != null)
 
     return natModules
@@ -52,13 +50,13 @@ class NatModuleApiClient(
   fun fetchNatModuleDetail(moduleCode: String): NatModule? {
     val request = Request.Builder().url("$baseUrl/mhb/module/$moduleCode").build()
 
-    val response = client.newCall(request).execute()
+    client.newCall(request).execute().use { response ->
+      if (response.code == 404) return null
 
-    if (response.code == 404) return null
+      if (!response.isSuccessful) throw IOException("Unexpected code $response")
 
-    if (!response.isSuccessful) throw IOException("Unexpected code $response")
-
-    return mapper.readValue(response.body!!.string())
+      return mapper.readValue(response.body!!.string())
+    }
   }
 
   /** Combined function: Fetch overview and then full details per NatModule. */
