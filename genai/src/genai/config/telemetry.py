@@ -12,7 +12,7 @@ from prometheus_client.multiprocess import MultiProcessCollector
 
 
 def init_telemetry(app: FastAPI):
-    FastAPIInstrumentor.instrument_app(app, excluded_urls=["metrics", "healthcheck"])
+    FastAPIInstrumentor.instrument_app(app)
     LangchainInstrumentor().instrument()
     SystemMetricsInstrumentor().instrument()
 
