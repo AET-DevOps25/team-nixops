@@ -36,18 +36,18 @@ class NatProgramApiClient(
 
       val request = Request.Builder().url(url).build()
 
-      val response = client.newCall(request).execute()
+      client.newCall(request).execute().use { response ->
+        if (!response.isSuccessful) {
+          throw IOException("Failed to search programs: $response")
+        }
 
-      if (!response.isSuccessful) {
-        throw IOException("Failed to search programs: $response")
+        val body = response.body?.string() ?: throw IOException("Empty response body")
+
+        val pagedResponse: PagedResponse<NatProgram> = mapper.readValue(body)
+        items.addAll(pagedResponse.hits)
+
+        offset = pagedResponse.nextOffset
       }
-
-      val body = response.body?.string() ?: throw IOException("Empty response body")
-
-      val pagedResponse: PagedResponse<NatProgram> = mapper.readValue(body)
-      items.addAll(pagedResponse.hits)
-
-      offset = pagedResponse.nextOffset
     } while (offset != null)
 
     return items

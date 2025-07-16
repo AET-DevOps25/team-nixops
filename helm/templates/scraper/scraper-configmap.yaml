@@ -41,6 +41,6 @@ data:
       targets = [{
         __address__ = "127.0.0.1:8080",
       }]
-      metrics_path    = "/metrics"
+      metrics_path    = "/actuator/prometheus"
       forward_to = [prometheus.remote_write.scraper.receiver]
     }

@@ -1147,6 +1147,16 @@
       "hash": "sha256-oHIb0W7heYA4qdUYTFyQG9WhGSOgonqZjjo+MMxMano="
     }
   },
+  "io.micrometer:micrometer-registry-prometheus:1.15.0": {
+    "micrometer-registry-prometheus-1.15.0.jar": {
+      "url": "https://plugins.gradle.org/m2/io/micrometer/micrometer-registry-prometheus/1.15.0/micrometer-registry-prometheus-1.15.0.jar",
+      "hash": "sha256-z/1TzwXPXLrcLSxqAEvX3IFw9VUe1FbLvS0+Z/w+AIY="
+    },
+    "micrometer-registry-prometheus-1.15.0.pom": {
+      "url": "https://plugins.gradle.org/m2/io/micrometer/micrometer-registry-prometheus/1.15.0/micrometer-registry-prometheus-1.15.0.pom",
+      "hash": "sha256-KowXrC8+XwNW2dtzEGW4gmsh3XkxF+P9aqj8LmQbEVM="
+    }
+  },
   "io.micrometer:micrometer-tracing-bom:1.5.0": {
     "micrometer-tracing-bom-1.5.0.pom": {
       "url": "https://plugins.gradle.org/m2/io/micrometer/micrometer-tracing-bom/1.5.0/micrometer-tracing-bom-1.5.0.pom",
@@ -1335,6 +1345,26 @@
     "opentelemetry-bom-1.49.0.pom": {
       "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-bom/1.49.0/opentelemetry-bom-1.49.0.pom",
       "hash": "sha256-RPy6c5ErlQ0+yIEp444DwYG5dfW17nPXureGaks3bFA="
+    }
+  },
+  "io.opentelemetry:opentelemetry-bom:1.46.0": {
+    "opentelemetry-bom-1.46.0.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-bom/1.46.0/opentelemetry-bom-1.46.0.module",
+      "hash": "sha256-XOhJduf9T785pQun+mpctRmHwjsNRYVkL/RdlFfNJWE="
+    },
+    "opentelemetry-bom-1.46.0.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-bom/1.46.0/opentelemetry-bom-1.46.0.pom",
+      "hash": "sha256-aJhHsqN67KZ6jySGrQWl8TEE2L35dv57YoJeb4y4KLw="
+    }
+  },
+  "io.opentelemetry:opentelemetry-bom-alpha:1.46.0-alpha": {
+    "opentelemetry-bom-alpha-1.46.0-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-bom-alpha/1.46.0-alpha/opentelemetry-bom-alpha-1.46.0-alpha.module",
+      "hash": "sha256-GjQNa9goWJPXYfeHLPEsGTdswKmIW2BKC7QMAJBkD7o="
+    },
+    "opentelemetry-bom-alpha-1.46.0-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/opentelemetry-bom-alpha/1.46.0-alpha/opentelemetry-bom-alpha-1.46.0-alpha.pom",
+      "hash": "sha256-e7+pLXcsgFkhRIUyfrJaoHHCjttvyp9uDWiVJNAWdYc="
     }
   },
   "io.opentelemetry:opentelemetry-context:1.49.0": {
@@ -1657,6 +1687,26 @@
     "opentelemetry-instrumentation-api-incubator-2.17.1-alpha.pom": {
       "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-instrumentation-api-incubator/2.17.1-alpha/opentelemetry-instrumentation-api-incubator-2.17.1-alpha.pom",
       "hash": "sha256-/2a4PlMSK/3jyT/aE/YZRUq+vPcHr9jN70Tummg5ERs="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom:2.12.0": {
+    "opentelemetry-instrumentation-bom-2.12.0.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-instrumentation-bom/2.12.0/opentelemetry-instrumentation-bom-2.12.0.module",
+      "hash": "sha256-pqUY8hXgvQljDZxFxSd8CrvWJ3zyMHqzkLbOFy4de4o="
+    },
+    "opentelemetry-instrumentation-bom-2.12.0.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-instrumentation-bom/2.12.0/opentelemetry-instrumentation-bom-2.12.0.pom",
+      "hash": "sha256-PiwIbtrhgrPCBlKsnuPECT2tobh5mwyQvJOZmaCEPrE="
+    }
+  },
+  "io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:2.12.0-alpha": {
+    "opentelemetry-instrumentation-bom-alpha-2.12.0-alpha.module": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-instrumentation-bom-alpha/2.12.0-alpha/opentelemetry-instrumentation-bom-alpha-2.12.0-alpha.module",
+      "hash": "sha256-jn5+7wk+tYvTpbPqjEBU+djgAaSeKMgmja5bY/PdtK8="
+    },
+    "opentelemetry-instrumentation-bom-alpha-2.12.0-alpha.pom": {
+      "url": "https://plugins.gradle.org/m2/io/opentelemetry/instrumentation/opentelemetry-instrumentation-bom-alpha/2.12.0-alpha/opentelemetry-instrumentation-bom-alpha-2.12.0-alpha.pom",
+      "hash": "sha256-CNbtDdftMSmWrbb20+e+Hn9oh7hAsNwMr1Iub6ut0lU="
     }
   },
   "io.opentelemetry.instrumentation:opentelemetry-jdbc:2.17.1-alpha": {
@@ -2007,6 +2057,72 @@
     "prometheus-metrics-bom-1.3.6.pom": {
       "url": "https://plugins.gradle.org/m2/io/prometheus/prometheus-metrics-bom/1.3.6/prometheus-metrics-bom-1.3.6.pom",
       "hash": "sha256-7F7SHKoBR1WFBiSTeY7gQUX7wUmkUNXFMWnASxUCg2A="
+    }
+  },
+  "io.prometheus:prometheus-metrics-config:1.3.6": {
+    "prometheus-metrics-config-1.3.6.jar": {
+      "url": "https://plugins.gradle.org/m2/io/prometheus/prometheus-metrics-config/1.3.6/prometheus-metrics-config-1.3.6.jar",
+      "hash": "sha256-Mubs8586t27ulO5pECeV+O2AAk0n/aC6QdVPJayIf60="
+    },
+    "prometheus-metrics-config-1.3.6.pom": {
+      "url": "https://plugins.gradle.org/m2/io/prometheus/prometheus-metrics-config/1.3.6/prometheus-metrics-config-1.3.6.pom",
+      "hash": "sha256-Ieq0w9C1LzeGO1glKJv/PrLPJN597MtEoB4fhtLlp2Q="
+    }
+  },
+  "io.prometheus:prometheus-metrics-core:1.3.6": {
+    "prometheus-metrics-core-1.3.6.jar": {
+      "url": "https://plugins.gradle.org/m2/io/prometheus/prometheus-metrics-core/1.3.6/prometheus-metrics-core-1.3.6.jar",
+      "hash": "sha256-aB64+Qbb0w45a7abGu/3EaZS8UZOLIezaBP4ldEkrGc="
+    },
+    "prometheus-metrics-core-1.3.6.pom": {
+      "url": "https://plugins.gradle.org/m2/io/prometheus/prometheus-metrics-core/1.3.6/prometheus-metrics-core-1.3.6.pom",
+      "hash": "sha256-5kRcSCr+zm3m4zHT4MgjgPYSog2nLa+TDcCcEDFiu1c="
+    }
+  },
+  "io.prometheus:prometheus-metrics-exposition-formats:1.3.6": {
+    "prometheus-metrics-exposition-formats-1.3.6.jar": {
+      "url": "https://plugins.gradle.org/m2/io/prometheus/prometheus-metrics-exposition-formats/1.3.6/prometheus-metrics-exposition-formats-1.3.6.jar",
+      "hash": "sha256-UnxeIXZ5NPodf7D0WB9WAlT+Ff/1uGBG6z1mmuyK4AA="
+    },
+    "prometheus-metrics-exposition-formats-1.3.6.pom": {
+      "url": "https://plugins.gradle.org/m2/io/prometheus/prometheus-metrics-exposition-formats/1.3.6/prometheus-metrics-exposition-formats-1.3.6.pom",
+      "hash": "sha256-kxpheprpV2McNvfkv7fctC+syYO9gs9G6bCStl5qC28="
+    }
+  },
+  "io.prometheus:prometheus-metrics-exposition-textformats:1.3.6": {
+    "prometheus-metrics-exposition-textformats-1.3.6.jar": {
+      "url": "https://plugins.gradle.org/m2/io/prometheus/prometheus-metrics-exposition-textformats/1.3.6/prometheus-metrics-exposition-textformats-1.3.6.jar",
+      "hash": "sha256-LZ4DUDwrzRyRPypPgtLr74ud+XHG8i3nmT36vgHVdfk="
+    },
+    "prometheus-metrics-exposition-textformats-1.3.6.pom": {
+      "url": "https://plugins.gradle.org/m2/io/prometheus/prometheus-metrics-exposition-textformats/1.3.6/prometheus-metrics-exposition-textformats-1.3.6.pom",
+      "hash": "sha256-2lVnm4mHGy2y0TpOz3qlNDFl1NHaL1mGWrK4fXFmXHc="
+    }
+  },
+  "io.prometheus:prometheus-metrics-model:1.3.6": {
+    "prometheus-metrics-model-1.3.6.jar": {
+      "url": "https://plugins.gradle.org/m2/io/prometheus/prometheus-metrics-model/1.3.6/prometheus-metrics-model-1.3.6.jar",
+      "hash": "sha256-UajadMA33dXJTda/yCjmC3SO/t4Nw/rm8YjU4Lvq3XU="
+    },
+    "prometheus-metrics-model-1.3.6.pom": {
+      "url": "https://plugins.gradle.org/m2/io/prometheus/prometheus-metrics-model/1.3.6/prometheus-metrics-model-1.3.6.pom",
+      "hash": "sha256-2Eb4QZjM2yLyVCM2EQQznUti+pPeLFkrOeZ1LfMYPPo="
+    }
+  },
+  "io.prometheus:prometheus-metrics-tracer:1.3.6": {
+    "prometheus-metrics-tracer-1.3.6.pom": {
+      "url": "https://plugins.gradle.org/m2/io/prometheus/prometheus-metrics-tracer/1.3.6/prometheus-metrics-tracer-1.3.6.pom",
+      "hash": "sha256-CftjJSvJmrLSzniTDwYrQ3q4F7eQ987qXdx4UQ946W8="
+    }
+  },
+  "io.prometheus:prometheus-metrics-tracer-common:1.3.6": {
+    "prometheus-metrics-tracer-common-1.3.6.jar": {
+      "url": "https://plugins.gradle.org/m2/io/prometheus/prometheus-metrics-tracer-common/1.3.6/prometheus-metrics-tracer-common-1.3.6.jar",
+      "hash": "sha256-904xijCq/inBaUiMRTX0FwcUYly1D8/VbChUw8X2bwk="
+    },
+    "prometheus-metrics-tracer-common-1.3.6.pom": {
+      "url": "https://plugins.gradle.org/m2/io/prometheus/prometheus-metrics-tracer-common/1.3.6/prometheus-metrics-tracer-common-1.3.6.pom",
+      "hash": "sha256-Q7HKkgPqveQdZHLlite5WjHBcRxDFERRtXft9zPchBk="
     }
   },
   "io.prometheus:simpleclient_bom:0.16.0": {
