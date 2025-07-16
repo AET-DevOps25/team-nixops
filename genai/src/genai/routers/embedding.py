@@ -2,9 +2,8 @@ from openapi_server.apis.embedding_api_base import BaseEmbeddingApi
 from openapi_server.apis.embedding_api import router as embedding_api_router
 from openapi_server.models.study_program import StudyProgram
 
-from pydantic import Field, StrictInt
+from logging import info, warn
 from typing import List
-from typing_extensions import Annotated
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from ..db.relational_db import (
@@ -39,7 +38,6 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
         self,
         study_program: StudyProgram,
     ) -> None:
-
         loop = asyncio.get_running_loop()
         loop.run_in_executor(None, self.embed_study_program, study_program)
 
@@ -54,11 +52,8 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
                 map(lambda x: SqlSemester(name=x), study_program.semesters.keys())
             )
 
-            print(
-                "Embedding:",
-                study_program.study_id,
-                study_program.program_name,
-                list(study_program.semesters.keys()),
+            info(
+                f"Embedding: {study_program.study_id}, {study_program.program_name}, {list(study_program.semesters.keys())}",
             )
 
             for s in sem:
@@ -74,7 +69,7 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
                     )
                     existing_ids = {record["id"] for record in existing_records}
                 except Exception as e:
-                    print(
+                    warn(
                         f"Warning: failed to query existing records in {collection_name}: {e}"
                     )
                     existing_ids = set()
@@ -82,9 +77,7 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
                 modules = study_program.semesters[s.name]
                 for n, mod in enumerate(modules):
                     if mod.id in existing_ids:
-                        print(
-                            f"Skipping duplicate module {mod.id} in {collection_name}"
-                        )
+                        info(f"Skipping duplicate module {mod.id} in {collection_name}")
                         continue
 
                     desc = (
@@ -118,9 +111,9 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
                         collection_name=collection_name, data=[data]
                     )
                     milvus_client.flush(collection_name=collection_name)
-                    print(f"Embedded module {n}/{len(modules)} ({res})")
+                    info(f"Embedded module {n}/{len(modules)} ({res})")
 
-            print("Finished embedding")
+            info("Finished embedding")
 
             sp = SqlStudyProgram(
                 id=study_program.study_id,
@@ -138,7 +131,6 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
         """Get all scraped study programs and matching semesters"""
         results: List[StudyProgramSelectorItem] = []
         with Session(engine) as session:
-            telemetry.foo.inc()
             stmt = select(SqlStudyProgram)
             for s in session.scalars(stmt):
                 semesters = list(map(lambda sem: sem.name, s.semesters))

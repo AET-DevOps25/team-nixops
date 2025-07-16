@@ -58,7 +58,7 @@ def retrieve_modules(
         keywords: A list of keywords to search for in the course and module descriptions (e.g., "["programming","not languages", "IN0001", "CIT000323"]")
     """
     info(f"retrieve modules: {keywords}")
-    telemetry.vecdb_query_counter.inc()
+    telemetry.vecdb_query_counter.add(1)
 
     # Combine keywords into a single search string
     combined_query = " ".join(keywords)
@@ -199,7 +199,7 @@ def rewrite_question(state: State):
     """Rewrite the original user question."""
 
     info("rewrite question")
-    telemetry.vecdb_rephrase_query_counter.inc()
+    telemetry.vecdb_rephrase_query_counter.add(1)
 
     messages = state["messages"]
     question = messages[-2].content

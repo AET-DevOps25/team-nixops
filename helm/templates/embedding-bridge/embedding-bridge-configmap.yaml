@@ -19,17 +19,17 @@ data:
     
     loki.source.file "files" {
     	targets               = local.file_match.files.targets
-    	forward_to            = [loki.write.default.receiver]
+    	forward_to            = [loki.write.embedding_bridge.receiver]
     	legacy_positions_file = "/tmp/positions.yaml"
     }
     
-    loki.write "default" {
+    loki.write "embedding_bridge" {
     	endpoint {
     		url = "http://monitoring-service.nixops-monitoring.svc.cluster.local:3100/loki/api/v1/push"
     	}
     	external_labels = {}
     }
-    prometheus.remote_write "default" {
+    prometheus.remote_write "embedding_bridge" {
       endpoint {
     		url = "http://monitoring-service.nixops-monitoring.svc.cluster.local:9090/api/v1/write"
       }
@@ -37,11 +37,11 @@ data:
         environment = "{podname}",
       }
     }
-    prometheus.scrape "default" {
+    prometheus.scrape "embedding_bridge" {
       targets = [{
         __address__ = "127.0.0.1:8040",
       }]
       metrics_path    = "/actuator/prometheus"
-      forward_to = [prometheus.remote_write.default.receiver]
+      forward_to = [prometheus.remote_write.embedding_bridge.receiver]
     }
 

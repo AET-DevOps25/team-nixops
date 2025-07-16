@@ -1,13 +1,15 @@
 from fastapi import FastAPI
+import importlib.metadata
 from opentelemetry import metrics
 from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.resources import Resource
-from opentelemetry.instrumentation.langchain import LangchainInstrumentor
-from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-from opentelemetry.instrumentation.system_metrics import SystemMetricsInstrumentor
-import importlib.metadata
+from opentelemetry.exporter.prometheus import PrometheusMetricReader
 
-from prometheus_client import CollectorRegistry, Counter, multiprocess, make_asgi_app
+from prometheus_client import CollectorRegistry, multiprocess, make_asgi_app
+
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from opentelemetry.instrumentation.langchain import LangchainInstrumentor
+from opentelemetry.instrumentation.system_metrics import SystemMetricsInstrumentor
 
 
 def init_telemetry(app: FastAPI):
@@ -16,42 +18,29 @@ def init_telemetry(app: FastAPI):
     SystemMetricsInstrumentor().instrument()
 
     resource = Resource.create({"service.name": "genai"})
-    provider = MeterProvider(resource=resource)
+    reader = PrometheusMetricReader()
+    provider = MeterProvider(resource=resource, metric_readers=[reader])
     metrics.set_meter_provider(provider)
 
     registry = CollectorRegistry()
     multiprocess.MultiProcessCollector(registry)
 
-    global genai_release_version
-    genai_release_version = Counter(
-        "genai_release_version",
-        "Counter for GenAI release version",
-        ["version"],
-        registry=registry,
-    )
-    __genai_version = importlib.metadata.version("genai")
-    genai_release_version.labels(version=__genai_version).inc()
+    app.mount("/metrics", make_asgi_app(registry=registry))
 
-    global vecdb_query_counter
-    vecdb_query_counter = Counter(
-        "vecdb_query_total",
-        "The number of vector db tool calls",
-        registry=registry,
-    )
 
-    global vecdb_rephrase_query_counter
-    vecdb_rephrase_query_counter = Counter(
-        "vecdb_rephrase_query_total",
-        "The number of rephrases during a vector db tool call",
-        registry=registry,
-    )
+meter = metrics.get_meter(__name__)
+meter.create_counter("foo_total", "example counter")
 
-    global foo
-    foo = Counter(
-        "foo_total",
-        "An example counter",
-        registry=registry,
-    )
+genai_release_version = meter.create_counter(
+    "genai_release_version", "Counter for GenAI release version"
+)
+__genai_version = importlib.metadata.version("genai")
+genai_release_version.add(1, {"version": __genai_version})
 
-    metrics_app = make_asgi_app(registry=registry)
-    app.mount("/metrics", metrics_app)
+vecdb_query_counter = meter.create_counter(
+    "vecdb_query_total", "The number of vector db tool calls"
+)
+
+vecdb_rephrase_query_counter = meter.create_counter(
+    "vecdb_rephrase_query_total", "The number of rephrases during a vector db tool call"
+)

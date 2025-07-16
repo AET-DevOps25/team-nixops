@@ -1,0 +1,8 @@
+http_server_duration_milliseconds_bucket -> heatmap
+vecdb_rephrase_query_total / vecdb_query_total
+genai_release_version_total -> display value for all pods
+process_cpu_utilization
+system_memory_utilization
+up
+gen_ai_client_operation_duration_seconds_bucket
+potentially db storage space??
