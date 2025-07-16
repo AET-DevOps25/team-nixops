@@ -19,17 +19,17 @@ data:
     
     loki.source.file "files" {
     	targets               = local.file_match.files.targets
-    	forward_to            = [loki.write.default.receiver]
+    	forward_to            = [loki.write.scraper.receiver]
     	legacy_positions_file = "/tmp/positions.yaml"
     }
     
-    loki.write "default" {
+    loki.write "scraper" {
     	endpoint {
     		url = "http://monitoring-service.nixops-monitoring.svc.cluster.local:3100/loki/api/v1/push"
     	}
     	external_labels = {}
     }
-    prometheus.remote_write "default" {
+    prometheus.remote_write "scraper" {
       endpoint {
     		url = "http://monitoring-service.nixops-monitoring.svc.cluster.local:9090/api/v1/write"
       }
@@ -37,10 +37,10 @@ data:
         environment = "{podname}",
       }
     }
-    prometheus.scrape "default" {
+    prometheus.scrape "scraper" {
       targets = [{
         __address__ = "127.0.0.1:8080",
       }]
       metrics_path    = "/metrics"
-      forward_to = [prometheus.remote_write.default.receiver]
+      forward_to = [prometheus.remote_write.scraper.receiver]
     }
