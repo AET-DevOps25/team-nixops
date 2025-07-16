@@ -1,4 +1,6 @@
 # TUM Course Scheduler – AI-Powered Semester Planner
+[![Deploy](https://github.com/AET-DevOps25/team-nixops/actions/workflows/deploy.yml/badge.svg)](https://github.com/AET-DevOps25/team-nixops/actions/workflows/deploy.yml)
+
 
 TUM Course Scheduler is an intelligent course scheduling tool designed to help students at the [Technical University of Munich (TUM)](https://www.tum.de/) create,
 optimize, and refine their semester plans with ease.
