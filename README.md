@@ -19,6 +19,8 @@ conflict-free scheduling, and an interactive planning experience tailored to use
 
 ##  Microservice Architecture
 
+<img alt="architecture" src="https://github.com/user-attachments/assets/ca07f243-3b4e-4e6b-ad8f-27fd67a8abae" />
+
 ### client
 - **User facing interface for semester planning**
 - Chat interface using the [genai service](#genai)
