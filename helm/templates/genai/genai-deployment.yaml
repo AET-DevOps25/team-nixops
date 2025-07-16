@@ -51,6 +51,8 @@ spec:
               value: "https://nixops-devops25.student.k8s.aet.cit.tum.de, http://localhost:3000"
             - name: LOGGING_FILENAME
               value: "/app/logs/genai.log"
+            - name: PROMETHEUS_MULTIPROC_DIR
+              value: "/app/"
 
             - name: MILVUS_URI
               value: http://genai-db-service:19530

@@ -17,6 +17,11 @@ conflict-free scheduling, and an interactive planning experience tailored to use
 
 ![demo](https://github.com/user-attachments/assets/8604fa6f-e9a6-491f-a353-3256e47fd960)
 
+- Live Demo: https://nixops-devops25.student.k8s.aet.cit.tum.de/
+- Statistics: https://stats.nixops-devops25.student.k8s.aet.cit.tum.de/
+- Alerts: https://push.nixops-devops25.student.k8s.aet.cit.tum.de/alerts
+
+
 ##  Microservice Architecture
 
 ![architecture](https://github.com/user-attachments/assets/ca07f243-3b4e-4e6b-ad8f-27fd67a8abae)

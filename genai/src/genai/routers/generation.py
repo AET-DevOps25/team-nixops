@@ -1,5 +1,4 @@
 from asyncio import sleep
-import asyncio
 from typing import Annotated
 from typing_extensions import TypedDict
 from typing import List
@@ -7,9 +6,9 @@ from typing import Literal
 
 from fastapi.responses import StreamingResponse
 from fastapi import APIRouter
+from logging import info
 
 from langgraph.graph.message import add_messages
-from langgraph.checkpoint.memory import InMemorySaver
 from langchain_core.tools import tool
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import InjectedState, ToolNode
@@ -23,8 +22,10 @@ from redis.asyncio import Redis as AsyncRedis
 
 from ..db.vector_db import embed_text, milvus_client
 from ..db.relational_db import get_study_program_name_by_id
+
 from ..config import env
 from ..clients import chat_client, reasoning_client
+from ..config import telemetry
 
 
 class TTLRedisSaver(AsyncRedisSaver):
@@ -56,15 +57,15 @@ def retrieve_modules(
     Args:
         keywords: A list of keywords to search for in the course and module descriptions (e.g., "["programming","not languages", "IN0001", "CIT000323"]")
     """
-
-    print("retrieve modules:", keywords)
+    info(f"retrieve modules: {keywords}")
+    telemetry.vecdb_query_counter.inc()
 
     # Combine keywords into a single search string
     combined_query = " ".join(keywords)
 
     collection_name = f"_{str(state['study_program_id'])}_{state['semester']}"
 
-    print("collection_name:", collection_name)
+    info(f"collection_name: {collection_name}")
 
     results = milvus_client.search(
         collection_name=collection_name,
@@ -75,7 +76,7 @@ def retrieve_modules(
     )
 
     for doc in results[0]:
-        print("found:", doc["entity"]["code"], doc["entity"]["name"])
+        info(f"found: {doc['entity']['code']}, {doc['entity']['name']}")
 
     docs = [
         Document(
@@ -93,6 +94,7 @@ def retrieve_modules(
         )
         for doc in results[0]
     ]
+    info(f"Found {len(docs)} results in total in vectordb")
     return docs
 
 
@@ -114,7 +116,7 @@ def generate_query_or_respond(state: State):
     schedule_id = state["user_id"]
     semester = state["semester"]
 
-    print("call model:", schedule_id, semester)
+    info(f"call model: {schedule_id} {semester}")
 
     response = reasoning_client.bind_tools(
         [
@@ -196,7 +198,8 @@ REWRITE_PROMPT = (
 def rewrite_question(state: State):
     """Rewrite the original user question."""
 
-    print("rewrite question")
+    info("rewrite question")
+    telemetry.vecdb_rephrase_query_counter.inc()
 
     messages = state["messages"]
     question = messages[-2].content
@@ -204,9 +207,7 @@ def rewrite_question(state: State):
         is_human_msg = not hasattr(messages[i], "tool_calls")
         if is_human_msg:
             question = messages[i].content
-            # print("------------------------")
-            # print(question)
-            # print("------------------------")
+            info(f"Rewriting query according to question: {question}")
             break
 
     prompt = REWRITE_PROMPT.format(question=question)
@@ -239,11 +240,7 @@ def generate_answer(state: State):
         is_human_msg = not hasattr(messages[i], "tool_calls")
         if is_human_msg:
             question = messages[i].content
-            # print("-----------generate_answer-------------")
-            # print(messages)
-            # print("QUESTION")
-            # print(question)
-            # print("-----------generate_answer-------------")
+            info(f"Generating answer based on question: {question}")
             break
     prompt = GENERATE_PROMPT.format(
         question=question, context=context, messages=messages

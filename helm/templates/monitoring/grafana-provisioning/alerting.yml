@@ -1,0 +1,147 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-alerting
+  namespace: "{{ .Values.MonitoringNamespace }}"
+data:
+  alert_resources.yaml: |
+    apiVersion: 1
+    contactPoints:
+      - orgId: 1
+        name: ntfy
+        receivers:
+          - uid: des478jr6tu68a
+            type: webhook
+            settings:
+              payload:
+                template: |-
+                  Title:       {{`{{`}} tmpl.Exec "default.title" . {{`}}`}}
+                  Summary:     {{`{{`}} tmpl.Exec "default.message" . {{`}}`}}
+                  Description: {{`{{`}} (index .Alerts 0).Annotations.description {{`}}`}}
+              url: https://localhost:80/alerts
+            disableResolveMessage: false
+  alert_rules.yaml: |
+    apiVersion: 1
+    groups:
+        - orgId: 1
+          name: default
+          folder: genai
+          interval: 10s
+          rules:
+            - uid: fes43ka5foe0wf
+              title: genai proc
+              condition: C
+              data:
+                - refId: A
+                  relativeTimeRange:
+                    from: 600
+                    to: 0
+                  datasourceUid: PBFA97CFB590B2093
+                  model:
+                    datasource:
+                        type: prometheus
+                        uid: PBFA97CFB590B2093
+                    disableTextWrap: false
+                    editorMode: builder
+                    expr: process_cpu_utilization{job="prometheus.scrape.genai"} * 100
+                    fullMetaSearch: false
+                    includeNullMetadata: true
+                    instant: true
+                    intervalMs: 1000
+                    legendFormat: __auto
+                    maxDataPoints: 43200
+                    range: false
+                    refId: A
+                    useBackend: false
+                - refId: C
+                  datasourceUid: __expr__
+                  model:
+                    conditions:
+                        - evaluator:
+                            params:
+                                - 0.50
+                            type: gt
+                          operator:
+                            type: and
+                          query:
+                            params:
+                                - C
+                          reducer:
+                            params: []
+                            type: last
+                          type: query
+                    datasource:
+                        type: __expr__
+                        uid: __expr__
+                    expression: A
+                    intervalMs: 1000
+                    maxDataPoints: 43200
+                    refId: C
+                    type: threshold
+              noDataState: NoData
+              execErrState: Error
+              annotations:
+                description: CPU Load exceeded set percentage
+              isPaused: false
+              notification_settings:
+                receiver: ntfy
+            - uid: ees45oeb9s5j4f
+              title: genai uptime
+              condition: C
+              data:
+                - refId: A
+                  relativeTimeRange:
+                    from: 600
+                    to: 0
+                  datasourceUid: PBFA97CFB590B2093
+                  model:
+                    datasource:
+                        type: prometheus
+                        uid: PBFA97CFB590B2093
+                    disableTextWrap: false
+                    editorMode: builder
+                    expr: up{job="prometheus.scrape.genai"}
+                    fullMetaSearch: false
+                    hide: false
+                    includeNullMetadata: true
+                    instant: true
+                    intervalMs: 1000
+                    legendFormat: __auto
+                    maxDataPoints: 43200
+                    range: false
+                    refId: A
+                    useBackend: false
+                - refId: C
+                  datasourceUid: __expr__
+                  model:
+                    conditions:
+                        - evaluator:
+                            params:
+                                - 1
+                            type: lt
+                          operator:
+                            type: and
+                          query:
+                            params:
+                                - C
+                          reducer:
+                            params: []
+                            type: last
+                          type: query
+                    datasource:
+                        type: __expr__
+                        uid: __expr__
+                    expression: A
+                    intervalMs: 1000
+                    maxDataPoints: 43200
+                    refId: C
+                    type: threshold
+              noDataState: NoData
+              execErrState: Error
+              for: 1m
+              annotations:
+                description: Service went down
+              isPaused: false
+              notification_settings:
+                receiver: ntfy
+    

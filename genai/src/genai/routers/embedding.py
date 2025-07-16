@@ -13,6 +13,7 @@ from ..db.relational_db import (
     Semester as SqlSemester,
 )
 from ..db.vector_db import create_collection, embed_text, milvus_client
+from ..config import telemetry
 from datetime import datetime, date
 from openapi_server.models.study_program_selector_item import StudyProgramSelectorItem
 import json
@@ -137,6 +138,7 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
         """Get all scraped study programs and matching semesters"""
         results: List[StudyProgramSelectorItem] = []
         with Session(engine) as session:
+            telemetry.foo.inc()
             stmt = select(SqlStudyProgram)
             for s in session.scalars(stmt):
                 semesters = list(map(lambda sem: sem.name, s.semesters))
