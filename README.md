@@ -20,6 +20,7 @@ conflict-free scheduling, and an interactive planning experience tailored to use
 - Live Demo: https://nixops-devops25.student.k8s.aet.cit.tum.de/
 - Statistics: https://stats.nixops-devops25.student.k8s.aet.cit.tum.de/
 - Alerts: https://push.nixops-devops25.student.k8s.aet.cit.tum.de/alerts
+- Documentation: [Wiki](https://github.com/AET-DevOps25/team-nixops/wiki)
 
 
 ##  Microservice Architecture
