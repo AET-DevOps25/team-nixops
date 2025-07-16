@@ -38,6 +38,7 @@ dependencies {
   // OpenTelemetry
   implementation("io.opentelemetry.instrumentation:opentelemetry-spring-boot-starter:2.17.1")
   implementation("org.springframework.boot:spring-boot-starter-actuator:3.5.3")
+  implementation("io.micrometer:micrometer-registry-prometheus")
 
   // Caffeine Cache
   implementation("com.github.ben-manes.caffeine:caffeine:3.2.1")

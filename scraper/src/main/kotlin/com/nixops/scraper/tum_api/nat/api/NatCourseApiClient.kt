@@ -21,17 +21,18 @@ class NatCourseApiClient(
 
     val request = Request.Builder().url(url).header("Accept", "application/json").build()
 
-    val response = client.newCall(request).execute()
+    client.newCall(request).execute().use { response ->
+      if (response.code == 404) return null
 
-    if (response.code == 404) return null
+      if (!response.isSuccessful) {
+        throw IOException("Unexpected response: $response")
+      }
 
-    if (!response.isSuccessful) {
-      throw IOException("Unexpected response: $response")
+      val body =
+          response.body?.string()
+              ?: throw IOException("Empty response body for courseId: $courseId")
+
+      return mapper.readValue(body)
     }
-
-    val body =
-        response.body?.string() ?: throw IOException("Empty response body for courseId: $courseId")
-
-    return mapper.readValue(body)
   }
 }

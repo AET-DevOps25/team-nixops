@@ -24,36 +24,32 @@ class NatSemesterApiClient(
   @Throws(IOException::class)
   fun getSemester(semesterKey: String): NatSemester? {
     val url = "$baseUrl/semesters/$semesterKey"
-
     val request = Request.Builder().url(url).build()
 
-    val response = client.newCall(request).execute()
+    client.newCall(request).execute().use { response ->
+      if (response.code == 422) return null
 
-    if (response.code == 422) return null
+      if (!response.isSuccessful) {
+        throw IOException("Failed to fetch semester: $response")
+      }
 
-    if (!response.isSuccessful) {
-      throw IOException("Failed to fetch semester: $response")
+      val body = response.body?.string() ?: throw IOException("Empty response body")
+      return mapper.readValue(body)
     }
-
-    val body = response.body?.string() ?: throw IOException("Empty response body")
-
-    return mapper.readValue(body)
   }
 
   @Throws(IOException::class)
   fun getSemesters(): List<NatSemester> {
     val url = "$baseUrl/semesters/"
-
     val request = Request.Builder().url(url).build()
 
-    val response = client.newCall(request).execute()
+    client.newCall(request).execute().use { response ->
+      if (!response.isSuccessful) {
+        throw IOException("Failed to fetch semesters: $response")
+      }
 
-    if (!response.isSuccessful) {
-      throw IOException("Failed to fetch semester: $response")
+      val body = response.body?.string() ?: throw IOException("Empty response body")
+      return mapper.readValue(body)
     }
-
-    val body = response.body?.string() ?: throw IOException("Empty response body")
-
-    return mapper.readValue(body)
   }
 }

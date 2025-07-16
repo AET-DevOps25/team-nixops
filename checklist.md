@@ -14,9 +14,9 @@
 
 ## 3. Containerization & Local Setup
 - [x] Each component is containerized and runnable in isolation
-- [ ] docker-compose.yml enables local development and testing with minimal effort and provides sane defaults
+- [x] docker-compose.yml enables local development and testing with minimal effort and provides sane defaults
   - [x] Individual dev envs
-  - [ ] Complete docker-compose.yml
+  - [x] Complete docker-compose.yml
 
 ## 4. CI/CD & Deployment
 - [x] CI pipeline with build, test, and Docker image generation via GitHub Action

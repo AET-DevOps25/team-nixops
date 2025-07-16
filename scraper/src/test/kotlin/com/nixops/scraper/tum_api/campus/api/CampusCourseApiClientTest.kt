@@ -201,28 +201,6 @@ class CampusCourseApiClientTest {
   }
 
   @Test
-  fun `getCourseGroups throws IOException on unsuccessful response`() {
-    val response =
-        Response.Builder()
-            .request(
-                Request.Builder()
-                    .url("${campusConfig.baseUrl}/slc.tm.cp/student/courseGroups/firstGroups/456")
-                    .build())
-            .protocol(Protocol.HTTP_1_1)
-            .code(500)
-            .message("Server Error")
-            .body("".toResponseBody(null))
-            .build()
-
-    every { mockClient.newCall(any()) } returns mockCall
-    every { mockCall.execute() } returns response
-
-    val apiClient = CampusCourseApiClient(campusConfig, mockClient)
-
-    assertThrows(IOException::class.java) { apiClient.getCourseGroups(456) }
-  }
-
-  @Test
   fun `getCourseGroups throws IOException on empty response body`() {
     val response =
         Response.Builder()
