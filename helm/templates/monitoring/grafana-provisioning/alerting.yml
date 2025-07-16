@@ -18,7 +18,7 @@ data:
                   Title:       {{`{{`}} tmpl.Exec "default.title" . {{`}}`}}
                   Summary:     {{`{{`}} tmpl.Exec "default.message" . {{`}}`}}
                   Description: {{`{{`}} (index .Alerts 0).Annotations.description {{`}}`}}
-              url: https://push.nixops-devops25.student.k8s.aet.cit.tum.de/alerts
+              url: https://localhost:80/alerts
             disableResolveMessage: false
   alert_rules.yaml: |
     apiVersion: 1
