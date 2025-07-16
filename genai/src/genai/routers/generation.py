@@ -25,6 +25,7 @@ from ..db.vector_db import embed_text, milvus_client
 from ..db.relational_db import get_study_program_name_by_id
 from ..config import env
 from ..clients import chat_client, reasoning_client
+from ..config.telemetry import vecdb_query_counter, vecdb_rephrase_query_counter
 
 
 class TTLRedisSaver(AsyncRedisSaver):
@@ -58,6 +59,7 @@ def retrieve_modules(
     """
 
     print("retrieve modules:", keywords)
+    vecdb_query_counter.add(1)
 
     # Combine keywords into a single search string
     combined_query = " ".join(keywords)
@@ -180,6 +182,7 @@ def grade_documents(
     if score == "yes":
         return "generate_answer"
     else:
+        vecdb_rephrase_query_counter.add(1)
         return "rewrite_question"
 
 
