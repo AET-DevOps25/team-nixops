@@ -38,7 +38,7 @@ vecdb_query_counter = meter.create_counter(
     description="The number of vector db tool calls",
 )
 vecdb_rephrase_query_counter = meter.create_counter(
-    name="rephrase_vecdb_query",
+    name="vecdb_rephrase_query",
     unit="1",
     description="The number of rephrases during a vector db tool call",
 )
