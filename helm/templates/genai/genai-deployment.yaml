@@ -52,7 +52,7 @@ spec:
             - name: LOGGING_FILENAME
               value: "/app/logs/genai.log"
             - name: PROMETHEUS_MULTIPROC_DIR
-              value: "/app/multiproc"
+              value: "/app/"
 
             - name: MILVUS_URI
               value: http://genai-db-service:19530

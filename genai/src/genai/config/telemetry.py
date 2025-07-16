@@ -7,8 +7,7 @@ from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from opentelemetry.instrumentation.system_metrics import SystemMetricsInstrumentor
 import importlib.metadata
 
-from prometheus_client import CollectorRegistry, Counter, multiprocess
-from prometheus_client.exposition import make_asgi_app as prometheus_make_asgi_app
+from prometheus_client import CollectorRegistry, Counter, multiprocess, make_asgi_app
 
 
 def init_telemetry(app: FastAPI):
@@ -54,5 +53,5 @@ def init_telemetry(app: FastAPI):
         registry=registry,
     )
 
-    metrics_app = prometheus_make_asgi_app(registry=registry)
+    metrics_app = make_asgi_app(registry=registry)
     app.mount("/metrics", metrics_app)
