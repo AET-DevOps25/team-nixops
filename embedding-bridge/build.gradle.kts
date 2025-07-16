@@ -142,4 +142,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KaptGenerateStubs>().configureE
   dependsOn("openApiGenerateGenAI", "openApiGenerateScraper")
 }
 
+tasks.test { useJUnitPlatform() }
+
 tasks.named("compileKotlin") { dependsOn("openApiGenerateGenAI", "openApiGenerateScraper") }
