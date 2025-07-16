@@ -29,7 +29,6 @@ genai_release_version_metric = meter.create_counter(
     "genai_release_version",
     description="Counter for GenAI release version",
 )
-
 version = importlib.metadata.version("genai")
 genai_release_version_metric.add(1, {"version": version})
 
