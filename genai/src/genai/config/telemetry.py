@@ -6,12 +6,15 @@ from opentelemetry.sdk.resources import Resource
 from prometheus_client import make_asgi_app
 from opentelemetry.instrumentation.langchain import LangchainInstrumentor
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from opentelemetry.instrumentation.system_metrics import SystemMetricsInstrumentor
 import importlib.metadata
 
 
 def init_telemetry(app: FastAPI):
     FastAPIInstrumentor.instrument_app(app, excluded_urls="metrics,healthcheck")
     LangchainInstrumentor().instrument()
+    SystemMetricsInstrumentor().instrument()
+
     resource = Resource.create({"service.name": "your_service_name"})
     reader = PrometheusMetricReader()
     provider = MeterProvider(resource=resource, metric_readers=[reader])
