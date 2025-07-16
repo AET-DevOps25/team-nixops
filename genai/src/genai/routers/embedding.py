@@ -138,7 +138,7 @@ class CustomEmbeddingApi(BaseEmbeddingApi):
         """Get all scraped study programs and matching semesters"""
         results: List[StudyProgramSelectorItem] = []
         with Session(engine) as session:
-            telemetry.foo.add(1)
+            telemetry.foo.inc()
             stmt = select(SqlStudyProgram)
             for s in session.scalars(stmt):
                 semesters = list(map(lambda sem: sem.name, s.semesters))
