@@ -12,6 +12,7 @@ import com.nixops.schedulemanager.model.Module
 import com.nixops.schedulemanager.model.Schedule
 import java.util.concurrent.TimeUnit
 import mu.KotlinLogging
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 private val logger = KotlinLogging.logger {}
@@ -21,10 +22,12 @@ class ScheduleManagementService(
     private val scraperApiClient: DefaultApi,
     //
     private val scheduleMetrics: ScheduleMetrics,
+    //
+    @Value("\${schedule-manager.schedule.expiry}") private val cacheExpirySeconds: Long
 ) {
   private val scheduleCache: Cache<String, Schedule> =
       Caffeine.newBuilder()
-          .expireAfterAccess(1, TimeUnit.HOURS)
+          .expireAfterAccess(cacheExpirySeconds, TimeUnit.SECONDS)
           .removalListener(
               RemovalListener<String, Schedule> { key, _, cause ->
                 logger.info("Schedule removed: $key, $cause")

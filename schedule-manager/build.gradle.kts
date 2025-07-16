@@ -125,6 +125,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>(
           ))
     }
 
+tasks.test { useJUnitPlatform() }
+
 tasks.named("compileKotlin") {
   dependsOn("openApiGenerateScraper", "openApiGenerateScheduleManager")
 }
