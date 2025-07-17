@@ -1,5 +1,6 @@
 from asyncio import sleep
 from typing import Annotated
+from langchain_core.callbacks import StdOutCallbackHandler
 from typing_extensions import TypedDict
 from typing import List
 from typing import Literal
@@ -462,7 +463,7 @@ async def stream_response(prompt: str, convId: str, studyProgramId: int, semeste
     ):
         config = {
             "configurable": {"thread_id": user_id},
-            "callbacks": [telemetry.PrometheusTokenCallback()],
+            "callbacks": [telemetry.PrometheusTokenCallback(), StdOutCallbackHandler()],
         }
         async for msg, metadata in graph.astream(
             {
