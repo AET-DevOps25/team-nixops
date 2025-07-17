@@ -156,7 +156,7 @@ def grade_documents(
 ) -> Literal["generate_answer", "rewrite_question"]:
     """Determine whether the retrieved documents are relevant to the question."""
 
-    print("grade documents")
+    info("grade documents")
 
     messages = state["messages"]
     context = messages[-1].content
@@ -166,9 +166,7 @@ def grade_documents(
         is_human_msg = not hasattr(messages[i], "tool_calls")
         if is_human_msg:
             question = messages[i].content
-            # print("------------------------")
-            # print(question)
-            # print("------------------------")
+            info(f"Grading docs according to question: {question}")
             break
 
     prompt = GRADE_PROMPT.format(question=question, context=context)

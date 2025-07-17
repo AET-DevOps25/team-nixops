@@ -1,4 +1,5 @@
 from datetime import datetime, date
+from logging import info, warning
 import json
 
 from sqlalchemy.orm import Session
@@ -28,11 +29,8 @@ def embed_study_program(
 ) -> None:
     sem = list(map(lambda x: SqlSemester(name=x), study_program.semesters.keys()))
 
-    print(
-        "Embedding:",
-        study_program.study_id,
-        study_program.program_name,
-        list(study_program.semesters.keys()),
+    info(
+        f"Embedding: {study_program.study_id} | {study_program.program_name} | {list(study_program.semesters.keys())}",
     )
 
     for s in sem:
@@ -48,7 +46,7 @@ def embed_study_program(
             )
             existing_ids = {record["id"] for record in existing_records}
         except Exception as e:
-            print(
+            warning(
                 f"Warning: failed to query existing records in {collection_name}: {e}"
             )
             existing_ids = set()
@@ -56,7 +54,7 @@ def embed_study_program(
         modules = study_program.semesters[s.name]
         for n, mod in enumerate(modules):
             if mod.id in existing_ids:
-                print(f"Skipping duplicate module {mod.id} in {collection_name}")
+                info(f"Skipping duplicate module {mod.id} in {collection_name}")
                 continue
 
             desc = (
@@ -88,9 +86,9 @@ def embed_study_program(
 
             res = milvus_client.insert(collection_name=collection_name, data=[data])
             milvus_client.flush(collection_name=collection_name)
-            print(f"Embedded module {n}/{len(modules)} ({res})")
+            info(f"Embedded module {n}/{len(modules)} ({res})")
 
-    print("Finished embedding")
+    info("Finished embedding")
 
     sp = SqlStudyProgram(
         id=study_program.study_id,
