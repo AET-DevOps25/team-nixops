@@ -43,7 +43,7 @@ data:
                         uid: PBFA97CFB590B2093
                     disableTextWrap: false
                     editorMode: builder
-                    expr: process_cpu_utilization{job="prometheus.scrape.genai"} * 100
+                    expr: avg without (mode,cpu) (1 - rate(node_cpu_seconds_total{mode="idle", environment=~"^genai-.*"}[1m]))
                     fullMetaSearch: false
                     includeNullMetadata: true
                     instant: true
@@ -59,7 +59,7 @@ data:
                     conditions:
                         - evaluator:
                             params:
-                                - 0.50
+                                - 0.25
                             type: gt
                           operator:
                             type: and

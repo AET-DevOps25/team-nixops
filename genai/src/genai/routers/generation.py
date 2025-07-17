@@ -1,5 +1,6 @@
 from asyncio import sleep
 from typing import Annotated
+from langchain_core.callbacks import StdOutCallbackHandler
 from typing_extensions import TypedDict
 from typing import List
 from typing import Literal
@@ -156,7 +157,7 @@ def grade_documents(
 ) -> Literal["generate_answer", "rewrite_question"]:
     """Determine whether the retrieved documents are relevant to the question."""
 
-    print("grade documents")
+    info("grade documents")
 
     messages = state["messages"]
     context = messages[-1].content
@@ -166,9 +167,7 @@ def grade_documents(
         is_human_msg = not hasattr(messages[i], "tool_calls")
         if is_human_msg:
             question = messages[i].content
-            # print("------------------------")
-            # print(question)
-            # print("------------------------")
+            info(f"Grading docs according to question: {question}")
             break
 
     prompt = GRADE_PROMPT.format(question=question, context=context)
@@ -462,7 +461,9 @@ async def stream_response(prompt: str, convId: str, studyProgramId: int, semeste
     async def generate(
         user_input: str, user_id: str, study_program: int, semester: str
     ):
-        config = {"configurable": {"thread_id": user_id}}
+        config = {
+            "configurable": {"thread_id": user_id},
+        }
         async for msg, metadata in graph.astream(
             {
                 "messages": [("user", user_input)],
