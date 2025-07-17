@@ -460,7 +460,10 @@ async def stream_response(prompt: str, convId: str, studyProgramId: int, semeste
     async def generate(
         user_input: str, user_id: str, study_program: int, semester: str
     ):
-        config = {"configurable": {"thread_id": user_id}}
+        config = {
+            "configurable": {"thread_id": user_id},
+            "callbacks": [telemetry.PrometheusTokenCallback],
+        }
         async for msg, metadata in graph.astream(
             {
                 "messages": [("user", user_input)],

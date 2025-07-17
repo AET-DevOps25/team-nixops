@@ -61,12 +61,42 @@ def init_telemetry(app: FastAPI):
         registry=registry,
     )
 
-    global foo
-    foo = Counter(
-        "foo_total",
-        "An example counter",
+    global input_tokens_counter
+    input_tokens_counter = Counter(
+        "langchain_input_tokens_total",
+        "Total number of input (prompt) tokens consumed by LangChain LLMs",
+        registry=registry,
+    )
+
+    global output_tokens_counter
+    output_tokens_counter = Counter(
+        "langchain_output_tokens_total",
+        "Total number of output (completion) tokens returned by LangChain LLMs",
         registry=registry,
     )
 
     metrics_app = make_asgi_app(registry=registry)
     app.mount("/metrics", metrics_app)
+
+
+from langchain.callbacks.base import BaseCallbackHandler
+from typing import Any, Dict, Optional
+
+
+class PrometheusTokenCallback(BaseCallbackHandler):
+    def on_llm_end(
+        self,
+        response: Dict[str, Any],
+        *,
+        run_id: str,
+        parent_run_id: Optional[str] = None,
+        **kwargs,
+    ) -> None:
+        usage = response.get("usage", {})
+        prompt_tokens = usage.get("prompt_tokens", 0)
+        completion_tokens = usage.get("completion_tokens", 0)
+
+        if prompt_tokens:
+            input_tokens_counter.inc(prompt_tokens)
+        if completion_tokens:
+            output_tokens_counter.inc(completion_tokens)
