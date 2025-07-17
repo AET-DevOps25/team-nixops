@@ -81,25 +81,29 @@ def init_telemetry(app: FastAPI):
 
 
 from langchain.callbacks.base import BaseCallbackHandler
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, override
 
 
 class PrometheusTokenCallback(BaseCallbackHandler):
-    def on_llm_end(
-        self,
-        response: Dict[str, Any],
-        *,
-        run_id: str,
-        parent_run_id: Optional[str] = None,
-        **kwargs,
-    ) -> None:
-        usage = response.get("usage", {})
-        prompt_tokens = usage.get("prompt_tokens", 0)
-        completion_tokens = usage.get("completion_tokens", 0)
+    @override
+    def on_chain_end(self, outputs: Dict[str, Any], **kwargs: Any) -> None:
+        llm_output = outputs.get("llm_output", {})
+        token_usage = llm_output.get("token_usage") or llm_output.get("usage")
 
-        info("on_llm_end called")
+        if token_usage:
+            prompt_tokens = token_usage.get("prompt_tokens", 0)
+            completion_tokens = token_usage.get("completion_tokens", 0)
+            total_tokens = token_usage.get(
+                "total_tokens", prompt_tokens + completion_tokens
+            )
 
-        if prompt_tokens:
-            input_tokens_counter.inc(prompt_tokens)
-        if completion_tokens:
-            output_tokens_counter.inc(completion_tokens)
+            print(f"  → prompt_tokens: {prompt_tokens}")
+            print(f"  → completion_tokens: {completion_tokens}")
+            print(f"  → total_tokens: {total_tokens}")
+
+            if prompt_tokens:
+                input_tokens_counter.inc(prompt_tokens)
+            if completion_tokens:
+                output_tokens_counter.inc(completion_tokens)
+        else:
+            print("  → No token usage found in chain outputs.")
