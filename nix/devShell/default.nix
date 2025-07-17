@@ -99,6 +99,7 @@
         packages = [
           venv
           pkgs.uv
+          pkgs.pdm
           pkgs.openapi-generator-cli
         ];
         env = {

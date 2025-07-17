@@ -5,7 +5,7 @@ description = "Default template for PDM package"
 authors = [
   { name = "GHOSCHT", email = "31184695+GHOSCHT@users.noreply.github.com" },
 ]
-requires-python = ">=3.13"
+requires-python = "==3.13.*"
 dependencies = [
   "dotenv>=0.9.9",
   "fastapi>=0.115.12",
@@ -27,8 +27,13 @@ dependencies = [
   "opentelemetry-instrumentation-fastapi>=0.55b1",
   "opentelemetry-instrumentation-system-metrics>=0.56b0",
   "redis>=6.2.0",
-  "langgraph-checkpoint-redis>=0.0.8"
+  "langgraph-checkpoint-redis>=0.0.8",
+  "pytest>=8.4",
+  "pytest-cov>=6.2",
+  "pytest-asyncio>=1.1"
 ]
+readme = "README.md"
+license = { text = "MIT" }
 
 [project.scripts]
 genai = "genai.app:run"
@@ -36,11 +41,6 @@ genai = "genai.app:run"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-
-dependencies = ["fastapi>=0.115.12", "openapi_server", "setuptools>=80.9.0"]
-requires-python = "==3.13.*"
-readme = "README.md"
-license = { text = "MIT" }
 
 [tool.pdm]
 distribution = false
