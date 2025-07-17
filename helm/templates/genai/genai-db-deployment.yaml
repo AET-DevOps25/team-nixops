@@ -114,6 +114,12 @@ spec:
               value: "localhost:9000"
             - name: LOG_FILE_ROOTPATH
               value: "/milvus/logs"
+            - name: LOG_FILE_MAXSIZE
+              value: "300"
+            - name: LOG_FILE_MAXAGE
+              value: "1"
+            - name: LOG_FILE_MAXBACKUPS
+              value: "2"
             - name: MINIO_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
@@ -210,7 +216,7 @@ spec:
          name: genai-configmap
       - name: shared-alloy-logs  # shared space monitored with alloy
         emptyDir: 
-         sizeLimit: 500Mi
+         sizeLimit: 1Gi
       - name: shared-alloy-config # use config prepared by init container
         emptyDir: 
          sizeLimit: 500Mi
