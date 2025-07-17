@@ -462,7 +462,7 @@ async def stream_response(prompt: str, convId: str, studyProgramId: int, semeste
     ):
         config = {
             "configurable": {"thread_id": user_id},
-            "callbacks": [telemetry.PrometheusTokenCallback],
+            "callbacks": [telemetry.PrometheusTokenCallback()],
         }
         async for msg, metadata in graph.astream(
             {
