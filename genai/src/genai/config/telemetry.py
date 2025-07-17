@@ -9,6 +9,11 @@ import importlib.metadata
 
 from prometheus_client import CollectorRegistry, Counter, multiprocess, make_asgi_app
 
+import os
+
+os.environ["PROMETHEUS_MULTIPROC_DIR"] = "/tmp/metrics"
+os.makedirs("/tmp/metrics", exist_ok=True)
+
 
 def init_telemetry(app: FastAPI):
     FastAPIInstrumentor.instrument_app(app, excluded_urls="metrics,healthcheck")
