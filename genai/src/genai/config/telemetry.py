@@ -1,10 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from opentelemetry import metrics
 from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.resources import Resource
-from opentelemetry.instrumentation.langchain import LangchainInstrumentor
-from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-from opentelemetry.instrumentation.system_metrics import SystemMetricsInstrumentor
 import importlib.metadata
 
 from prometheus_client import CollectorRegistry, Counter, multiprocess, make_asgi_app
@@ -16,16 +13,29 @@ os.makedirs("/tmp/metrics", exist_ok=True)
 
 
 def init_telemetry(app: FastAPI):
-    FastAPIInstrumentor.instrument_app(app, excluded_urls="metrics,healthcheck")
-    LangchainInstrumentor().instrument()
-    SystemMetricsInstrumentor().instrument()
-
     resource = Resource.create({"service.name": "genai"})
     provider = MeterProvider(resource=resource)
     metrics.set_meter_provider(provider)
 
     registry = CollectorRegistry()
     multiprocess.MultiProcessCollector(registry)
+
+    http_requests_total = Counter(
+        "http_requests_total",
+        "Counts of HTTP requests by method and path",
+        ["method", "path"],
+        registry=registry,
+    )
+
+    @app.middleware("http")
+    async def prometheus_request_counter(request: Request, call_next):
+        path = request.url.path
+        method = request.method
+
+        http_requests_total.labels(method=method, path=path).inc()
+
+        response = await call_next(request)
+        return response
 
     global genai_release_version
     genai_release_version = Counter(
