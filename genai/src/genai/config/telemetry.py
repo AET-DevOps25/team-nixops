@@ -1,3 +1,4 @@
+from logging import info
 from fastapi import FastAPI, Request
 from opentelemetry import metrics
 from opentelemetry.sdk.metrics import MeterProvider
@@ -95,6 +96,8 @@ class PrometheusTokenCallback(BaseCallbackHandler):
         usage = response.get("usage", {})
         prompt_tokens = usage.get("prompt_tokens", 0)
         completion_tokens = usage.get("completion_tokens", 0)
+
+        info("on_llm_end called")
 
         if prompt_tokens:
             input_tokens_counter.inc(prompt_tokens)
