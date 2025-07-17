@@ -88,6 +88,7 @@ class PrometheusTokenCallback(BaseCallbackHandler):
     @override
     def on_chain_end(self, outputs: Dict[str, Any], **kwargs: Any) -> None:
         llm_output = outputs.get("llm_output", {})
+        print(llm_output)
         token_usage = llm_output.get("token_usage") or llm_output.get("usage")
 
         if token_usage:
