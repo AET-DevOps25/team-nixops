@@ -13,8 +13,8 @@ const petApiConfig = new Configuration({ basePath: "http://localhost:8000" });
 const petApi = PetApiFactory(petApiConfig);
 
 export const metadata = {
-  title: "My App",
-  description: "Description",
+  title: "TUM Scheduler",
+  description: "AI-Powered Semester Planner",
 };
 
 export default function RootLayout({
