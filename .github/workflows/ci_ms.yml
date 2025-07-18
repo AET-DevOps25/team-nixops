@@ -30,45 +30,45 @@ jobs:
       
       - id: check_client
         run: |
-          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^client/'; then
-            echo "changed=true" >> $GITHUB_STATE
+          if git diff --name-only HEAD^ HEAD | grep '^client/'; then
+            echo "changed=true" >> $GITHUB_OUTPUT
           else
-            echo "changed=false" >> $GITHUB_STATE
+            echo "changed=false" >> $GITHUB_OUTPUT
           fi
       - id: check_embedding_bridge
         run: |
-          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^embedding-bridge/'; then
-            echo "changed=true" >> $GITHUB_STATE
+          if git diff --name-only HEAD^ HEAD | grep '^embedding-bridge/'; then
+            echo "changed=true" >> $GITHUB_OUTPUT
           else
-            echo "changed=false" >> $GITHUB_STATE
+            echo "changed=false" >> $GITHUB_OUTPUT
           fi
       - id: check_genai
         run: |
-          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^genai/'; then
-            echo "changed=true" >> $GITHUB_STATE
+          if git diff --name-only HEAD^ HEAD | grep '^genai/'; then
+            echo "changed=true" >> $GITHUB_OUTPUT
           else
-            echo "changed=true" >> $GITHUB_STATE
+            echo "changed=false" >> $GITHUB_OUTPUT
           fi
       - id: check_schedule_manager
         run: |
-          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^schedule-manager/'; then
-            echo "changed=true" >> $GITHUB_STATE
+          if git diff --name-only HEAD^ HEAD | grep '^schedule-manager/'; then
+            echo "changed=true" >> $GITHUB_OUTPUT
           else
-            echo "changed=false" >> $GITHUB_STATE
+            echo "changed=false" >> $GITHUB_OUTPUT
           fi
       - id: check_scraper
         run: |
-          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^scraper/'; then
-            echo "changed=true" >> $GITHUB_STATE
+          if git diff --name-only HEAD^ HEAD | grep '^scraper/'; then
+            echo "changed=true" >> $GITHUB_OUTPUT
           else
-            echo "changed=false" >> $GITHUB_STATE
+            echo "changed=false" >> $GITHUB_OUTPUT
           fi
       - id: check_schedule_optimizer
         run: |
-          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^schedule-optimizer/'; then
-            echo "changed=true" >> $GITHUB_STATE
+          if git diff --name-only HEAD^ HEAD | grep '^schedule-optimizer/'; then
+            echo "changed=true" >> $GITHUB_OUTPUT
           else
-            echo "changed=false" >> $GITHUB_STATE
+            echo "changed=false" >> $GITHUB_OUTPUT
           fi
 
   build-client:
@@ -241,7 +241,7 @@ jobs:
         name: team-nixops
         # If you chose API tokens for write access OR if you have a private cache
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-    - run: nix build .#scraper.dockerImage
+    - run: nix build .#schedule-optimizer.dockerImage
     - name: Log in to GitHub Container Registry
       uses: docker/login-action@v3
       with:
@@ -288,9 +288,9 @@ jobs:
  
     - name: Run docker-compose on EC2
       run: |
-        ssh -i ~/.ssh/id_rsa root@${{ vars.EC2_PUBLIC_IP }} << 'EOF'
+        ssh staging << 'EOF'
           curl -L https://raw.githubusercontent.com/AET-DevOps25/team-nixops/refs/heads/main/docker-compose.yml -o docker-compose.yml
           docker compose pull
-          docker compose up -d
+          docker compose up -d --force-recreate
         EOF
 
