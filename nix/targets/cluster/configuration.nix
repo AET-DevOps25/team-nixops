@@ -4,8 +4,13 @@
   terraform,
   ...
 }: let
-  nixosVars = builtins.fromJSON (builtins.readFile ./nixos-vars-${terraform.name}.json);
+  nixosVars = builtins.fromJSON (builtins.readFile ./nixos-vars/${terraform.name}.json);
 in {
+  _module.args.terraform = lib.mkDefault {
+    name = "control-1";
+    role = "control";
+  };
+
   imports = [
     self.nixosModules.hcloud
     self.nixosModules.k8s
@@ -33,9 +38,9 @@ in {
     matchConfig.Name = "enp1s0";
     address =
       []
-      ++ (lib.optional (nixosVars ? network) ["${nixosVars.network.ip}/24"])
-      ++ (lib.optional (nixosVars ? ipv6_address && nixosVars.ipv6_address != null) ["${nixosVars.ipv6_address}/64"])
-      ++ (lib.optional (nixosVars ? ipv4_address && nixosVars.ipv4_address != null) ["${nixosVars.ipv4_address}/32"]);
+      ++ (lib.optional (nixosVars ? network) "${(builtins.head nixosVars.network).ip}/24")
+      ++ (lib.optional (nixosVars ? ipv6_address && nixosVars.ipv6_address != null) "${nixosVars.ipv6_address}/64")
+      ++ (lib.optional (nixosVars ? ipv4_address && nixosVars.ipv4_address != null) "${nixosVars.ipv4_address}/32");
     routes = [
       # create default routes for both IPv6 and IPv4
       {Gateway = "fe80::1";}
