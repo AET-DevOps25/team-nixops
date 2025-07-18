@@ -11,6 +11,14 @@ jobs:
     outputs:
       microservice: ${{ steps.extract.outputs.microservice }}
     steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v25
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - uses: cachix/cachix-action@v14
+        with:
+          name: team-nixops
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
       - name: Extract microservice name from tag
         id: extract
         run: |
@@ -19,9 +27,6 @@ jobs:
           MICROSERVICE="${TAG%@*}"
           echo "Microservice: $MICROSERVICE"
           echo "::set-output name=microservice::$MICROSERVICE"
-
-      - uses: actions/checkout@v3
-      
       - name: Run release for microservice
         run: |
           echo "Releasing microservice: ${{ steps.extract.outputs.microservice }}"
