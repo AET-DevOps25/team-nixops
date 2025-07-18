@@ -18,7 +18,8 @@ terraform {
 }
 
 module "dev" {
-  source = "../../terraform/admins"
+  source  = "../../../terraform/admins"
+  use_aws = true
   ssh_keys = {
     floriannadam = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEbn4CJG3JtDrziLAEQ21bZxL5w4+MkDwD17LoQeEuJc florian@nixoslaptop"
     ghoscht      = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBKg7pWqDj8X+4YFbrL99PgwuIfV8W4J1tsClG2e1A8w openpgp:0x7505C713"

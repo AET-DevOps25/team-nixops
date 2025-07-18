@@ -2,10 +2,10 @@ name: "Build Scheduling Docker Image"
 on:
   pull_request:
     paths:
-      - schedulingEngine/**
+      - schedule-optimizer/**
   push:
     paths:
-      - schedulingEngine/**
+      - schedule-optimizer/**
 jobs:
   tests:
     runs-on: ubuntu-latest
@@ -19,4 +19,4 @@ jobs:
         name: team-nixops
         # If you chose API tokens for write access OR if you have a private cache
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-    - run: nix build .#packages.x86_64-linux.schedulingEngine
+    - run: nix build .#packages.x86_64-linux.schedule-optimizer

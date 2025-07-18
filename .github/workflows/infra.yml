@@ -1,4 +1,4 @@
-name: "Build Infrastructure"
+name: Build Infrastructure
 on:
   pull_request:
     paths:
@@ -20,3 +20,4 @@ jobs:
         # If you chose API tokens for write access OR if you have a private cache
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
     - run: nix build .#checks.x86_64-linux.nixos-k8s
+    - run: nix build .#nixosConfigurations.dev.config.system.build.toplevel

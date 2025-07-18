@@ -14,6 +14,8 @@
           jq
           age
           sops
+          podman-compose
+          docker-compose
         ];
         cachix = {
           enable = true;
@@ -66,6 +68,7 @@
         languages = {
           opentofu.enable = true;
         };
+        packages = with pkgs; [awscli2];
       };
       kotlin-dev = {
         imports = [default];

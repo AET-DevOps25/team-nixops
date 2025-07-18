@@ -1,0 +1,284 @@
+name: Build and Deploy Microservices
+
+on:
+  push:
+    branches:
+      - main
+      - scheduling-openapi
+    paths:
+      - 'client/**'
+      - 'embedding-bridge/**'
+      - 'genai/**'
+      - 'schedule-manager/**'
+      - 'scraper/**'
+      - 'schedule-optimizer/**'
+
+jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      client_changed: ${{ steps.check_client.outputs.changed }}
+      embedding_bridge_changed: ${{ steps.check_embedding_bridge.outputs.changed }}
+      genai_changed: ${{ steps.check_genai.outputs.changed }}
+      schedule_manager_changed: ${{ steps.check_schedule_manager.outputs.changed }}
+      scraper_changed: ${{ steps.check_scraper.outputs.changed }}
+      schedule_optimizer_changed: ${{ steps.check_schedule_optimizer.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v3
+      
+      - id: check_client
+        run: |
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^client/'; then
+            echo "::set-output name=changed::true"
+          else
+            echo "::set-output name=changed::false"
+          fi
+      - id: check_embedding_bridge
+        run: |
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^embedding-bridge/'; then
+            echo "::set-output name=changed::true"
+          else
+            echo "::set-output name=changed::false"
+          fi
+      - id: check_genai
+        run: |
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^genai/'; then
+            echo "::set-output name=changed::true"
+          else
+            echo "::set-output name=changed::false"
+          fi
+      - id: check_schedule_manager
+        run: |
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^schedule-manager/'; then
+            echo "::set-output name=changed::true"
+          else
+            echo "::set-output name=changed::false"
+          fi
+      - id: check_scraper
+        run: |
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^scraper/'; then
+            echo "::set-output name=changed::true"
+          else
+            echo "::set-output name=changed::false"
+          fi
+      - id: check_schedule_optimizer
+        run: |
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^schedule-optimizer/'; then
+            echo "::set-output name=changed::true"
+          else
+            echo "::set-output name=changed::false"
+          fi
+
+  build-client:
+    runs-on: ubuntu-latest
+    needs: check-changes
+    if: needs.check-changes.outputs.client_changed == 'true'
+    steps:
+    - uses: actions/checkout@v4
+    - uses: cachix/install-nix-action@v25
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+    - uses: cachix/cachix-action@v14
+      with:
+        name: team-nixops
+        # If you chose API tokens for write access OR if you have a private cache
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+    - run: nix build .#client.dockerImage
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Load and push Docker image
+      run: |
+        version=$(nix eval --raw .#client.version)
+        name=$(nix eval --raw .#client.pname)
+        LOCAL_IMAGE="nixops-${name}:${version}"
+        REMOTE_LATEST_IMAGE="ghcr.io/aet-devops25/nixops-${name}:latest"
+        docker load < result
+        docker tag $LOCAL_IMAGE $REMOTE_LATEST_IMAGE
+        docker push $REMOTE_LATEST_IMAGE
+
+  build-embedding-bridge:
+    runs-on: ubuntu-latest
+    needs: check-changes
+    if: needs.check-changes.outputs.embedding_bridge_changed == 'true'
+    steps:
+    - uses: actions/checkout@v4
+    - uses: cachix/install-nix-action@v25
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+    - uses: cachix/cachix-action@v14
+      with:
+        name: team-nixops
+        # If you chose API tokens for write access OR if you have a private cache
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+    - run: nix build .#embedding-bridge.dockerImage
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Load and push Docker image
+      run: |
+        version=$(nix eval --raw .#embedding-bridge.version)
+        name=$(nix eval --raw .#embedding-bridge.pname)
+        LOCAL_IMAGE="nixops-${name}:${version}"
+        REMOTE_LATEST_IMAGE="ghcr.io/aet-devops25/nixops-${name}:latest"
+        docker load < result
+        docker tag $LOCAL_IMAGE $REMOTE_LATEST_IMAGE
+        docker push $REMOTE_LATEST_IMAGE
+
+
+  build-genai:
+    runs-on: ubuntu-latest
+    needs: check-changes
+    if: needs.check-changes.outputs.genai_changed == 'true'
+    steps:
+    - uses: actions/checkout@v4
+    - uses: cachix/install-nix-action@v25
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+    - uses: cachix/cachix-action@v14
+      with:
+        name: team-nixops
+        # If you chose API tokens for write access OR if you have a private cache
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+    - run: nix build .#genai.dockerImage
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Load and push Docker image
+      run: |
+        version=$(nix eval --raw .#genai.version)
+        name=$(nix eval --raw .#genai.pname)
+        LOCAL_IMAGE="nixops-${name}:${version}"
+        REMOTE_LATEST_IMAGE="ghcr.io/aet-devops25/nixops-${name}:latest"
+        docker load < result
+        docker tag $LOCAL_IMAGE $REMOTE_LATEST_IMAGE
+        docker push $REMOTE_LATEST_IMAGE
+
+  build-schedule-manager:
+    runs-on: ubuntu-latest
+    needs: check-changes
+    if: needs.check-changes.outputs.schedule_manager_changed == 'true'
+    steps:
+    - uses: actions/checkout@v4
+    - uses: cachix/install-nix-action@v25
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+    - uses: cachix/cachix-action@v14
+      with:
+        name: team-nixops
+        # If you chose API tokens for write access OR if you have a private cache
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+    - run: nix build .#schedule-manager.dockerImage
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Load and push Docker image
+      run: |
+        version=$(nix eval --raw .#schedule-manager.version)
+        name=$(nix eval --raw .#schedule-manager.pname)
+        LOCAL_IMAGE="nixops-${name}:${version}"
+        REMOTE_LATEST_IMAGE="ghcr.io/aet-devops25/nixops-${name}:latest"
+        docker load < result
+        docker tag $LOCAL_IMAGE $REMOTE_LATEST_IMAGE
+        docker push $REMOTE_LATEST_IMAGE
+
+
+  build-scraper:
+    runs-on: ubuntu-latest
+    needs: check-changes
+    if: needs.check-changes.outputs.scraper_changed == 'true'
+    steps:
+    - uses: actions/checkout@v4
+    - uses: cachix/install-nix-action@v25
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+    - uses: cachix/cachix-action@v14
+      with:
+        name: team-nixops
+        # If you chose API tokens for write access OR if you have a private cache
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+    - run: nix build .#scraper.dockerImage
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Load and push Docker image
+      run: |
+        version=$(nix eval --raw .#scraper.version)
+        name=$(nix eval --raw .#scraper.pname)
+        LOCAL_IMAGE="nixops-${name}:${version}"
+        REMOTE_LATEST_IMAGE="ghcr.io/aet-devops25/nixops-${name}:latest"
+        docker load < result
+        docker tag $LOCAL_IMAGE $REMOTE_LATEST_IMAGE
+        docker push $REMOTE_LATEST_IMAGE
+  build-schedule-optimizer:
+    runs-on: ubuntu-latest
+    needs: check-changes
+    if: needs.check-changes.outputs.schedule_optimizer_changed == 'true'
+    steps:
+    - uses: actions/checkout@v4
+    - uses: cachix/install-nix-action@v25
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+    - uses: cachix/cachix-action@v14
+      with:
+        name: team-nixops
+        # If you chose API tokens for write access OR if you have a private cache
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+    - run: nix build .#scraper.dockerImage
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Load and push Docker image
+      run: |
+        version=$(nix eval --raw .#schedule-optimizer.version)
+        name=$(nix eval --raw .#schedule-optimizer.pname)
+        LOCAL_IMAGE="nixops-${name}:${version}"
+        REMOTE_LATEST_IMAGE="ghcr.io/aet-devops25/nixops-${name}:latest"
+        docker load < result
+        docker tag $LOCAL_IMAGE $REMOTE_LATEST_IMAGE
+        docker push $REMOTE_LATEST_IMAGE
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs:
+      - build-client
+      - build-embedding-bridge
+      - build-genai
+      - build-schedule-manager
+      - build-scraper
+      - build-schedule-optimizer
+    if: always()
+    steps:
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H 16.171.59.110 >> ~/.ssh/known_hosts
+
+    - name: Run docker-compose on EC2
+      run: |
+        ssh -i ~/.ssh/id_rsa root@16.171.59.110 << 'EOF'
+          curl -L https://raw.githubusercontent.com/AET-DevOps25/team-nixops/refs/heads/main/docker-compose.yml -o docker-compose.yml
+          docker compose pull
+          docker compose up -d
+        EOF
+
