@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 2
       
       - id: check_client
         run: |
@@ -269,13 +269,24 @@ jobs:
       - build-schedule-optimizer
     if: always()
     steps:
-    - name: Set up SSH
+    steps:
+    - name: Configure SSH
       run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ vars.EC2_PUBLIC_IP }} >> ~/.ssh/known_hosts
-
+        mkdir -p ~/.ssh/
+        echo "$SSH_KEY" > ~/.ssh/staging.key
+        chmod 600 ~/.ssh/staging.key
+        cat >>~/.ssh/config <<END
+        Host staging
+          HostName $SSH_HOST
+          User $SSH_USER
+          IdentityFile ~/.ssh/staging.key
+          StrictHostKeyChecking no
+        END
+      env:
+        SSH_USER: root
+        SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+        SSH_HOST: ${{ vars.EC2_PUBLIC_IP }}
+ 
     - name: Run docker-compose on EC2
       run: |
         ssh -i ~/.ssh/id_rsa root@${{ vars.EC2_PUBLIC_IP }} << 'EOF'
