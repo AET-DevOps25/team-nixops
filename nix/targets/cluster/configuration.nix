@@ -32,11 +32,10 @@ in {
     # matchConfig.MACAddress = "00:00:00:00:00:00";
     matchConfig.Name = "enp1s0";
     address =
-      [
-        "${nixosVars.network.ip}/24"
-        "${nixosVars.ipv6_address}/64"
-      ]
-      ++ (lib.optional (nixosVars ? ipv4_address) ["${nixosVars.ipv4_address}/32"]);
+      []
+      ++ (lib.optional (nixosVars ? network) ["${nixosVars.network.ip}/24"])
+      ++ (lib.optional (nixosVars ? ipv6_address && nixosVars.ipv6_address != null) ["${nixosVars.ipv6_address}/64"])
+      ++ (lib.optional (nixosVars ? ipv4_address && nixosVars.ipv4_address != null) ["${nixosVars.ipv4_address}/32"]);
     routes = [
       # create default routes for both IPv6 and IPv4
       {Gateway = "fe80::1";}

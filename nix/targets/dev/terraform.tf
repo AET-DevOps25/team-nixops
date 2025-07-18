@@ -17,8 +17,26 @@ terraform {
   }
 }
 
+#TODO: uncomment when having admint rights to repo
+# provider "github" {
+#   owner = "AET-DevOps25"
+# }
+#
+# resource "github_repository_environment" "env" {
+#   repository  = "team-nixops"
+#   environment = "dev"
+# }
+#
+# resource "github_actions_environment_variable" "ec2_public_ip" {
+#   repository    = github_repository_environment.env.repository
+#   environment   = github_repository_environment.env.environment
+#   variable_name = "EC2_PUBLIC_IP"
+#   value         = module.dev.ipv4_address
+# }
+
+
 module "dev" {
-  source           = "../../../terraform/hcloud"
+  source           = "../../../terraform/aws"
   name             = "dev"
   domain           = "nixops.aet.cit.tum.de"
   nixos_flake_attr = "dev"
@@ -30,10 +48,10 @@ module "dev" {
   }
 }
 
-output "ipv4_address" {
-  value = module.dev.ipv4_address
+output "public_ip" {
+  value = module.dev.public_ip
 }
 
-output "ipv6_address" {
-  value = module.dev.ipv6_address
+output "public_dns" {
+  value = module.dev.public_dns
 }

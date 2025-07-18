@@ -33,6 +33,7 @@ variable "nixos_flake_attr" {
 variable "nixos_special_args" {
   type        = any
   description = "Extra argumets to pass to NixOS configuration"
+  default     = {}
 }
 
 variable "network_id" {
