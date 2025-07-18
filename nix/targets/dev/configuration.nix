@@ -45,27 +45,6 @@ in {
       # # make the routes on this interface a dependency for network-online.target
       # linkConfig.RequiredForOnline = "routable";
     };
-    "11-podman" = {
-      matchConfig.Name = "podman*";
-      linkConfig.Unmanaged = true;
-    };
-  };
-
-  virtualisation = {
-    containers = {
-      enable = true;
-    };
-    oci-containers.backend = "podman";
-    podman = {
-      enable = true;
-      autoPrune = {
-        enable = true;
-        dates = "daily";
-        flags = ["--all"];
-      };
-      dockerCompat = true;
-      dockerSocket.enable = true;
-    };
   };
 
   services.nginx.config =
@@ -112,10 +91,6 @@ in {
           }
       }
     '';
-
-  environment.systemPackages = with pkgs; [
-    podman-compose
-  ];
 
   sops.secrets.env.path = "/root/.env";
   sops.defaultSopsFile = ./secrets/secrets.yaml;

@@ -11,7 +11,6 @@
       ./single-disk-mbr.nix
       ./nix.nix
       {
-        infra.rootDevice = "sda";
         sops.age.keyFile = "/var/lib/secrets/age";
       }
     ];
@@ -30,6 +29,7 @@
       inputs.srvos.nixosModules.roles-prometheus
       inputs.srvos.nixosModules.mixins-nginx
       ./single-disk-uefi.nix
+      ./podman.nix
       ./nix.nix
       {
         ec2.efi = true;
