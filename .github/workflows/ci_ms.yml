@@ -24,49 +24,51 @@ jobs:
       scraper_changed: ${{ steps.check_scraper.outputs.changed }}
       schedule_optimizer_changed: ${{ steps.check_schedule_optimizer.outputs.changed }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       
       - id: check_client
         run: |
           if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^client/'; then
-            echo "::set-output name=changed::true"
+            echo "changed=true" >> $GITHUB_STATE
           else
-            echo "::set-output name=changed::false"
+            echo "changed=false" >> $GITHUB_STATE
           fi
       - id: check_embedding_bridge
         run: |
           if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^embedding-bridge/'; then
-            echo "::set-output name=changed::true"
+            echo "changed=true" >> $GITHUB_STATE
           else
-            echo "::set-output name=changed::false"
+            echo "changed=false" >> $GITHUB_STATE
           fi
       - id: check_genai
         run: |
           if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^genai/'; then
-            echo "::set-output name=changed::true"
+            echo "changed=true" >> $GITHUB_STATE
           else
-            echo "::set-output name=changed::false"
+            echo "changed=true" >> $GITHUB_STATE
           fi
       - id: check_schedule_manager
         run: |
           if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^schedule-manager/'; then
-            echo "::set-output name=changed::true"
+            echo "changed=true" >> $GITHUB_STATE
           else
-            echo "::set-output name=changed::false"
+            echo "changed=false" >> $GITHUB_STATE
           fi
       - id: check_scraper
         run: |
           if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^scraper/'; then
-            echo "::set-output name=changed::true"
+            echo "changed=true" >> $GITHUB_STATE
           else
-            echo "::set-output name=changed::false"
+            echo "changed=false" >> $GITHUB_STATE
           fi
       - id: check_schedule_optimizer
         run: |
           if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^schedule-optimizer/'; then
-            echo "::set-output name=changed::true"
+            echo "changed=true" >> $GITHUB_STATE
           else
-            echo "::set-output name=changed::false"
+            echo "changed=false" >> $GITHUB_STATE
           fi
 
   build-client:
@@ -272,11 +274,11 @@ jobs:
         mkdir -p ~/.ssh
         echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H 16.171.59.110 >> ~/.ssh/known_hosts
+        ssh-keyscan -H ${{ vars.EC2_PUBLIC_IP }} >> ~/.ssh/known_hosts
 
     - name: Run docker-compose on EC2
       run: |
-        ssh -i ~/.ssh/id_rsa root@16.171.59.110 << 'EOF'
+        ssh -i ~/.ssh/id_rsa root@${{ vars.EC2_PUBLIC_IP }} << 'EOF'
           curl -L https://raw.githubusercontent.com/AET-DevOps25/team-nixops/refs/heads/main/docker-compose.yml -o docker-compose.yml
           docker compose pull
           docker compose up -d
