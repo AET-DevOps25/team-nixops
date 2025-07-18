@@ -22,28 +22,61 @@ jobs:
       - name: Extract microservice name from tag
         id: extract
         run: |
-          # Tag format: microservice@vX.Y.Z
-          TAG=${GITHUB_REF#refs/tags/}
-          MICROSERVICE="${TAG%@*}"
-          echo "Microservice: $MICROSERVICE"
-          echo "::set-output name=microservice::$MICROSERVICE"
-      - run: nix build .#${{ steps.extract.outputs.microservice }}.dockerImage
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Run release for microservice
-        run: |
-          echo "Releasing microservice: ${{ steps.extract.outputs.microservice }}"
-          version=$(nix eval --raw .#${{ steps.extract.outputs.microservice }}.version)
-          name=$(nix eval --raw .#${{ steps.extract.outputs.microservice }}.pname)
-          LOCAL_IMAGE="nixops-${name}:${version}"
-          REMOTE_VERSIONED_IMAGE="ghcr.io/aet-devops25/nixops-${name}:${version}"
-          docker load < result
-          docker tag $LOCAL_IMAGE $REMOTE_VERSIONED_IMAGE
-          docker push $REMOTE_VERSIONED_IMAGE
+          #TODO: add schedule-optimizer on merging https://github.com/AET-DevOps25/team-nixops/pull/39
+          COMPONENTS=("client" "embedding-bridge" "genai" "schedule-manager" "scraper")
+          for name in "${COMPONENTS[@]}"; do
+            version=$(nix eval --raw ".#${name}.version")
+            tag="${name}@v${version}"
+            if git rev-parse "$tag" >/dev/null 2>&1; then
+              echo "${name}=false" >> $GITHUB_OUTPUT
+            else
+              echo "${name}=true" >> $GITHUB_OUTPUT
+            fi
+          done
+  release-client:
+    needs: check-versions
+    if: needs.check-versions.outputs.new_client == 'true'
+    uses: ./.github/workflows/z-release-service.yml
+    with:
+      microservice: client
+
+  release-embedding-bridge:
+    needs: check-versions
+    if: needs.check-versions.outputs.new_embedding_bridge == 'true'
+    uses: ./.github/workflows/z-release-service.yml
+    with:
+      microservice: embedding-bridge
+
+  release-genai:
+    needs: check-versions
+    if: needs.check-versions.outputs.new_genai == 'true'
+    uses: ./.github/workflows/z-release-service.yml
+    with:
+      microservice: genai
+
+  release-schedule-manager:
+    needs: check-versions
+    if: needs.check-versions.outputs.new_schedule_manager == 'true'
+    uses: ./.github/workflows/z-release-service.yml
+    with:
+      microservice: schedule-manager
+
+  release-scraper:
+    needs: check-versions
+    if: needs.check-versions.outputs.new_scraper == 'true'
+    uses: ./.github/workflows/z-release-service.yml
+    with:
+      microservice: scraper
+
+  release-schedule-optimizer:
+    needs: check-versions
+    if: needs.check-versions.outputs.new_schedule_optimizer == 'true'
+    uses: ./.github/workflows/z-release-service.yml
+    with:
+      microservice: schedule-optimizer
+
+  lint-helm:
+    uses: ./.github/workflows/z-lint-helm.yml
 
   deploy-staging:
     runs-on: ubuntu-latest
