@@ -41,6 +41,7 @@ conflict-free scheduling, and an interactive planning experience tailored to use
 - Creates and manages schedules using the [schedule-manager](#schedule-manager)
 - Manages longterm AI memory
 - Tech Stack: Python, LangGraph, Milvus, Redis, OpenAI + Ollama
+- SwaggerUI: http://localhost:8000/docs
 
 ### scraper
 - **The data ingestion service**
