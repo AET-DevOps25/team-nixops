@@ -20,7 +20,7 @@ conflict-free scheduling, and an interactive planning experience tailored to use
 - Live Demo: https://nixops-devops25.student.k8s.aet.cit.tum.de/
 - Statistics: https://stats.nixops-devops25.student.k8s.aet.cit.tum.de/
 - Alerts: https://push.nixops-devops25.student.k8s.aet.cit.tum.de/alerts
-- Dev Server: http://ec2-16-171-59-110.eu-north-1.compute.amazonaws.com
+- Dev Server: http://ec2-16-16-198-246.eu-north-1.compute.amazonaws.com
 - Documentation: [Wiki](https://github.com/AET-DevOps25/team-nixops/wiki)
 
 
