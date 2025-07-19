@@ -39,12 +39,12 @@ jobs:
         run: |
           name=$(nix eval --raw .#${{ env.microservice }}.pname)
 
+          version=$(nix eval --raw .#${{ env.microservice }}.version)
           if [[ "${{ inputs.version }}" == "true" ]]; then
-            version=$(nix eval --raw .#${{ env.microservice }}.version)
             LOCAL_IMAGE="nixops-${name}:${version}"
             REMOTE_IMAGE="ghcr.io/aet-devops25/nixops-${name}:${version}"
           else
-            LOCAL_IMAGE="nixops-${name}:latest"
+            LOCAL_IMAGE="nixops-${name}:${version}"
             REMOTE_IMAGE="ghcr.io/aet-devops25/nixops-${name}:latest"
           fi
 

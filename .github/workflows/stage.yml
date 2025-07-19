@@ -81,6 +81,7 @@ jobs:
       microservice: schedule-optimizer
 
   lint-helm:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     uses: ./.github/workflows/z-lint-helm.yml
 
   deploy-staging:
