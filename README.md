@@ -93,8 +93,13 @@ Alternatively follow the [setup instructions](#setup-instructions) for a develop
 ## Setup Instructions
 
 ### Prerequisites:
-- Nix
+- Nix (including flakes)
 - Docker & Docker Compose
+
+If Nix is not already installed on your system you can do so using the following [installer command](https://github.com/DeterminateSystems/nix-installer):
+```sh
+curl -fsSL https://install.determinate.systems/nix | sh -s -- install
+```
 
 ### Cloning the Repository
 
