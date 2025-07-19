@@ -157,6 +157,8 @@ jobs:
         ssh ec2 << 'EOF'
           curl -L https://raw.githubusercontent.com/AET-DevOps25/team-nixops/refs/heads/main/docker-compose.yml -o docker-compose.yml
           docker compose pull
-          docker compose up -d --force-recreate
+          docker compose down
+          docker compose up -d
+          docker image prune -f
         EOF
 
