@@ -17,7 +17,7 @@ elif env.chat_ai_provider == "ollama":
     chat_client = ChatOllama(
         model=env.chat_model,
         base_url=env.chat_ollama_base_url,
-        api_key=env.chat_api_key,
+        client_kwargs={"headers": {"Authorization": f"Bearer {env.chat_api_key}"}},
     )
 else:
     raise Exception(
