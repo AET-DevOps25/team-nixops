@@ -77,4 +77,4 @@ jobs:
       microservice: schedule-optimizer
 
   lint-helm:
-    uses: ./.github/workflows/internal/lint-helm.yml
+    uses: ./.github/workflows/z-lint-helm.yml
