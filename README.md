@@ -101,6 +101,11 @@ If Nix is not already installed on your system you can do so using the following
 curl -fsSL https://install.determinate.systems/nix | sh -s -- install
 ```
 
+You can remove Nix installed by Determinate Nix Installer by running:
+```sh
+/nix/nix-installer uninstall
+```
+
 ### Cloning the Repository
 
 First clone the repository:
