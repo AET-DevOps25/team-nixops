@@ -96,6 +96,16 @@ Alternatively follow the [setup instructions](#setup-instructions) for a develop
 - Nix
 - Docker & Docker Compose
 
+For installing Nix, simply use the [determinate installer](https://github.com/DeterminateSystems/nix-installer):
+```bash
+curl -fsSL https://install.determinate.systems/nix | sh -s -- install
+```
+
+For uninstalling Nix:
+```
+/nix/nix-installer uninstall
+```
+
 ### Cloning the Repository
 
 First clone the repository:
