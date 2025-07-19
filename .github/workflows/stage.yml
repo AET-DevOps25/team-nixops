@@ -15,7 +15,7 @@ jobs:
       new_client: ${{ steps.check-tags.outputs.client }}
       new_embedding_bridge: ${{ steps.check-tags.outputs.embedding-bridge }}
       new_genai: ${{ steps.check-tags.outputs.genai }}
-      new_schedule_manager: ${{ steps.check-tags.outputs.schedule_manager }}
+      new_schedule_manager: ${{ steps.check-tags.outputs.schedule-manager }}
       new_scraper: ${{ steps.check-tags.outputs.scraper }}
       new_schedule_optimizer: ${{ steps.check-tags.outputs.schedule-optimizer }}
     steps:
@@ -81,6 +81,7 @@ jobs:
       microservice: schedule-optimizer
 
   lint-helm:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     uses: ./.github/workflows/z-lint-helm.yml
 
   deploy-staging:
