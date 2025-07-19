@@ -5,7 +5,7 @@
 ![client](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=client%40v*&label=%20)
 ![embedding-bridge](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=embedding-bridge%40v*&label=%20)
 ![genai](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=genai%40v*&label=%20)
-![schedule-manager](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=schedule_manager%40v*&label=%20)
+![schedule-manager](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=schedule-manager%40v*&label=%20)
 ![scraper](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=scraper%40v*&label=%20)
 ![schedule-optimizer](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=schedule-optimizer%40v*&label=%20)
 
