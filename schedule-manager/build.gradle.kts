@@ -125,6 +125,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>(
           ))
     }
 
+tasks.processResources { from("$projectDir/openapi.yaml") { into(".") } }
+
 tasks.test { useJUnitPlatform() }
 
 tasks.named("compileKotlin") {
