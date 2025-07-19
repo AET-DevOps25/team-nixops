@@ -32,5 +32,13 @@
       machine.copy_from_host( "${./env.txt}", ".env")
       machine.succeed("docker compose pull")
       machine.succeed("docker compose up -d")
+      machine.succeed("curl -s -o /dev/null -w '%{http_code}' http://localhost:3000")
+      machine.sleep(20)
+      output = machine.succeed("docker ps -a --format '{{.Names}} {{.Status}}'").strip().splitlines()
+
+      for line in output:
+          name, status = line.split(" ", 1)
+          print(f"Container {name} status: {status}")
+          assert not status.startswith("Exited"), f"Container {name} exited or crashed: {status}"
     '';
 }
