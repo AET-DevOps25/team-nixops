@@ -1,4 +1,10 @@
 {pkgs, ...}: {
+  networking = {
+    nftables.enable = true;
+    firewall = {
+      interfaces."podman*".allowedUDPPorts = [53];
+    };
+  };
   systemd.network.networks = {
     "11-podman" = {
       matchConfig.Name = "podman*";

@@ -24,7 +24,6 @@ in {
   networking = {
     hostName = "dev";
     domain = "nixops.aet.cit.tum.de";
-    nftables.enable = true;
   };
 
   services.cloud-init.enable = lib.mkForce false;
