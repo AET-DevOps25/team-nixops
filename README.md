@@ -2,12 +2,12 @@
 [![CI](https://img.shields.io/badge/Deploy-passing-brightgreen)](https://github.com/AET-DevOps25/team-nixops/actions/workflows/ci.yml)
 [![Staging](https://img.shields.io/badge/Build_Infrastructure-passing-brightgreen)](https://github.com/AET-DevOps25/team-nixops/actions/workflows/stage.yml)
 \
-![client](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=client%40*&label=%20)
-![embedding-bridge](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=embedding-bridge@v.*&label=%20)
-![genai](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=genai@v.*&label=%20)
-![schedule-manager](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=schedule_manager@v.*&label=%20)
-![scraper](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=scraper@v.*&label=%20)
-![schedule-optimizer](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=schedule-optimizer@v.*&label=%20)
+![client](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=client%40v*&label=%20)
+![embedding-bridge](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=embedding-bridge%40v*&label=%20)
+![genai](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=genai%40v*&label=%20)
+![schedule-manager](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=schedule_manager%40v*&label=%20)
+![scraper](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=scraper%40v*&label=%20)
+![schedule-optimizer](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=schedule-optimizer%40v*&label=%20)
 
 TUM Scheduler is an intelligent course scheduling tool designed to help students at the [Technical University of Munich (TUM)](https://www.tum.de/) create,
 optimize, and refine their semester plans with ease.
