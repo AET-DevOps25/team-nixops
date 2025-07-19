@@ -29,7 +29,8 @@ jobs:
           fetch-depth: 2
       - id: check_client
         run: |
-          COMPONENTS=("client" "embedding-bridge" "genai" "schedule_manager" "scraper" "schedule-optimizer")
+          #TODO: add schedule-optimizer on merging https://github.com/AET-DevOps25/team-nixops/pull/39
+          COMPONENTS=("client" "embedding-bridge" "genai" "schedule_manager" "scraper")
           for name in "${COMPONENTS[@]}"; do
             if git diff --name-only HEAD^ HEAD | grep "^${name}/"; then
               echo "${name}=false" >> $GITHUB_OUTPUT
@@ -44,6 +45,7 @@ jobs:
     uses: ./.github/workflows/z-release-service.yml
     with:
       microservice: client
+      version: false
 
   build-embedding-bridge:
     needs: check-versions
@@ -51,6 +53,7 @@ jobs:
     uses: ./.github/workflows/z-release-service.yml
     with:
       microservice: embedding-bridge
+      version: false
 
   build-genai:
     needs: check-versions
@@ -58,6 +61,7 @@ jobs:
     uses: ./.github/workflows/z-release-service.yml
     with:
       microservice: genai
+      version: false
 
   build-schedule-manager:
     needs: check-versions
@@ -65,6 +69,7 @@ jobs:
     uses: ./.github/workflows/z-release-service.yml
     with:
       microservice: schedule-manager
+      version: false
 
   build-scraper:
     needs: check-versions
@@ -72,6 +77,7 @@ jobs:
     uses: ./.github/workflows/z-release-service.yml
     with:
       microservice: scraper
+      version: false
 
   build-schedule-optimizer:
     needs: check-versions
@@ -79,6 +85,7 @@ jobs:
     uses: ./.github/workflows/z-release-service.yml
     with:
       microservice: schedule-optimizer
+      version: false
 
   integration-test:
     runs-on: ubuntu-latest
