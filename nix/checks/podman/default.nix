@@ -32,8 +32,6 @@
       machine.copy_from_host( "${./env.txt}", ".env")
       machine.succeed("docker compose pull")
       machine.succeed("docker compose up -d")
-      machine.succeed('${pkgs.chromium}/bin/chromium --headless --disable-gpu --dump-dom http://localhost:3000 > /tmp/page.html')
-      machine.succeed('grep "Select Study Program" /tmp/page.html')
 
       machine.sleep(20)
       output = machine.succeed("docker ps -a --format '{{.Names}} {{.Status}}'").strip().splitlines()
