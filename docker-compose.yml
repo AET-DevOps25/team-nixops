@@ -5,7 +5,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - API_URL=http://genai:8000
+      - API_URL=http://localhost:8000
       - SCHEDULE_MANAGER_BASE_URL=http://schedule-manager:8042
       - GENAI_BASE_URL=http://genai:8000
 
