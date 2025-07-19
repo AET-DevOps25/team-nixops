@@ -1,0 +1,35 @@
+name: Lint Helm Charts
+
+on:
+  workflow_call:
+    inputs:
+      base_ref:
+        required: false
+        type: string
+        default: HEAD^
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check if helm/ has changed
+        id: changes
+        run: |
+          if git diff --name-only ${{ inputs.base_ref }} HEAD | grep '^helm/'; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set up Helm
+        if: steps.changes.outputs.changed == 'true'
+        uses: azure/setup-helm@v4.3.0
+
+      - name: Lint Helm Charts
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          helm lint ./helm
