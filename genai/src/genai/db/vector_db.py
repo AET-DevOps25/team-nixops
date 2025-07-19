@@ -1,9 +1,30 @@
-from pymilvus import IndexType, MilvusClient, DataType
+from pymilvus import IndexType, MilvusClient, DataType, exceptions
+from tenacity import (
+    retry,
+    stop_after_attempt,
+    wait_fixed,
+    retry_if_exception_type,
+    before_log,
+)
+import logging
 
 from ..config import env
 from ..clients import embedding_client
 
-milvus_client = MilvusClient(uri=env.milvus_uri, token=env.milvus_token)
+logger = logging.getLogger(__name__)
+
+
+@retry(
+    stop=stop_after_attempt(5),
+    wait=wait_fixed(3),
+    retry=retry_if_exception_type((exceptions.MilvusException, ConnectionError)),
+    before=before_log(logger, logging.INFO),
+)
+def create_milvus_client():
+    return MilvusClient(uri=env.milvus_uri, token=env.milvus_token)
+
+
+milvus_client = create_milvus_client()
 
 
 def create_index(collection_name):

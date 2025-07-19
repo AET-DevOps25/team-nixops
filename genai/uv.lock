@@ -397,6 +397,7 @@ dependencies = [
     { name = "python-decouple" },
     { name = "redis" },
     { name = "sqlalchemy" },
+    { name = "tenacity" },
 ]
 
 [package.metadata]
@@ -425,6 +426,7 @@ requires-dist = [
     { name = "python-decouple", specifier = ">=3.8" },
     { name = "redis", specifier = ">=6.2.0" },
     { name = "sqlalchemy", specifier = ">=2.0.41" },
+    { name = "tenacity", specifier = ">=9.1.2" },
 ]
 
 [[package]]
