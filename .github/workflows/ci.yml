@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - scheduling-openapi
     paths:
       - 'client/**'
       - 'embedding-bridge/**'
@@ -28,49 +27,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
-      
       - id: check_client
         run: |
-          if git diff --name-only HEAD^ HEAD | grep '^client/'; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "changed=false" >> $GITHUB_OUTPUT
-          fi
-      - id: check_embedding_bridge
-        run: |
-          if git diff --name-only HEAD^ HEAD | grep '^embedding-bridge/'; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "changed=false" >> $GITHUB_OUTPUT
-          fi
-      - id: check_genai
-        run: |
-          if git diff --name-only HEAD^ HEAD | grep '^genai/'; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "changed=false" >> $GITHUB_OUTPUT
-          fi
-      - id: check_schedule_manager
-        run: |
-          if git diff --name-only HEAD^ HEAD | grep '^schedule-manager/'; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "changed=false" >> $GITHUB_OUTPUT
-          fi
-      - id: check_scraper
-        run: |
-          if git diff --name-only HEAD^ HEAD | grep '^scraper/'; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "changed=false" >> $GITHUB_OUTPUT
-          fi
-      - id: check_schedule_optimizer
-        run: |
-          if git diff --name-only HEAD^ HEAD | grep '^schedule-optimizer/'; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "changed=false" >> $GITHUB_OUTPUT
-          fi
+          COMPONENTS=("client" "embedding-bridge" "genai" "schedule_manager" "scraper" "schedule-optimizer")
+          for name in "${COMPONENTS[@]}"; do
+            if git diff --name-only HEAD^ HEAD | grep "^${name}/"; then
+              echo "${name}=false" >> $GITHUB_OUTPUT
+            else
+              echo "${name}=true" >> $GITHUB_OUTPUT
+            fi
+          done
 
   build-client:
     runs-on: ubuntu-latest
@@ -95,9 +61,8 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Load and push Docker image
       run: |
-        version=$(nix eval --raw .#client.version)
         name=$(nix eval --raw .#client.pname)
-        LOCAL_IMAGE="nixops-${name}:${version}"
+        LOCAL_IMAGE="nixops-${name}:latest"
         REMOTE_LATEST_IMAGE="ghcr.io/aet-devops25/nixops-${name}:latest"
         docker load < result
         docker tag $LOCAL_IMAGE $REMOTE_LATEST_IMAGE
@@ -126,9 +91,8 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Load and push Docker image
       run: |
-        version=$(nix eval --raw .#embedding-bridge.version)
         name=$(nix eval --raw .#embedding-bridge.pname)
-        LOCAL_IMAGE="nixops-${name}:${version}"
+        LOCAL_IMAGE="nixops-${name}:latest"
         REMOTE_LATEST_IMAGE="ghcr.io/aet-devops25/nixops-${name}:latest"
         docker load < result
         docker tag $LOCAL_IMAGE $REMOTE_LATEST_IMAGE
@@ -158,9 +122,8 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Load and push Docker image
       run: |
-        version=$(nix eval --raw .#genai.version)
         name=$(nix eval --raw .#genai.pname)
-        LOCAL_IMAGE="nixops-${name}:${version}"
+        LOCAL_IMAGE="nixops-${name}:latest"
         REMOTE_LATEST_IMAGE="ghcr.io/aet-devops25/nixops-${name}:latest"
         docker load < result
         docker tag $LOCAL_IMAGE $REMOTE_LATEST_IMAGE
@@ -189,9 +152,8 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Load and push Docker image
       run: |
-        version=$(nix eval --raw .#schedule-manager.version)
         name=$(nix eval --raw .#schedule-manager.pname)
-        LOCAL_IMAGE="nixops-${name}:${version}"
+        LOCAL_IMAGE="nixops-${name}:latest"
         REMOTE_LATEST_IMAGE="ghcr.io/aet-devops25/nixops-${name}:latest"
         docker load < result
         docker tag $LOCAL_IMAGE $REMOTE_LATEST_IMAGE
@@ -221,9 +183,8 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Load and push Docker image
       run: |
-        version=$(nix eval --raw .#scraper.version)
         name=$(nix eval --raw .#scraper.pname)
-        LOCAL_IMAGE="nixops-${name}:${version}"
+        LOCAL_IMAGE="nixops-${name}:latest"
         REMOTE_LATEST_IMAGE="ghcr.io/aet-devops25/nixops-${name}:latest"
         docker load < result
         docker tag $LOCAL_IMAGE $REMOTE_LATEST_IMAGE
@@ -251,9 +212,8 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Load and push Docker image
       run: |
-        version=$(nix eval --raw .#schedule-optimizer.version)
         name=$(nix eval --raw .#schedule-optimizer.pname)
-        LOCAL_IMAGE="nixops-${name}:${version}"
+        LOCAL_IMAGE="nixops-${name}:latest"
         REMOTE_LATEST_IMAGE="ghcr.io/aet-devops25/nixops-${name}:latest"
         docker load < result
         docker tag $LOCAL_IMAGE $REMOTE_LATEST_IMAGE
