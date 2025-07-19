@@ -94,6 +94,8 @@ tasks.openApiGenerate {
   skipValidateSpec.set(true)
 }
 
+tasks.processResources { from("$projectDir/openapi.yaml") { into(".") } }
+
 tasks.named("compileKotlin") { dependsOn("openApiGenerate") }
 
 tasks.test { useJUnitPlatform { excludeTags("remoteApi") } }
