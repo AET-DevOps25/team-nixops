@@ -23,9 +23,9 @@ services:
       - POSTGRES_NAME=genai_db
       - SCHEDULE_MANAGER_BASE_URL=http://schedule-manager:8042
       - REDIS_URI=redis://redis:6379
-      - DEFAULT_AI_PROVIDER=openai
-      - DEFAULT_MODEL=gpt-4.1-mini
-      - DEFAULT_EMBEDDING_MODEL=text-embedding-3-small
+      - DEFAULT_AI_PROVIDER=${GENAI_PROVIDER:-openai}
+      - DEFAULT_MODEL=${GENAI_CHAT_MODEL:-gpt-4.1-mini}
+      - DEFAULT_EMBEDDING_MODEL=${GENAI_EMBEDDING_MODEL:-text-embedding-3-small}
       - DEFAULT_API_KEY=${GENAI_API_KEY}
       - DEFAULT_OPENAI_ORG=${GENAI_OPENAI_ORG}
       - DEFAULT_OLLAMA_BASE_URL=${GENAI_OLLAMA_BASE_URL}
