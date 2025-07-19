@@ -1,13 +1,13 @@
 # TUM Scheduler – AI-Powered Semester Planner
-[![Build Client](https://img.shields.io/badge/Build_Client-passing-brightgreen)](https://github.com/AET-DevOps25/team-nixops/actions/workflows/client-dev.yml)
-[![Build Embedding-Bridge](https://img.shields.io/badge/Build_Embedding_Bridge-passing-brightgreen)](https://github.com/AET-DevOps25/team-nixops/actions/workflows/embedding-bridge-dev.yml)
-[![Build GenAI](https://img.shields.io/badge/Build_GenAI-passing-brightgreen)](https://github.com/AET-DevOps25/team-nixops/actions/workflows/genai-dev.yml)
-[![Build Schedule Manager](https://img.shields.io/badge/Build_Schedule_Manager-passing-brightgreen)](https://github.com/AET-DevOps25/team-nixops/actions/workflows/schedule-manager-dev.yml)
-[![Build Scraper](https://img.shields.io/badge/Build_Scraper-passing-brightgreen)](https://github.com/AET-DevOps25/team-nixops/actions/workflows/scraper-dev.yml)
-
-[![Deploy](https://img.shields.io/badge/Deploy-passing-brightgreen)](https://github.com/AET-DevOps25/team-nixops/actions/workflows/deploy.yml)
-[![Build Infrastructure](https://img.shields.io/badge/Build_Infrastructure-passing-brightgreen)](https://github.com/AET-DevOps25/team-nixops/actions/workflows/infra.yml)
-
+[![CI](https://img.shields.io/badge/Deploy-passing-brightgreen)](https://github.com/AET-DevOps25/team-nixops/actions/workflows/ci.yml)
+[![Staging](https://img.shields.io/badge/Build_Infrastructure-passing-brightgreen)](https://github.com/AET-DevOps25/team-nixops/actions/workflows/stage.yml)
+\
+![client](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=client%40*&label=%20)
+![embedding-bridge](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=embedding-bridge@v.*&label=%20)
+![genai](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=genai@v.*&label=%20)
+![schedule-manager](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=schedule_manager@v.*&label=%20)
+![scraper](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=scraper@v.*&label=%20)
+![schedule-optimizer](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=schedule-optimizer@v.*&label=%20)
 
 TUM Scheduler is an intelligent course scheduling tool designed to help students at the [Technical University of Munich (TUM)](https://www.tum.de/) create,
 optimize, and refine their semester plans with ease.
@@ -202,8 +202,8 @@ cat schedule-manager | docker load
  
 ## Testing
 
-Tests are automatically run during the nix build process.\
-Therefor all tests can be run using:
+Unit tests are automatically run during the nix build process.\
+Therefor all unit tests can be run using:
 ```bash
 nix build .#client
 nix build .#genai
@@ -211,16 +211,35 @@ nix build .#scraper
 nix build .#embedding-bridge
 nix build .#schedule-manager
 ```
+Integration tests can be run using the following command:
+```bash
+nix flake check -L --option sandbox false --no-pure-eval
+```
+This will test all dev environments, packages, infrastructure configurations, and also run scripted tests in a VM.
 
 ## CI/CD Pipeline
 
-The project includes GitHub Actions workflows for:
-- **Testing**: All changes to services are tested automatically
-- **Linting**: All OpenAPI and helm files are linted for correctness
-- **Building Docker Images**: Automatically builds and pushes Docker images to GitHub Container Registry.
-- **Deploying Docker Images**: Deploys the application to a production Kubernetes environment using helm.
+### GitHub Actions
 
-## Git-Hooks
+The project includes GitHub Actions workflows for:
+- **Testing**: All changes to services are tested automatically. Long integration tests are only run on `main`.
+- **Linting**: All OpenAPI and helm files are linted for correctness
+- **Building Docker Images**: Automatically builds and pushes Docker images to GitHub Container Registry. Specifically, `latest` tracks the `main` branch and versioned releases correspond to tagged commits.
+- **Automatic Versioning**: Commits that pass the CI are automatically tagged if any version is updated. Tags will have the format: `<name>@v<version>`.
+- **Deploy Docker Images**: Deploys the application to a production Kubernetes environment using helm and to a provisioned server on AWS using `podman-compose`.
+
+### Reproducible Environments
+
+All environments are provisioned with automated tools such as helm, nix and terraform to ensure that the system is reproducible with minimal MTTR from any state.
+Because these operations are critical and can have financial implications, these need to be performed by an admin.
+
+**Secrets**: In reproducible environments it is not trivial to manage secrets as these a potentially revealed in public configuration files. To solve this we use sops &mdash; a way to store secrets that only get decrypted by authorized targets at runtime.\
+**No decrypted secret gets written to persistent storage, ever!**\
+The configuration that determines recipients for a secret it generated to improve maintainability.
+
+Details can be found at the respective subfolders.
+
+### Git-Hooks
 
 The project includes Git pre-commit hooks for:
 - **Formatting**: All files are formatted with `nix fmt .`
