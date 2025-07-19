@@ -1,8 +1,8 @@
 package com.nixops.scraper.controller
 
-import java.io.File
-import org.springframework.core.io.FileSystemResource
+import org.springframework.core.io.ClassPathResource
 import org.springframework.core.io.Resource
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -10,9 +10,12 @@ import org.springframework.web.bind.annotation.RestController
 class OpenApiSpecController {
 
   @RequestMapping("/api-docs.yaml", produces = ["application/yaml"])
-  fun getOpenApiYaml(): Resource {
-    val file = File("openapi.yaml")
-    println("Trying to serve: ${file.absolutePath} exists: ${file.exists()}")
-    return FileSystemResource(file)
+  fun getOpenApiYaml(): ResponseEntity<Resource> {
+    val resource = ClassPathResource("openapi.yaml")
+    return if (resource.exists()) {
+      ResponseEntity.ok(resource)
+    } else {
+      ResponseEntity.notFound().build()
+    }
   }
 }
