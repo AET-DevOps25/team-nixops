@@ -17,7 +17,7 @@ elif env.reasoning_ai_provider == "ollama":
     reasoning_client = ChatOllama(
         model=env.reasoning_model,
         base_url=env.reasoning_ollama_base_url,
-        api_key=env.reasoning_api_key,
+        client_kwargs={"headers": {"Authorization": f"Bearer {env.reasoning_api_key}"}},
     )
 else:
     raise Exception(

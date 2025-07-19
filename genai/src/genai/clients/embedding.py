@@ -17,7 +17,7 @@ elif env.embedding_ai_provider == "ollama":
     embedding_client = OllamaEmbeddings(
         model=env.embedding_model,
         base_url=env.embedding_ollama_base_url,
-        api_key=env.embedding_api_key,
+        client_kwargs={"headers": {"Authorization": f"Bearer {env.embedding_api_key}"}},
     )
 else:
     raise Exception(
