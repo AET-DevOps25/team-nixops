@@ -32,7 +32,6 @@
       machine.copy_from_host( "${./env.txt}", ".env")
       machine.succeed("docker compose pull")
       machine.succeed("docker compose up -d")
-
       machine.sleep(20)
       output = machine.succeed("docker ps -a --format '{{.Names}} {{.Status}}'").strip().splitlines()
 
