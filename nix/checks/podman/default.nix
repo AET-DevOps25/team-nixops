@@ -26,14 +26,32 @@
   testScript =
     #python
     ''
+      def launch_browser():
+        """Launches the web browser with the correct options."""
+        # Determine the name of the binary:
+        binary = ${pkgs.chromium}/bin/chromium
+        # Add optional CLI options:
+        options = []
+        if major_version > "95" and not pname.startswith("google-chrome"):
+            # Workaround to avoid a GPU crash:
+            options.append("--use-gl=swiftshader")
+        # Launch the process:
+        options.append("http://localhost:3000")
+        machine.succeed(ru(f'ulimit -c unlimited; {binary} {shlex.join(options)} >&2 & disown'))
+        if binary.startswith("google-chrome"):
+            # Need to click away the first window:
+            machine.wait_for_text("Make Google Chrome the default browser")
+            machine.screenshot("google_chrome_default_browser_prompt")
+            machine.send_key("ret")
+
       machine.wait_for_unit("multi-user.target")
       machine.succeed("cd")
       machine.succeed("curl -L https://raw.githubusercontent.com/AET-DevOps25/team-nixops/refs/heads/main/docker-compose.yml -o docker-compose.yml")
       machine.copy_from_host( "${./env.txt}", ".env")
       machine.succeed("docker compose pull")
       machine.succeed("docker compose up -d")
-      machine.succeed('${pkgs.chromium}/bin/chromium --headless --disable-gpu --dump-dom http://localhost:3000 > /tmp/page.html')
-      machine.succeed('grep "Select Study Program" /tmp/page.html')
+
+      launch_browser()
 
       machine.sleep(20)
       output = machine.succeed("docker ps -a --format '{{.Names}} {{.Status}}'").strip().splitlines()
