@@ -12,6 +12,7 @@ services:
   # GenAI service
   genai:
     image: ghcr.io/aet-devops25/nixops-genai:latest
+    restart: always
     ports:
       - "8000:8000"
     environment:
