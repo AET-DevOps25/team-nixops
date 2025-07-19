@@ -96,12 +96,12 @@ Alternatively follow the [setup instructions](#setup-instructions) for a develop
 - Nix (including flakes)
 - Docker & Docker Compose
 
-If Nix is not already installed on your system you can do so using the following [installer command](https://github.com/DeterminateSystems/nix-installer):
+If Nix is not already installed on your system you can do so using the [Determinate Nix Installer](https://github.com/DeterminateSystems/nix-installer):
 ```sh
 curl -fsSL https://install.determinate.systems/nix | sh -s -- install
 ```
 
-You can remove Nix installed by Determinate Nix Installer by running:
+You can remove Nix installed by the [Determinate Nix Installer](https://github.com/DeterminateSystems/nix-installer) by running:
 ```sh
 /nix/nix-installer uninstall
 ```
