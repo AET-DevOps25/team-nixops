@@ -52,6 +52,7 @@ function useChat(conversationId: string | null, api: string | null, studyId: num
   const sendMessage = useCallback(
     async (msg: string) => {
       if (msg !== "") {
+        setIsGenerating(true);
         setCurrentQuestion(msg);
         setMessages((prev) => [
           ...prev,
