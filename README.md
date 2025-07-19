@@ -41,7 +41,6 @@ conflict-free scheduling, and an interactive planning experience tailored to use
 - Creates and manages schedules using the [schedule-manager](#schedule-manager)
 - Manages longterm AI memory
 - Tech Stack: Python, LangGraph, Milvus, Redis, OpenAI + Ollama
-- SwaggerUI: http://localhost:8000/docs
 
 ### scraper
 - **The data ingestion service**
@@ -85,6 +84,9 @@ docker-compose up -d
 ```
 
 The client UI will be available at [http://localhost:3030](http://localhost:3030).\
+The genai Swagger UI will be available at [http://localhost:8000/docs](http://localhost:8000/docs).\
+The scraper Swagger UI will be available at [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html).\
+The schedule-manager Swagger UI will be available at [http://localhost:8042/swagger-ui/index.html](http://localhost:8042/swagger-ui/index.html).
 
 Alternatively follow the [setup instructions](#setup-instructions) for a development environment
 
