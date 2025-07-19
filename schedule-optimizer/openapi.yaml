@@ -1,0 +1,124 @@
+openapi: 3.0.1
+info:
+  title: Schedule Optimizer API
+  description: API for creating schedules based on course events and availability.
+  version: 1.0.0
+paths:
+  /schedule:
+    post:
+      summary: Create a schedule
+      operationId: schedule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Query'
+      responses:
+        '200':
+          description: Successfully generated schedule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+components:
+  schemas:
+
+    Appointment:
+      type: object
+      properties:
+        appointment_id:
+          type: integer
+          example: 1
+        seriesBeginDate:
+          type: string
+          format: date
+          example: "2024-03-01"
+        seriesEndDate:
+          type: string
+          format: date
+          example: "2024-07-01"
+        beginTime:
+          type: string
+          example: "08:00"
+        endTime:
+          type: string
+          example: "10:00"
+        weekdays:
+          type: array
+          items:
+            type: string
+            enum: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
+          example: ["Mo", "Di"]
+
+    Query:
+      type: object
+      properties:
+        modules:
+          type: string
+          example: "CS123"
+        availability:
+          type: array
+          items:
+            $ref: '#/components/schemas/AvailabilityBlocker'
+        ectsTarget:
+          type: integer
+      required:
+        - modules
+        - ectsTarget
+
+    AvailabilityBlocker:
+      type: object
+      properties:
+        timeSlot:
+          $ref: '#/components/schemas/Appointment'
+      required:
+        - timeSlot
+
+    Response:
+      type: object
+      properties:
+        scheduled:
+          type: array
+          items:
+            $ref: '#/components/schemas/Appointment'
+        complement:
+          type: array
+          items:
+            $ref: '#/components/schemas/Appointment'
+      required:
+        - scheduled
+
+    Schedule:
+      type: object
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Appointment'
+        score:
+          type: integer
+        collisions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Collision'
+      required:
+        - events
+        - score
+        - collisions
+
+    Collision:
+      type: object
+      properties:
+        primary:
+          $ref: '#/components/schemas/Appointment'
+        secondary:
+          $ref: '#/components/schemas/Appointment'
+        duration:
+          type: string
+          format: duration
+      required:
+        - primary
+        - secondary
+        - duration
+
