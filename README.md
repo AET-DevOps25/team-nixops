@@ -7,7 +7,6 @@
 ![genai](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=genai%40v*&label=%20)
 ![schedule-manager](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=schedule-manager%40v*&label=%20)
 ![scraper](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=scraper%40v*&label=%20)
-![schedule-optimizer](https://img.shields.io/github/v/tag/AET-DevOps25/team-nixops?sort=semver&filter=schedule-optimizer%40v*&label=%20)
 
 TUM Scheduler is an intelligent course scheduling tool designed to help students at the [Technical University of Munich (TUM)](https://www.tum.de/) create,
 optimize, and refine their semester plans with ease.
