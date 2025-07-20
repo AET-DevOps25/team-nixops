@@ -87,7 +87,7 @@ jobs:
       microservice: schedule-optimizer
       version: false
 
-  integration-test:
+  deploy:
     runs-on: ubuntu-latest
     needs:
       - build-client
@@ -100,25 +100,6 @@ jobs:
       always() &&
       !contains(needs.*.result, 'failure') &&
       !contains(needs.*.result, 'cancelled') &&
-      contains(needs.*.result, 'success')
-    steps:
-    - uses: actions/checkout@v4
-    - uses: cachix/install-nix-action@v25
-      with:
-        nix_path: nixpkgs=channel:nixos-unstable
-    - uses: cachix/cachix-action@v14
-      with:
-        name: team-nixops
-        # If you chose API tokens for write access OR if you have a private cache
-        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-    - run: nix flake check -L --option sandbox false --no-pure-eval
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs:
-      - integration-test
-    if: >
-      always() &&
       contains(needs.*.result, 'success')
     steps:
     - name: Configure SSH
@@ -152,13 +133,159 @@ jobs:
         export SOPS_AGE_KEY_FILE=key.txt
         nix profile install nixpkgs#nixos-rebuild
         nixos-rebuild switch --flake .#dev --target-host ec2
-    - name: Run docker-compose on EC2
-      run: |
-        ssh ec2 << 'EOF'
-          curl -L https://raw.githubusercontent.com/AET-DevOps25/team-nixops/refs/heads/main/docker-compose.yml -o docker-compose.yml
-          docker compose pull
-          docker compose down
-          docker compose up -d
-          docker image prune -f
-        EOF
+
+  integration-test:
+    runs-on: ubuntu-latest
+    needs:
+      - deploy
+    if: >
+      always() &&
+      contains(needs.*.result, 'success')
+    steps:
+    - uses: actions/checkout@v4
+    - uses: cachix/install-nix-action@v25
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+    - uses: cachix/cachix-action@v14
+      with:
+        name: team-nixops
+        # If you chose API tokens for write access OR if you have a private cache
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+    - run: nix flake check -L --option sandbox false --no-pure-eval
+
+  check-versions:
+    needs:
+      - integration-test
+    if: >
+      always() &&
+      contains(needs.*.result, 'success')
+    runs-on: ubuntu-latest
+    outputs:
+      new_client: ${{ steps.check-tags.outputs.client }}
+      new_embedding_bridge: ${{ steps.check-tags.outputs.embedding-bridge }}
+      new_genai: ${{ steps.check-tags.outputs.genai }}
+      new_schedule_manager: ${{ steps.check-tags.outputs.schedule-manager }}
+      new_scraper: ${{ steps.check-tags.outputs.scraper }}
+      new_schedule_optimizer: ${{ steps.check-tags.outputs.schedule-optimizer }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: cachix/install-nix-action@v25
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - id: check-tags
+        run: |
+          #TODO: add schedule-optimizer on merging https://github.com/AET-DevOps25/team-nixops/pull/39
+          COMPONENTS=("client" "embedding-bridge" "genai" "schedule-manager" "scraper")
+          for name in "${COMPONENTS[@]}"; do
+            version=$(nix eval --raw ".#${name}.version")
+            tag="${name}@v${version}"
+            if git rev-parse "$tag" >/dev/null 2>&1; then
+              echo "${name}=false" >> $GITHUB_OUTPUT
+            else
+              echo "${name}=true" >> $GITHUB_OUTPUT
+            fi
+          done
+  release-client:
+    needs: check-versions
+    if: needs.check-versions.outputs.new_client == 'true'
+    uses: ./.github/workflows/z-release-service.yml
+    with:
+      microservice: client
+
+  release-embedding-bridge:
+    needs: check-versions
+    if: needs.check-versions.outputs.new_embedding_bridge == 'true'
+    uses: ./.github/workflows/z-release-service.yml
+    with:
+      microservice: embedding-bridge
+
+  release-genai:
+    needs: check-versions
+    if: needs.check-versions.outputs.new_genai == 'true'
+    uses: ./.github/workflows/z-release-service.yml
+    with:
+      microservice: genai
+
+  release-schedule-manager:
+    needs: check-versions
+    if: needs.check-versions.outputs.new_schedule_manager == 'true'
+    uses: ./.github/workflows/z-release-service.yml
+    with:
+      microservice: schedule-manager
+
+  release-scraper:
+    needs: check-versions
+    if: needs.check-versions.outputs.new_scraper == 'true'
+    uses: ./.github/workflows/z-release-service.yml
+    with:
+      microservice: scraper
+
+  release-schedule-optimizer:
+    needs: check-versions
+    if: needs.check-versions.outputs.new_schedule_optimizer == 'true'
+    uses: ./.github/workflows/z-release-service.yml
+    with:
+      microservice: schedule-optimizer
+
+  lint-helm:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    uses: ./.github/workflows/z-lint-helm.yml
+
+  deploy-staging:
+    runs-on: ubuntu-latest
+    needs:
+      - release-client
+      - release-embedding-bridge
+      - release-genai
+      - release-schedule-manager
+      - release-scraper
+      - release-schedule-optimizer
+    if: >
+      always() &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled') &&
+      contains(needs.*.result, 'success')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v25
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - uses: cachix/cachix-action@v14
+        with:
+          name: team-nixops
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+      - uses: azure/setup-helm@v4.3.0
+      - name: Deploy to staging
+        run: |
+          RELEASE_NAME="nixops"
+          CHART_NAME="./helm"
+          NAMESPACE="nixops-default"
+
+          GENAI_VERSION="$(nix eval --raw .#genai.version)"
+          CLIENT_VERSION="$(nix eval --raw .#client.version)"
+          SCRAPER_VERSION="$(nix eval --raw .#scraper.version)"
+          EMBEDDING_BRIDGE_VERSION="$(nix eval --raw .#embedding-bridge.version)"
+          SCHEDULE_MANAGER_VERSION="$(nix eval --raw .#schedule-manager.version)"
+
+          VAR_FLAGS="--values ./helm/values.ci.yaml \
+            --set genai.image.tag=$GENAI_VERSION \
+            --set client.image.tag=$CLIENT_VERSION \
+            --set scraper.image.tag=$SCRAPER_VERSION \
+            --set embeddingBridge.image.tag=$EMBEDDING_BRIDGE_VERSION \
+            --set scheduleManager.image.tag=$SCHEDULE_MANAGER_VERSION"
+
+          echo "Using GenAI version: $GENAI_VERSION"
+          echo "Using Client version: $CLIENT_VERSION"
+          echo "Using Scraper version: $SCRAPER_VERSION"
+          echo "Using Embedding-Bridge version: $EMBEDDING_BRIDGE_VERSION"
+          echo "Using Schedule-Manager version: $SCHEDULE_MANAGER_VERSION"
+
+          TEMP_KUBECONFIG=$(mktemp)
+          echo '${{ secrets.KUBECONFIG }}' > "$TEMP_KUBECONFIG" 
+   
+          helm upgrade --kubeconfig "$TEMP_KUBECONFIG"  "$RELEASE_NAME" "$CHART_NAME" -n "$NAMESPACE" --install $VAR_FLAGS
+
+          rm -f "$TEMP_KUBECONFIG"
 
