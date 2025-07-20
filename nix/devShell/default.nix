@@ -14,8 +14,8 @@
           jq
           age
           sops
-          podman-compose
           docker-compose
+          compose2nix
         ];
         cachix = {
           enable = true;
@@ -32,21 +32,27 @@
           };
           openapi-spec-validator.enable = true;
         };
+        scripts. generate-sops = {
+          exec = builtins.readFile ./scripts/generate-sops.py;
+          package = pkgs.python3.withPackages (
+            p:
+              with p; [
+                jinja2
+                pyyaml
+              ]
+          );
+          description = "Generate .sops.yaml";
+        };
+        tasks = {
+          "setup:sops" = {
+            exec = "generate-sops";
+            before = ["devenv:enterShell"];
+          };
+        };
       };
       ops = {
         imports = [default];
         scripts = {
-          generate-sops = {
-            exec = builtins.readFile ./scripts/generate-sops.py;
-            package = pkgs.python3.withPackages (
-              p:
-                with p; [
-                  jinja2
-                  pyyaml
-                ]
-            );
-            description = "Generate .sops.yaml";
-          };
           provision-certificates = {
             exec = builtins.readFile ./scripts/provision-certificates.py;
             package = pkgs.python3.withPackages (
@@ -56,13 +62,7 @@
                   ruamel-yaml
                 ]
             );
-            description = "Generate .sops.yaml";
-          };
-        };
-        tasks = {
-          "setup:sops" = {
-            exec = "generate-sops";
-            before = ["devenv:enterShell"];
+            description = "Generate certificates for kubernetes cluster";
           };
         };
         languages = {
