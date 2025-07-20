@@ -118,6 +118,13 @@ jobs:
         SSH_USER: root
         SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
         SSH_HOST: ${{ vars.EC2_PUBLIC_IP }}
+    - name: Shutdown docker on EC2
+      run: |
+        ssh ec2 << 'EOF'
+          curl -L https://raw.githubusercontent.com/AET-DevOps25/team-nixops/refs/heads/main/docker-compose.yml -o docker-compose.yml
+          docker compose pull
+          docker compose down
+        EOF
     - uses: actions/checkout@v4
     - uses: cachix/install-nix-action@v25
       with:
@@ -133,6 +140,13 @@ jobs:
         export SOPS_AGE_KEY_FILE=key.txt
         nix profile install nixpkgs#nixos-rebuild
         nixos-rebuild switch --flake .#dev --target-host ec2
+    - name: Run docker-compose on EC2
+      run: |
+        ssh ec2 << 'EOF'
+          curl -L https://raw.githubusercontent.com/AET-DevOps25/team-nixops/refs/heads/main/docker-compose.yml -o docker-compose.yml
+          docker compose up -d
+          docker image prune -f
+        EOF
 
   integration-test:
     runs-on: ubuntu-latest
