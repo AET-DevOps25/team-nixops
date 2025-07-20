@@ -1,6 +1,8 @@
 from typing import List
 from typing import Optional
 
+from urllib.parse import quote_plus
+
 from sqlalchemy import Column, ForeignKey, Table
 from sqlalchemy import String
 from sqlalchemy.orm import DeclarativeBase
@@ -58,7 +60,7 @@ class Semester(Base):
         return f"Semester(id={self.id!r}, name={self.name!r})"
 
 
-database_uri = f"postgresql://{env.db_user}:{env.db_pass}@{env.db_host}/{env.db_name}"
+database_uri = f"postgresql://{quote_plus(env.db_user)}:{quote_plus(env.db_pass)}@{env.db_host}/{quote_plus(env.db_name)}"
 
 engine = create_engine(database_uri, echo=True)
 
