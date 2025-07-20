@@ -319,7 +319,7 @@ data:
               },
               "disableTextWrap": false,
               "editorMode": "code",
-              "expr": "vecdb_rephrase_query_total{job=\"prometheus.scrape.genai\"} / vecdb_query_total{job=\"prometheus.scrape.genai\"}\n",
+              "expr": "(vecdb_rephrase_query_total{job=\"prometheus.scrape.genai\"} / vecdb_query_total{job=\"prometheus.scrape.genai\"}) or on(job) vector(0)\n",
               "fullMetaSearch": false,
               "includeNullMetadata": true,
               "instant": false,
@@ -929,7 +929,7 @@ data:
                 "uid": "PBFA97CFB590B2093"
               },
               "editorMode": "code",
-              "expr": "embedding_bridge_study_programs_embedding_duration_seconds_sum{job=\"prometheus.scrape.embedding_bridge\"}",
+              "expr": "sum(embedding_bridge_study_programs_embedding_duration_seconds_sum{job=\"prometheus.scrape.embedding_bridge\"})",
               "instant": false,
               "legendFormat": "__auto",
               "range": true,
@@ -1046,7 +1046,7 @@ data:
         "list": []
       },
       "time": {
-        "from": "now-1h",
+        "from": "now-24h",
         "to": "now"
       },
       "timepicker": {},

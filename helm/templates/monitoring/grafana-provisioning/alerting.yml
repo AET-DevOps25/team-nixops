@@ -18,7 +18,7 @@ data:
                   Title:       {{`{{`}} tmpl.Exec "default.title" . {{`}}`}}
                   Summary:     {{`{{`}} tmpl.Exec "default.message" . {{`}}`}}
                   Description: {{`{{`}} (index .Alerts 0).Annotations.description {{`}}`}}
-              url: https://localhost:80/alerts
+              url: http://localhost:80/alerts
             disableResolveMessage: false
   alert_rules.yaml: |
     apiVersion: 1
@@ -59,7 +59,7 @@ data:
                     conditions:
                         - evaluator:
                             params:
-                                - 0.25
+                                - 0.90
                             type: gt
                           operator:
                             type: and
