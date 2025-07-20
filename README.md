@@ -282,25 +282,25 @@ The project includes Git pre-commit hooks for:
 │   └── build.gradle.kts    # embedding-bridge dependencies
 │
 ├── schedule-manager/
-│   ├── src/                # source code
-│   ├── build.gradle.kts    # schedule-manager dependencies
-│   └── openapi.yaml        # schedule-manager openapi contract
+│   ├── src/                
+│   ├── build.gradle.kts
+│   └── openapi.yaml
 │
-├── schedulingEngine/
-│   ├── src/                # source code
-│   └── build.gradle.kts    # scheduling-engine dependencies
+├── schedulingEngine/       # Mikilio
+│   ├── src/       
+│   └── build.gradle.kts
 │
-├── terraform/              # terraform code for custom kubernetes deployment
+├── terraform/              # Mikilio
 │   ├── admins
 │   ├── hcloud
 │   └── k8s
 │
-├── nix/
+├── nix/                    # Mikilio
 │   ├── checks/
-│   ├── devShell            # nix development environments
+│   ├── devShell            
 │   ├── modules/
 │   ├── targets/
-│   └── treefmt.nix         # nix formatting setup
+│   └── treefmt.nix
 │
 ├── helm                    # helm deployment
 │   ├── Chart.yaml
@@ -317,8 +317,8 @@ The project includes Git pre-commit hooks for:
 │
 ├── docker-compose.yml
 ├── flake.lock
-├── flake.nix
-└── .github/workflows/       # CI/CD workflows
+├── flake.nix                # All
+└── .github/workflows/       # Mikilio
 ```
 
 ## License
